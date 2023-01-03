@@ -5,6 +5,7 @@ classdef Propagated_space_object
         epoch       % Epoch in mjd2000
         final_time  % Final time in mjd2000
         timestep    % time step [s]
+        type        % Space object tupe (PAYLOAD/ROCKET BODY/DEBRIS)
         RCS         % Radar Cross Section category (LARGE/MEDIUM/SMALL)
         %%Time ticks
         t           % Time tick N*[mjd2000]

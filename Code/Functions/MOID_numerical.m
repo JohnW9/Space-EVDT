@@ -1,4 +1,4 @@
-function moid = MOID_numerical (Primary, object2,screen_distance)
+function moid = MOID_numerical (Primary, object2,distance)
 %% Input setting
 if nargin<3
     flag1=0;
@@ -7,13 +7,13 @@ else
 end
 %% Rotating the second orbit to the desired reference frame (where i1=0 raan1=0)
 R3=[cos(Primary.raan) sin(Primary.raan) 0;...
-   -sin(Primary.raan) cos(Primary.raan) 0;...
+    -sin(Primary.raan) cos(Primary.raan) 0;...
     0                 0                 1];
 R2=[1  0              0;...
     0  cos(Primary.i) sin(Primary.i);...
     0 -sin(Primary.i) cos(Primary.i)];
 R1=[cos(Primary.om) sin(Primary.om) 0;...
-   -sin(Primary.om) cos(Primary.om) 0;...
+    -sin(Primary.om) cos(Primary.om) 0;...
     0                 0             1];
 
 R_eci2perifocal=R1*R2*R3;
@@ -61,7 +61,7 @@ D2s = D2(v);
 [minD2,index] = min(D2s);
 
 if flag1==1
-    if minD2>screen_distance^2
+    if minD2<distance^2
         moid=sqrt(minD2);
         return;
     end
@@ -74,7 +74,7 @@ vminA=vmin;
 vminB=vmin;
 stepsize=0.06; %[rad]
 while stepsize>1e-9
-    
+
     A=[vminA-stepsize vminA vminA+stepsize];
 
     B=[vminB-stepsize vminB vminB+stepsize];
@@ -85,23 +85,23 @@ while stepsize>1e-9
 
     %D2_par=zeros(3);
 
-   % for a=1:3
-   %     for b=1:3
-   %         %D_par(a,b)=norm(rA(A(a))-rB(B(b)));
-   %         D2_par(a,b)=(xA(A(a))-xB(B(b))).^2+(yA(A(a))-yB(B(b))).^2+zB(B(b)).^2;
-   %     end
-   % end
+    % for a=1:3
+    %     for b=1:3
+    %         %D_par(a,b)=norm(rA(A(a))-rB(B(b)));
+    %         D2_par(a,b)=(xA(A(a))-xB(B(b))).^2+(yA(A(a))-yB(B(b))).^2+zB(B(b)).^2;
+    %     end
+    % end
 
     D2_par=[ (xA(A(1))-xB(B(1))).^2+(yA(A(1))-yB(B(1))).^2+zB(B(1)).^2 , (xA(A(1))-xB(B(2))).^2+(yA(A(1))-yB(B(2))).^2+zB(B(2)).^2 , (xA(A(1))-xB(B(3))).^2+(yA(A(1))-yB(B(3))).^2+zB(B(3)).^2;...
-             (xA(A(2))-xB(B(1))).^2+(yA(A(2))-yB(B(1))).^2+zB(B(1)).^2 , (xA(A(2))-xB(B(2))).^2+(yA(A(2))-yB(B(2))).^2+zB(B(2)).^2 , (xA(A(2))-xB(B(3))).^2+(yA(A(2))-yB(B(3))).^2+zB(B(3)).^2;...
-             (xA(A(3))-xB(B(1))).^2+(yA(A(3))-yB(B(1))).^2+zB(B(1)).^2 , (xA(A(3))-xB(B(2))).^2+(yA(A(3))-yB(B(2))).^2+zB(B(2)).^2 , (xA(A(3))-xB(B(3))).^2+(yA(A(3))-yB(B(3))).^2+zB(B(3)).^2];
+        (xA(A(2))-xB(B(1))).^2+(yA(A(2))-yB(B(1))).^2+zB(B(1)).^2 , (xA(A(2))-xB(B(2))).^2+(yA(A(2))-yB(B(2))).^2+zB(B(2)).^2 , (xA(A(2))-xB(B(3))).^2+(yA(A(2))-yB(B(3))).^2+zB(B(3)).^2;...
+        (xA(A(3))-xB(B(1))).^2+(yA(A(3))-yB(B(1))).^2+zB(B(1)).^2 , (xA(A(3))-xB(B(2))).^2+(yA(A(3))-yB(B(2))).^2+zB(B(2)).^2 , (xA(A(3))-xB(B(3))).^2+(yA(A(3))-yB(B(3))).^2+zB(B(3)).^2];
 
 
     min_D2_par=min(D2_par,[],"all");
     [a_min,b_min]=find(D2_par==min_D2_par);
 
     %%ADDITIAL EXIT POINT BY ME
-    if abs(minD2-min_D2_par)<1e-2
+    if abs(minD2-min_D2_par)<1 % Tolerance of 1 km
         minD2=min_D2_par;
         break;
     end
@@ -112,7 +112,7 @@ while stepsize>1e-9
         minD2=min_D2_par;
     end
 
-    
+
 
     %if a_min==2 && b_min==2
     if ismember(2,a_min) && ismember(2,b_min)

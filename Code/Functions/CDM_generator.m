@@ -57,11 +57,13 @@ for m=1:length(eos)
     if temp_objects(1).id == eos(m).id
         dim1=eos(m).dimensions; % [m^2]
         m1=eos(m).mass; % [kg]
+        value1=eos(m).value;
         break;
     end
 end
 
 second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are completely arbitrary
+second_obj=Secondary_value(second_obj);
 if strcmp(second_obj.RCS,'SMALL') 
     dim2=0.1; % [m^2] This is the upper band dimension
     m2=10; %[kg]
@@ -99,9 +101,11 @@ cdm.v1=v1_f;
 cdm.cov1=P0_1;
 cdm.dim1=dim1;
 cdm.m1=m1;
+cdm.value1=value1;
 cdm.r2=r2_f;
 cdm.v2=v2_f;
 cdm.cov2=P0_2;
 cdm.dim2=dim2;
 cdm.m2=m2;
+cdm.value2=value2;
 end

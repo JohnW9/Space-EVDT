@@ -31,8 +31,8 @@ MEANANOMALIES=table2array(raw_data(:,'MEAN_ANOMALY'));
 EPOCHS=table2array(raw_data(:,'EPOCH'));
 TYPE_OBJECTS=table2array(raw_data(:,'OBJECT_TYPE'));
 RCSs=table2array(raw_data(:,'RCS_SIZE'));
-TLELINE1s=table2array(raw_data(:,'TLE_LINE1'));
-TLELINE2s=table2array(raw_data(:,'TLE_LINE2'));
+%TLELINE1s=table2array(raw_data(:,'TLE_LINE1'));
+%TLELINE2s=table2array(raw_data(:,'TLE_LINE2'));
 % Converting to Space_object
 no_obj=length(NAMES);
 space_obj (1:no_obj) = Space_object;
@@ -49,6 +49,6 @@ for i=1:no_obj
     space_obj(i).M=deg2rad(MEANANOMALIES(i));
     space_obj(i).type = char(TYPE_OBJECTS(i));
     space_obj(i).RCS = char(RCSs(i));
-    space_obj(i).line1= char(TLELINE1s(i));
-    space_obj(i).line2= char(TLELINE2s(i));
+    %space_obj(i).line1= char(TLELINE1s(i));
+    %space_obj(i).line2= char(TLELINE2s(i));
 end

@@ -1,5 +1,5 @@
 
-% Event list details:
+% Event matrix details:
 % row1: Conjunction event ID number (in chronological order)
 % row2: Time of Closest Approach (TCA) in [MJD2000]
 % row3: Primary satellite NORAD ID

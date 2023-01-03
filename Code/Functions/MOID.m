@@ -18,7 +18,7 @@ for i=1:length(space_cat)
         continue
     else
         %% Here you have to add the MOID calculation
-        moid = MOID_numerical (Primary, space_cat(i),distance*2);
+        moid = MOID_numerical (Primary, space_cat(i),distance );
         if moid<=distance
             ind=ind+1;
             rpra_filtered(ind)=space_cat(i);

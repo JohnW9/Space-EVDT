@@ -1,5 +1,6 @@
 %% Vectorized 2BP with secular J2 effect propagator
 
+% final_time is in 1x6 date format
 
 function propagated_object_list = main_propagator (objects_list,final_time,timestep,~)
 
