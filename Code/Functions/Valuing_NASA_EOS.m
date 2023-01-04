@@ -62,10 +62,6 @@ score_coast=coast_erosion/TUSD;
 disasters_cost=152.6*1e9;
 score_disaster=disasters_cost/TUSD;
 
-%% Ecological forecasting
-% Not enough information on how to value!
-score_ecology=0;
-
 %% Energy management
 % total Energy expenditure 2020 per state taken from https://www.eia.gov/state/seds/sep_sum/html/pdf/rank_pr.pdf
 energy_gdp_percentage2020=4.82/100;
@@ -106,7 +102,6 @@ for u=1:length(eos)
     if any(strcmp(eos(u).applications,"Carbon Management")); value=value+score_carbon; end
     if any(strcmp(eos(u).applications,"Coastal Management")); value=value+score_coast; end
     if any(strcmp(eos(u).applications,"Disaster Management")); value=value+score_disaster; end
-    if any(strcmp(eos(u).applications,"Ecological Forecasting")); value=value+score_ecology; end
     if any(strcmp(eos(u).applications,"Energy Management")); value=value+score_energy; end
     if any(strcmp(eos(u).applications,"Homeland Security")); value=value+score_security; end
     if any(strcmp(eos(u).applications,"Invasive Species")); value=value+score_invasive; end

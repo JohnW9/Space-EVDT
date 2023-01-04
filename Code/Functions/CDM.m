@@ -8,6 +8,7 @@ classdef CDM
         CC                  % Collision consequence number of pieces
         catas_flag          % Catastrophy flag [bool]
         HBR                 % Hard body radius [km]
+        read_status         % Read status by the officers
         
         id1                 % NORAD id of object 1
         r1                  % Position vector of object 1

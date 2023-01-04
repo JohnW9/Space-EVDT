@@ -12,10 +12,11 @@ addpath("Data\");
 conj_box=[2,25,25];                   %[km,km,km] in order, RSW directions
 moid_distance=200;                    %[km]
 epoch = datevec(datetime('now'));     % This is in the current timezone
-end_date= [2023 1 4 0 0 0];
+end_date= [2023 1 15 0 0 0];
 %% NASA satellites
 eos = Read_NASA_satellites;
 eos = Valuing_NASA_EOS (eos);
+eos=eos(3);
 disp('NASA satellites loaded and valued')
 %% Space catalogue
 space_cat = Read_Space_catalogue(1);

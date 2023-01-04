@@ -1,4 +1,4 @@
-function [event_list,cdm_list,action_list] = main_program (epoch, end_date , eos, space_cat, conj_box , moid_distance,accelerator,space_cat_ids)
+function [event_list,cdm_list,event_detection,action_list,total_cost] = main_program (epoch, end_date , eos, space_cat, conj_box , moid_distance,accelerator,space_cat_ids)
 %% Input check
 if nargin<4
     error('Insufficient number of inputs.');
@@ -23,8 +23,14 @@ for eos_sat=1:length(eos)
     event_list = Event_detection (eos(eos_sat),space_cat,no_days,timestep,conj_box,moid_distance,event_list);
 end
 %% Event list to matrix conversion
-event_matrix = list2matrix (event_list,space_cat,space_cat_ids,accelerator);
+%event_matrix = list2matrix (event_list,space_cat,space_cat_ids,accelerator);
+event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
+%% Saving 
+%save('Data\Temp_modular_before_CARAPROCESS.mat');
+
+%% Loading
+%load('Data\Temp_modular_before_CARAPROCESS.mat');
+
 %%
-cdm_list=0;
-action_list=0;
+[cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos);
