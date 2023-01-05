@@ -4,6 +4,19 @@ for i=1:size(event_detection,2)
     if event_detection(9,i)>t && event_detection(11,i)==-1 % The case where the commercial SSA provider was unavialable
         event_detection(7,i)=t+0.2;
         event_detection(8,i)=1;
+        event_detection(11,i)=1;
+        action=1;
+        event_number=i;
+        TimeToConjunction=event_detection(9,i)-t;
+        for v=length(cdm_list):-1:1
+            if cdm_list(v).read_status==1 && cdm_list(v).label==event_detection(1,i)
+                kl=v;
+                break;
+            else
+                kl=-1;
+            end
+        end
+        action_list(:,end+1)=[kl;action;-1;TimeToConjunction;event_number];
     end
 end
 
@@ -24,7 +37,7 @@ for i=1:length(cdm_list)
         %% Simple decision making
 
         if Pc<1e-7
-            event_detection(7,event_detection_index)=event_detection(7,event_detection_index)+1;
+            %event_detection(7,event_detection_index)=event_detection(7,event_detection_index);
             event_detection(8,event_detection_index)=0;
             action=0;
         elseif Pc<1e-4
@@ -46,7 +59,8 @@ for i=1:length(cdm_list)
                 
             end
         end
-        action_list(1:4,end+1)=[i;action;Pc;TimeToConjunction];
+        event_number=event_detection_index;
+        action_list(:,end+1)=[i;action;Pc;TimeToConjunction;event_number];
     end
 end
 

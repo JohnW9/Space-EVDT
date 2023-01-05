@@ -77,13 +77,14 @@ while t<=tf
     [event_detection,cdm_list,action_list]=Decision (event_detection,cdm_list,action_list,total_cost,t);
 
     % Find minimum dt
-    dt=1;
+    min_dt=1;
     for l=1:size(event_detection,2)
         delta=event_detection(7,l)-t;
-        if delta>0 && delta<dt
-            dt=delta;
+        if delta>0 && delta<min_dt
+            min_dt=delta;
         end
     end
+    dt=min([1 min_dt]);
     t=t+dt;
 end
 
