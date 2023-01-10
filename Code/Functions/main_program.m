@@ -27,7 +27,7 @@ end
 event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
 %% Saving 
-%save('Data\Temp_modular_before_CARAPROCESS.mat');
+save('Data\Intermediate_9Jan.mat');
 
 %% Loading
 %load('Data\Temp_modular_before_CARAPROCESS.mat');

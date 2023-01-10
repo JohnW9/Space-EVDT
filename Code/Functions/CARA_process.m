@@ -23,7 +23,7 @@ tf=date2mjd2000(end_date);
 det_matrix=event_matrix(1:5,:);
 det_matrix(2,:)=det_matrix(2,:)-detection_date;
 
-dt=1; % Days
+dt_default=1; % Days
 
 t=ti;
 
@@ -84,7 +84,7 @@ while t<=tf
             min_dt=delta;
         end
     end
-    dt=min([1 min_dt]);
+    dt=min([dt_default min_dt]);
     t=t+dt;
 end
 

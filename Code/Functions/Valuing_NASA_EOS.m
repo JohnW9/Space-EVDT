@@ -18,17 +18,19 @@ function eos = Valuing_NASA_EOS (eos)
 % GDP data taken from The World Bank at https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=US
 % USD from 2020 is converted to December 2021 in CPI inflation calculator at https://data.bls.gov/cgi-bin/cpicalc.pl?cost1=1.00&year1=202012&year2=202112
 usd2020to2021=1.07;
-TUSD=1e12; % Trillion US dollar [USD]
+TUSD=1e12; % Trillion US dollars [USD]
+BUSD=1e9; % Billion US dollars [USD]
 GDP2020=20.89*TUSD; % [USD]
 GDP2021=23*TUSD; % [USD]
 
 %% Agriculture
 % Data taken from https://www.ers.usda.gov/data-products/ag-and-food-statistics-charting-the-essentials/ag-and-food-sectors-and-the-economy/
 % Data matches with world bank at https://data.worldbank.org/indicator/NV.AGR.TOTL.ZS?locations=US
-AgricultureGDP2020=0.011*GDP2020; % Including all food services related
-FarmGDP2020=134.7*1e9;
-AgricultureGDP2021=AgricultureGDP2020*usd2020to2021;
-FarmGDP2021=FarmGDP2020*usd2020to2021;
+%AgricultureGDP2020=0.011*GDP2020; % Including all food services related
+%FarmGDP2020=134.7*1e9;
+AgricultureGDP2021=1.264*TUSD;
+FarmToTextileMan=560*BUSD;
+%FarmGDP2021=FarmGDP2020*usd2020to2021;
 score_agriculture=AgricultureGDP2021/TUSD;
 
 %% Air Quality
