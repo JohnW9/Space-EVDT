@@ -1,6 +1,5 @@
-% Main
-%
-%
+%% Main
+% New header will be added here
 clc;
 clear;
 
