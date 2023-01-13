@@ -1,6 +1,35 @@
-%% Vectorized 2BP with secular J2 effect propagator
-
-% final_time is in 1x6 date format
+% FUNCTION NAME:
+%   main_propagator
+%
+% DESCRIPTION:
+%   This function analytically propagates space objects from the objects' epoch till a specified
+%   final propagation time considering only the secular effects of J2 zonal harmonics. The output
+%   is the states of the objects at each timestep in mean keplerian element form or with cartesian form.
+%   
+%
+% INPUT:
+%   objects_list = (K objects) List of space objects to propagate [Space_object]
+%   final_time = [1x6] Final propagation time in Gregorian calender date [yy mm dd hr mn sc]
+%   timestep = [1x1] Propagation time step [sec]
+%   !additional input = If more than 3 input arguments exist, the function will calculate the cartestian 
+%                       states of the object as well at each timestep. 
+%   
+% OUTPUT:
+%   propagated_object_list = (K objects) List of propagated space objects [Propagated_space_object]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The objects must have the same epoch.
+%   The states of the space objects are generated at the same timesteps.
+%   Only secular effects on M, RAAN, and AOP , due to J2 zonal harmonics are considered.
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 
 function propagated_object_list = main_propagator (objects_list,final_time,timestep,~)
 

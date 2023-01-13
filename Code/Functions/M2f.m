@@ -1,21 +1,41 @@
-%% Vectorized Newton raphson for M2E
-
-function [f,E_out] = M2f(M,e,tol,E0)
+% FUNCTION NAME:
+%   M2f
+%
+% DESCRIPTION:
+%   This function converts an array of Mean anomalies to True anomalies using the Newton method.
+%   
+%
+% INPUT:
+%   M = [N] Array of Mean anomalies [rad]
+%   e = [1x1] or [N] Eccentricity
+%   tol = [1x1] Accepted tolerance for values of true anomaly [rad]
+%   
+% OUTPUT:
+%   f = [N] Array of True anomalies [rad]
+%   E_out = [N] Array of Eccentric anomalies [rad]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+% If the value doesn't converge before 10 iterations, the function displays an error.
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
+function [f,E_out] = M2f(M,e,tol)
 
 max_iter=10;
 
 %% M2E
 if nargin == 2
     tol=1e-8;
-    E0=M;
-elseif nargin == 3
-    E0=M;
 end
-
 func  = @(E) E - e.* sin(E) - M;
 dfunc = @(E) 1 - e.* cos(E);
 
-Ei=E0;
+Ei=M;
 max_tol=max(abs(func(Ei)));
 
 iter = 0;

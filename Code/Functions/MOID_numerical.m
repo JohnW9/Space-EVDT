@@ -1,3 +1,34 @@
+% FUNCTION NAME:
+%   MOID_numerical
+%
+% DESCRIPTION:
+%   This function finds the MOID between two space objects by utilizing the method
+%   explained in "Fast Geometric Method for Calculating Accurate Minimum Orbit Intersection Distances".
+%   It takes 2 steps to calculate to the MOID, 1-Scanning 2-Tuning
+%   If the minimum distance calculated in scanning is already less than the MOID threshold, the calculation
+%   is stopped and the scanned distance is set as output
+%   
+%
+% INPUT:
+%   Primary = (1 object) Primary NASA satellite as an object from the catalogue [Space_object]
+%   object2 = (1 object) The secondary object for calculating the MOID [Space_object] 
+%   distance = [1x1] The minimum orbit intersection distance treshold, to find the relative 
+%                    space objects from the space catalogue. [km]
+%   
+% OUTPUT:
+%   moid = [1x1] The minimum orbit intersection distance between the two space objects [km]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   To improve the MOID calculation speed, a tolerance of 1 km is considered
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 function moid = MOID_numerical (Primary, object2,distance)
 %% Input setting
 if nargin<3

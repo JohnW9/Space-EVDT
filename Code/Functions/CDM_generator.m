@@ -82,14 +82,14 @@ for m=1:length(eos)
     if temp_objects(1).id == eos(m).id
         dim1=eos(m).dimensions; % [m^2]
         m1=eos(m).mass; % [kg]
-        value1=eos(m).value;
+        %value1=eos(m).value;
         break;
     end
 end
 
 second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are completely arbitrary
-second_obj=Secondary_value(second_obj);
-value2=second_obj.value;
+%second_obj=Valuing_Secondary_obj(second_obj);
+%value2=second_obj.value;
 if strcmp(second_obj.RCS,'SMALL') 
     dim2=0.1; % [m^2] This is the upper band dimension
     m2=10; %[kg]
@@ -100,6 +100,8 @@ else
     dim2=10; % [m^2] % The cross section dimension is completely arbitrary
     m2=500; %[kg]
 end
+
+[value1,value2]=Valuing_model(eos(m),second_obj);
 
 HBR=1e-3*(sqrt(dim1)+sqrt(dim2)); % [km]
 HBRType='circle';

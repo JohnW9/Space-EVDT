@@ -1,3 +1,24 @@
+% FUNCTION NAME:
+%   Read_spacetrack
+%
+% DESCRIPTION:
+%   This function downloads the space-catalogue from Space-Track, given a username and password. Then,
+%   the catalogue is stored in a CSV file named "Space_catalogue_updated.csv"
+%
+% INPUT:
+%
+% OUTPUT:
+%
+% ASSUMPTIONS AND LIMITATIONS:
+% Internet needed to download the catalogue from Space-Track
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 function Read_spacetrack
 
 %% Credentials

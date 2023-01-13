@@ -1,4 +1,33 @@
-%% WORKING PROGRESS
+% FUNCTION NAME:
+%   MOID
+%
+% DESCRIPTION:
+%   This function finds the relevant space objects to the EOS satellite under consideration by
+%   initially comparing the apoapsis and periapsis of two space objects and then performing a
+%   numerical MOID calculation.
+%   
+%
+% INPUT:
+%   Primary = (1 object)  Primary NASA satellite as an object from the catalogue [Space_object]
+%   distance = [1x1] The minimum orbit intersection distance treshold, to find the relative 
+%                    space objects from the space catalogue. [km]
+%   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
+%   
+% OUTPUT:
+%   close_orbits = (G objects) List of space objects from space catalogue with MOIDs less than the threshold [km]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   To improve the MOID calculation speed, a tolerance of 1 km is considered
+%   Remember that G<=M
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 
 function close_orbits = MOID(Primary,distance,space_cat)
 %% First Filter (ra-rp)
@@ -17,7 +46,7 @@ for i=1:length(space_cat)
     elseif rp_primary>(distance+ra_obj) || (ra_primary+distance)<rp_obj
         continue
     else
-        %% Here you have to add the MOID calculation
+        %% The actual MOID calculation
         moid = MOID_numerical (Primary, space_cat(i),distance );
         if moid<=distance
             ind=ind+1;

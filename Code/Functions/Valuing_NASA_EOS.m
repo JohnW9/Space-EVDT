@@ -1,5 +1,31 @@
-%% Giving value to each of the EOS satellites
-
+% FUNCTION NAME:
+%   Valuing_NASA_EOS
+%
+% DESCRIPTION:
+%   As part of the vulnerability model, this function gives a monetized
+%   value to the NASA Earth Observation System satellites based upon
+%   their science application.
+%
+% INPUT:
+%   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance [NASA_sat]
+%
+% OUTPUT:
+%   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance with monetized
+%                      value added to the object [NASA_sat]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The science applications of the input satellites has to be exactly according to the categories
+%   mentioned in the NASA EOS website.
+%
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 
 
 function eos = Valuing_NASA_EOS (eos)

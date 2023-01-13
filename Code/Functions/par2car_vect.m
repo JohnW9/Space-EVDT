@@ -12,24 +12,38 @@ function [X, Y, Z, Vx, Vy, Vz] = par2car_vect (a, e, i, raan, om, f)
 %		       		         parameters of any satellite orbit in the geocentric-equatorial
 %                            reference system.
 %
-% 			INPUT:
-% 			alt:    Altitude.....................(Km)							
-% 			ecc:    Eccentricity											    
-% 			inc:	Inclination..................(rad)							
-% 			w:	    Argument of perigee..........(rad)	
-% 			nu:	    Satellite position...........(rad)							
-% 			RAAN:	Right Asc. of Ascending Node.(rad)							
+% 																	
 %
-% 			OUTPUT:
-%			Position Components: 		
-% 			[X Y Z]...(Km)
+%   EDITED BY SINA ES HAGHI 
+%   NOVEMBER 2022
+%   All the equations are converted to elementwise to enable vector input and output.
 %
-%			Velocity Components:
-% 			[Vx Vy Vz]...(Km/s) 														
+%   INPUT:
+% 			a = [N]   Altitude.....................[Km]							
+% 			e = [N]   Eccentricity											    
+% 			i = [N]	Inclination..................[rad]							
+% 			om = [N]	    Argument of perigee..........[rad]	
+% 			f = [N]	Satellite position...........[rad]							
+% 			raan = [N]	Right Asc. of Ascending Node.[rad]							
 %
+% 	OUTPUT:
+%					
+% 			X = [N]  Component of position in the ECI X direction [km]
+% 			Y = [N]  Component of position in the ECI Y direction [km]
+% 			Z = [N]  Component of position in the ECI Z direction [km]
+% 			Vx = [N] Component of velocity in the ECI X direction [km/s]
+% 			Vx = [N] Component of velocity in the ECI Y direction [km/s]
+% 			Vx = [N] Component of velocity in the ECI Z direction [km/s]
 %
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
+
 %%---------------------------- Constants ----------------------------------------------%
-%mu_earth = astroConstants(13);
+
 mu_earth = 3.986004330000000e+05;
 %
 %%--------------------------------------------------------------------------------------

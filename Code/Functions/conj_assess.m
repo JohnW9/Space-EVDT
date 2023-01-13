@@ -1,12 +1,52 @@
-%% Conjuction assessment
+% FUNCTION NAME:
+%   conj_assess
+%
+% DESCRIPTION:
+%   This function does the conjunction assessment based on the propagated data of
+%   the space objects at specific timesteps. This function initially detects conjunctions
+%   inside the enlarged screening volume based on the initial timestep of the propagated objects.
+%   Since the timesteps might be large, an auxillary distance is also considered where the relative
+%   velocity of the two objects is multiplied by the timestep, resulting in a distance that can be 
+%   subtracted from the actual distance, resulting in a possible minimum distance.
+%   If there was a conjunction in the enlarged screening volume, a new propagation is conducted
+%   with a finer time step and the conjunction is assessed with the real screening volume. If again
+%   the conjunction exists, a super fine propagation is carried out to find the exact time of conjunction
+%   with an accuracy of 0.1 seconds. Since the conjunction box is defined in the RSW directions,
+%   a conversion of the relative positions from ECI to local RSW is implemented.
+%   
+%
+% INPUT:
+%   primary = (1 object) Propagated primary NASA satellites  [Propagated_space_object]
+%   objects_list = (G objects) List of propagated relevant space objects [Propagated_space_object]
+%   conj_box = [1x3] The conjunction screening volume currently defined as a box in RSW directions [km km km]
+%   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
+%   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
+%   fine_prop_timestep
+%   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
+%   
+% OUTPUT:
+%   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The objects must have the same epoch.
+%   The states of the space objects are generated at the same timesteps.
+%   Remember that number of events in event_list must increase or stay constant after the simulation (F<=P)
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 
-function event_list = conj_assess (primary, objects_list,box,event_list,space_cat,space_cat_ids,fine_prop_timestep,box_multiplier)
-if nargin==6
-    fine_prop_timestep=1;
-    box_multiplier=5;
-end
+function event_list = conj_assess (primary, objects_list,conj_box,event_list,space_cat,space_cat_ids,box_multiplier)
+
+fine_prop_timestep=1; %[s]
+
 timestep=primary.timestep;
-t=primary.t;
+t=primary.t; %[mjd2000]
 time_index_final=length(t);
 objects_length = length(objects_list);
 for k=1:objects_length
@@ -23,6 +63,7 @@ for k=1:objects_length
 
     [VR_rel,VS_rel,VW_rel] = ECI2RSW_vect(primary.rx,primary.ry,primary.rz,primary.vx,primary.vy,primary.vz,VX_rel_eci,VY_rel_eci,VZ_rel_eci);
 
+    % Auxillary distance calculation
     virt_dist_r = timestep.*VR_rel;
     virt_dist_s = timestep.*VS_rel;
     virt_dist_w = timestep.*VW_rel;
@@ -33,7 +74,7 @@ for k=1:objects_length
 
     for l=1:length(t)
         
-        if  min(abs(R_rel(l)),aux_dist_r(l))<box(1)/2*box_multiplier  &&  min(abs(S_rel(l)),aux_dist_s(l))<box(2)/2*box_multiplier  &&  min(abs(W_rel(l)),aux_dist_w(l))<box(3)/2*box_multiplier
+        if  min(abs(R_rel(l)),aux_dist_r(l))<conj_box(1)/2*box_multiplier  &&  min(abs(S_rel(l)),aux_dist_s(l))<conj_box(2)/2*box_multiplier  &&  min(abs(W_rel(l)),aux_dist_w(l))<conj_box(3)/2*box_multiplier
             
             temp_object(2)=Space_object;
             temp_timestep=fine_prop_timestep;
@@ -63,7 +104,7 @@ for k=1:objects_length
             [weird_r_rel,weird_s_rel,weird_w_rel]=ECI2RSW_vect(temp_object_prop(1).rx,temp_object_prop(1).ry,temp_object_prop(1).rz,temp_object_prop(1).vx,temp_object_prop(1).vy,temp_object_prop(1).vz,weird_x_rel,weird_y_rel,weird_z_rel);
             index_holder=1:length(temp_object_prop(1).t);
             for g=length(temp_object_prop(1).t):-1:1
-                if abs(weird_r_rel(g))>box(1)/2 || abs(weird_s_rel(g))>box(2)/2 || abs(weird_w_rel(g))>box(3)/2
+                if abs(weird_r_rel(g))>conj_box(1)/2 || abs(weird_s_rel(g))>conj_box(2)/2 || abs(weird_w_rel(g))>conj_box(3)/2
                     weird_r_rel(g)=[];
                     weird_s_rel(g)=[];
                     weird_w_rel(g)=[];
@@ -77,10 +118,10 @@ for k=1:objects_length
 
             weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
             [min_distance,minimum_dist_index]=min(weird_distance);
-            if abs(R_rel(l))<box(1)/2 && abs(S_rel(l))<box(2)/2 && abs(W_rel(l))<box(3)/2
+            if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
                 distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
             else
-                distance=0.5*box_multiplier*sqrt(box(1)^2+box(2)^2+box(3)^2);
+                distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
             end
             if min_distance>distance+0.0001
                 disp('Something wrong in fine propagation');
@@ -126,7 +167,7 @@ for k=1:objects_length
                 super_index_holder=1:length(super_temp_object_prop(1).t);
                 
                 for d=length(super_temp_object_prop(1).t):-1:1
-                    if abs(super_weird_r_rel(d))>box(1)/2 || abs(super_weird_s_rel(d))>box(2)/2 || abs(super_weird_w_rel(d))>box(3)/2
+                    if abs(super_weird_r_rel(d))>conj_box(1)/2 || abs(super_weird_s_rel(d))>conj_box(2)/2 || abs(super_weird_w_rel(d))>conj_box(3)/2
                         super_weird_r_rel(d)=[];
                         super_weird_s_rel(d)=[];
                         super_weird_w_rel(d)=[];

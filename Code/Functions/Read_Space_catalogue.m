@@ -1,3 +1,28 @@
+% FUNCTION NAME:
+%   Read_Space_catalogue
+%
+% DESCRIPTION:
+%   This function provides a space catalogue either from space-track or a local file.
+%   If the online catalogue is unavailable, a local file is used.
+%
+% INPUT:
+%   read_from_web = [1x1] or Null This is an indicater whether the function should download the
+%                         space catalogue from the web or not (if no input, no download)
+%
+% OUTPUT:
+%   space_cat = (M objects) Space catalogue containing thousands of space objects [Space_object]
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The current SSA providers can detect objects only bigger than 10 cm.
+%
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   11/1/2023 - Sina Es haghi
+%       * Adding header
+%
 function space_obj = Read_Space_catalogue(read_from_web)
 if nargin==0 || read_from_web==0
     read_from_web=0;
@@ -10,12 +35,12 @@ if read_from_web==1 % Update the space catalogue
         Read_spacetrack;
         raw_data=readtable("Space_catalogue_updated.csv");
         disp("Space catalogue downloaded from Space-Track");
-    catch
-        raw_data=readtable("Space_catalogue_updated.csv");
+    catch % Reading from web unsuccessful, reads from local file
+        raw_data=readtable("Space_catalogue_old.csv");
         disp("Couldn't dowoload space catalogue from Space-Track; Local file loaded");
     end
 else
-    raw_data=readtable("Space_catalogue_updated.csv");
+    raw_data=readtable("Space_catalogue_old.csv");
     disp("Local space catalogue loaded");
 end
 
@@ -33,6 +58,7 @@ TYPE_OBJECTS=table2array(raw_data(:,'OBJECT_TYPE'));
 RCSs=table2array(raw_data(:,'RCS_SIZE'));
 %TLELINE1s=table2array(raw_data(:,'TLE_LINE1'));
 %TLELINE2s=table2array(raw_data(:,'TLE_LINE2'));
+
 % Converting to Space_object
 no_obj=length(NAMES);
 space_obj (1:no_obj) = Space_object;
