@@ -8,7 +8,8 @@
 %   The program uses the Government SSA provider by default and at daily time scales, however any
 %   tasking requests by the decision model will make the technology model to use the commercial 
 %   SSA provider for OD. Although, the commercial SSA provider has a chance of being unavailable, 
-%   resulting in a failed request. 
+%   resulting in a failed request. Every time the commercial data is used, a cost is added to the
+%   total cost of the operation.
 %
 % INPUT:
 %   event_column = [13x1] A matrix with one column corresponding to a conjunction,Containing important 
@@ -34,9 +35,9 @@
 %     row13: Real miss distance (either manipulated or not) [km]
 %
 % OUTPUT:
-%   event_column = [12x1] A matrix with one column corresponding to the same conjunction,Containing important 
+%   event_column = [13x1] A matrix with one column corresponding to the same conjunction,Containing important 
 %                         space object informations. Some are modified since input. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
 %   conjunction_data = [84x1] A matrix containing all the orbital data and covariances of the two
 %                             space objects at the real observation time.
 %   cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
@@ -51,7 +52,8 @@
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   The program currently gives the same deterministic covariances to both objects.
-%   No stochastic
+%   The cost value of the commercial data should be modified.
+%   std of the two SSA providers can be 0 for a more deterministic approach.
 %
 %
 % REVISION HISTORY:
@@ -78,17 +80,15 @@ actual_stats_at_tca2=actual_objects_states_at_tca(7:12);
 switch ssa_type
     case 0 % Using the 18 SDS
         
-        %[state_car1,P01]=SDS18 (event_column(3),t,space_cat,space_cat_ids);
         [state_car1,P01,state_car_tca1]=SDS18 (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
         [state_car2,P02,state_car_tca2]=SDS18 (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
-        %[state_car2,P02]=SDS18 (event_column(4),t,space_cat,space_cat_ids);
 
         %% Adding the OD and Covariance values to the conjunction data
         conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];
         cost = 0;
         event_column(11)=0;
         event_column(12)=t;
-        event_column(5)=norm(state_car_tca1(1:3)-state_car_tca2(1:3));
+        event_column(5)=norm(state_car_tca1(1:3)-state_car_tca2(1:3)); % Estimated miss distance
 
     case 1 % Using the commercial version
 

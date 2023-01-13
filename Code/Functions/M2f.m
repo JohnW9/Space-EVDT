@@ -16,7 +16,7 @@
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % If the value doesn't converge before 10 iterations, the function displays an error.
-%
+% The output True anomaly values are between -pi and pi
 %
 % REVISION HISTORY:
 %   Dates in DD/MM/YYYY

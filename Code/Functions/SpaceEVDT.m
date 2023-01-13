@@ -69,14 +69,16 @@ event_list=Conjunction_event;
 for eos_sat=1:length(eos)
     event_list = Event_detection (eos(eos_sat),space_cat,no_days,timestep,conj_box,moid_distance,event_list,space_cat_ids);
 end
+disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
 event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
 %% Saving 
 %save('Data\Intermediate_9Jan.mat');
-
+%save("Data\Intermediate_13Jan.mat");
 %% Loading
-load('Data\Temp_modular_before_CARAPROCESS.mat');
+%load('Data\Temp_modular_before_CARAPROCESS.mat');
 
 %%
 [cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,7,0);
+disp('NASA CARA process replicated')

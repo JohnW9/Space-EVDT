@@ -13,11 +13,10 @@ tic
 conj_box=[2,25,25];                   %[km,km,km] in order, RSW directions
 moid_distance=200;                    %[km]
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 1 11 23 0 0];         % Simulation end date and time in gregorian calender
+end_date= [2023 1 20 0 0 0];          % Simulation end date and time in gregorian calender
 accelerator=0;
 %% NASA satellites
 eos = Read_NASA_satellites;
-eos=eos(1); % Temp run
 eos = Valuing_NASA_EOS (eos);
 disp('NASA satellites loaded and valued')
 %% Space catalogue
@@ -31,8 +30,10 @@ runtime=toc;
 cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
 %% After a long run
 %save("Data\Final_9Jan.mat"); 
+%save("Data\Final_13Jan.mat");
 %% Load instead of the full run
 %load("Data\Final_9Jan.mat"); 
+%load("Data\Final_13Jan.mat");
 %% Plotting
 
 % set(groot,'defaultTextInterpreter','latex'); 
@@ -61,7 +62,7 @@ yy=yline(1e-7,'Color',"#EDB120",'LineWidth',2);
 for k=1:1:size(cdm_rep_list,2)
     time_series=[];
     Pc_series=[];
-    for v=5:cdm_rep_list{4,k}
+    for v=5:(cdm_rep_list{4,k}+4)
         time_series(end+1)=date2mjd2000(cdm_rep_list{v,k}.creation_date);
         Pc_series(end+1)=cdm_rep_list{v,k}.Pc;
     end
@@ -92,6 +93,6 @@ print(filename,'-dpng','-r500');
 %% For the long run
 %system('shutdown -s');
 %% Small test
-A=action_list';
-B=sortrows(A,5);
-sorted_action=B';
+% A=action_list';
+% B=sortrows(A,5);
+% sorted_action=B';

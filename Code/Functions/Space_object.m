@@ -12,7 +12,7 @@ classdef Space_object
         f      % True anomaly [rad]
         type   % Space object tupe (PAYLOAD/ROCKET BODY/DEBRIS)
         RCS    % Radar Cross Section category (LARGE/MEDIUM/SMALL)
-        value
+        value  % Monetized value of the space object
         %line1  % TLE line 1
         %line2  % TLE line 2
     end

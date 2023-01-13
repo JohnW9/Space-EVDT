@@ -62,12 +62,6 @@ for k = 1:objects_length
     M0(k)    = objects_list(k).M;
 end
 
-% raan(:,1) = raan0;
-% om(:,1)   = om0;
-% M(:,1)    = M0;
-
-% J2 = astroConstants(9);
-% miu = astroConstants(13);
 
 J2= 0.001082626925639;
 Re = 6378.14;

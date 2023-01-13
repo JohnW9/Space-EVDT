@@ -1,21 +1,31 @@
-function state_kep = car2par(state_car)
-%% Orbital mechanics course A.Y. 2020/2021
-% Developed by: Group 37
-% Sina Es haghi       10693213
-% Giulia Sala         10582449
-% Valerio Santolini   10568153
-% Pietro Zorzi        10607053
+% FUNCTION NAME:
+%   car2par
 %
-% PROTOTYPE:
-% [a_or_kep, e_or_hh, i, OM, om, th, hh] = car2par(rr, vv, mu)
-%% This function will compute the keplerian parameters from the cartesian ones in the ECI reference frame
-% Inputs:
-% state [6x1] = [r;v]
+% DESCRIPTION:
+%   Cartesian to keplerian parameters converter.
+%
+% INPUT:
+%   state_car = [6x1] Cartesian states of the space object in the ECI frame [km;km;km;km/s;km/s;km/s]
+%                     in this order: [x,y,z,vx,vy,vz]'
+%
+% OUTPUT:
+%   state_kep = [6x1] Keplerian state parameters of the object [km;-;rad;rad;rad;rad] 
+%                     in this order: [a,e,i,raan,aop,f]'
+%
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+% 
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+%
+function state_kep = car2par(state_car)
 
-% Outputs:
-% kep [6x1] Keplerian parameters [km;-;rad;rad;rad;rad] `
 
-%mu=astroConstants(13);
 mu= 3.986004330000000e+05;
 state_car=state_car';
 rr=state_car(1:3);

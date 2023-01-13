@@ -4,7 +4,7 @@ classdef NASA_sat
     properties
         id                      % NORAD ID
         name                    % Name of the satellite
-        dimensions              % Maximum cross section area [m]
+        dimensions              % Array of satellite dimensions [m] or up to [m,m,m]
         mass                    % Satellite mass [kg]
         cost                    % Production and launch cost of the satellite [million $]
         science                 % Science areas that the satellite is producing data in

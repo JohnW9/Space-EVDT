@@ -1,8 +1,31 @@
-%% Analytic Orbit Propagator
+% FUNCTION NAME:
+%   TwoBP_J2_analytic
+%
+% DESCRIPTION:
+%   This function propagates a cartesian state of an object for a desired amount of time
+%   using 2 body problem plus the secular effects of J2 zonal harmonics.
+%   The outputs are the cartesian ECI frame.
+%
+% INPUT:
+%   state_i = [6x1] The initial cartesian state of the object [km;km;km;km/s;km/s;km/s]
+%   time = [1x1] Amount of time for propagation [days]
+%
+% OUTPUT:
+%   state_f = [6x1] The final cartesian state of the object [km;km;km;km/s;km/s;km/s]
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   Considering only secular J2 effects during the propagation.
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+%
 
 function state_f = TwoBP_J2_analytic_car_state (state_i,time)
-%state_i is in cartesian
-% time is in days
 
 state_i_kep=car2par(state_i);
 

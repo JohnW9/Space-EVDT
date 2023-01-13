@@ -110,7 +110,7 @@ while t<=tf %% Loops over Reality time
         end
     end
 
-    for j=1:size(event_detection,2)
+    for j=1:size(event_detection,2) % loops through the already detected cunjunctions
         
         
         if event_detection(10,j)~=0 % if the conjunction is mitigated or the TCA is passed, don't analyze it
@@ -133,7 +133,7 @@ while t<=tf %% Loops over Reality time
 
     end
 
-    [event_detection,cdm_list,action_list]=Decision (event_detection,cdm_list,action_list,total_cost,t);
+    [event_detection,cdm_list,action_list] = Decision_model (event_detection,cdm_list,action_list,total_cost,t);
 
     % Find minimum dt
     min_dt=1;
@@ -146,5 +146,3 @@ while t<=tf %% Loops over Reality time
     dt=min([dt_default min_dt]);
     t=t+dt;
 end
-
-disp('done');

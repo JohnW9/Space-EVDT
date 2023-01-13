@@ -1,7 +1,89 @@
-%% CDM generation
+% FUNCTION NAME:
+%   CDM_generator
+%
+% DESCRIPTION:
+%   This function generates a Conjunction Data Message (CDM) whenever data is provided
+%   by the SSA providers. The data will be the states and covariance matrices of the 
+%   objects at time t. Therefore, this function propagates the states and covariances
+%   to TCA and also converts the covariances to ECI frame. This function also does a 
+%   very simple estimation of the size and mass of the secondary space object.
+%
+% INPUT:
+%   event_column = [13x1] A matrix with one column corresponding to a conjunction,Containing important 
+%                         space object informations. 
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%   conjunction_data = [84x1] A matrix containing all the orbital data and covariances of the two
+%                             space objects at the real observation time.
+%   t = [1x1] Realistic observation time [mjd2000]
+%   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
+%   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
+%   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance [NASA_sat]
+%
+%     event_column details:
+%     row1: Conjunction event ID number (in chronological order)
+%     row2: Time of detection in [MJD2000]
+%     row3: Primary satellite NORAD ID
+%     row4: Secondary space object NORAD ID
+%     row5: Estimated Miss distance in [km]
+%     row6: Number of times the cdm is generated for the event
+%     row7: Next expected conjunction update [MJD2000]
+%     row8: Type of SSA to use
+%     row9: TCA [MJD2000]
+%     row10: Mitigation status (0-not mitigated 1-mitigated -1-not mitigated and TCA passed)
+%     row11: Request status (0-no special tasking request 1-commercial SSA request -1-commercial request denied by the provider)
+%     row12: Last successful observation time [MJD2000]
+%     row13: Real miss distance (either manipulated or not) [km]
+%
+%
+%     conjunction_data matrix details:
+%     row1-6: Cartesian state of object 1 in ECI [km;km;km;km/s;km/s;km/s]
+%     row7-12: Cartesian state of object 2 in ECI [km;km;km;km/s;km/s;km/s]
+%     row13-48: Covariance elements of object 1 in RSW [units in km^2 and km^2/s^2]
+%     row49-84: Covariance elements of object 2 in RSW [units in km^2 and km^2/s^2]
+%
+% OUTPUT:
+%   cdm = (1 object) A conjunction data message including important data at TCA [CDM]
+%
+%   A cdm includes all the following data AT TCA:
+%   label = [1x1] Represents which conjunction event is this cdm representing (The conjunction event are numbered in the chronological order)
+%   creation_date = [1x6] Gregorian calender date of when the CDM is generated, which is realistic time (t) [yy mm dd hr mn sc]
+%   miss_dist = [1x1] This is the ESTIMATED miss distance from propagating the estimated states of the objects to TCA [km]
+%   Pc = [1x1] Probability of collision value calculated by NASA function (Default is 2D, then Max Pc)
+%   CC = [1x1] Collision consequenc, number of fragments generated in case of collision. Obtained through the NASA software
+%   catas_flag = [1x1] A flag showing whether the collision will be catastrophic or not (0-not catastrophic, 1-catastrophic)
+%   HBR = [1x1] The hard body radius of the two objects summed and projected on a plane for maximum cross area [m]
+%   id1 = [1x1] NORAD ID of object 1 (The primary NASA satellite)
+%   id2 = [1x1] NORAD ID of object 2 (The secondary space object)
+%   r1 = [3x1] The position vector of object 1 in the ECI frame [km;km;km]
+%   v1 = [3x1] The velocity vector of object 1 in the ECI frame [km/s;km/s;km/s]
+%   cov1 = [6x6] The propagated covariance matrix of object 1 in the ECI frame [units is km^2 and km^2/s^2]
+%   dim1 = [1x1] conjuncting dimension of object 1 [m]
+%   m1 = [1x1] Mass of object 1 [kg]
+%   value1 = [1x1] Socio-economic value of object 1 
+%   r2 = [3x1] The position vector of object 2 in the ECI frame [km;km;km]
+%   v2 = [3x1] The velocity vector of object 2 in the ECI frame [km/s;km/s;km/s]
+%   cov2 = [6x6] The propagated covariance matrix of object 2 in the ECI frame [units is km^2 and km^2/s^2]
+%   dim2 = [1x1] conjuncting dimension of object 2 [m]
+%   m2 = [1x1] Mass of object 2 [kg]
+%   value2 = [1x1] Socio-economic value of object 2
+%   read_status = [1x1] Read status of the CDM (0-the CDM is not read by the decision model, 1-the CDM is read by the decision model)
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The program currently takes into account the maximum dimension of the NASA satellite for HBR.
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+%   13/1/2023 - Sina Es haghi
+%       * Modified the hard body radius calculation
+%
+%
 
-function cdm = CDM_generator (event_detection,conjunction_data,t,space_cat,space_cat_ids,eos)
-%Event detection and conjunction data matrices shall be single column
+function cdm = CDM_generator (event_column,conjunction_data,t,space_cat,space_cat_ids,eos)
 %% Converting R V vectors at time t to orbital elements and put in the single event matrix
 state_car1=conjunction_data(1:6);
 state_car2=conjunction_data(7:12);
@@ -10,19 +92,19 @@ state_par1=car2par(state_car1);
 state_par2=car2par(state_car2);
 
 
-single_event_matrix=[event_detection(1);t;event_detection(3:5);0;...
+single_event_matrix=[event_column(1);t;event_column(3:5);0;...
     state_par1(1:5);f2M(state_par1(6),state_par1(2));state_par2(1:5);f2M(state_par2(6),state_par2(2))];
 
 P01_rsw=reshape(conjunction_data(13:48),[6,6]);
 P02_rsw=reshape(conjunction_data(49:84),[6,6]);
 
 NoP2=0;
-if norm(P02_rsw)==0; NoP2=1;end
+if norm(P02_rsw)==0; NoP2=1;end % Checks if no value for the covariance matrix of the secondary object is available
 %% 
 
 temp_objects(2)=Space_object;
 
-tca=event_detection(9);
+tca=event_column(9);
 
 temp_objects(1).id=single_event_matrix(3);
 temp_objects(2).id=single_event_matrix(4);
@@ -59,8 +141,8 @@ v2_f=stat2_f(4:6);
 
 %% quick check
 miss_dist=norm(r1_f-r2_f);
-error_of_missdist=abs(miss_dist-event_detection(5));
-if error_of_missdist>1e-3 
+error_of_missdist=abs(miss_dist-event_column(5));
+if error_of_missdist>1e-4 
     error("error in propagation in cdm generation");
 end
 
@@ -80,33 +162,33 @@ end
 
 for m=1:length(eos)
     if temp_objects(1).id == eos(m).id
-        dim1=eos(m).dimensions; % [m^2]
+        dim1=max(eos(m).dimensions); % [m^2]
         m1=eos(m).mass; % [kg]
-        %value1=eos(m).value;
         break;
     end
 end
 
 second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are completely arbitrary
-%second_obj=Valuing_Secondary_obj(second_obj);
-%value2=second_obj.value;
+%% Estimating the size and mass of the secondary space object
+% NASA does have a model called: "NASA_SEM_RCSToSizeVec.m" but requires the RCS normalized vectors
+% NASA also has a model called: "EstimateMassFromRCS.m" but requires the RCS value
 if strcmp(second_obj.RCS,'SMALL') 
-    dim2=0.1; % [m^2] This is the upper band dimension
+    dim2=0.1; % [m] This is the upper band dimension
     m2=10; %[kg]
 elseif strcmp(second_obj.RCS,'MEDIUM')
-    dim2=1; % [m^2]
+    dim2=1; % [m]
     m2=100; %[kg]
 else
-    dim2=10; % [m^2] % The cross section dimension is completely arbitrary
+    dim2=10; % [m] % The maximum dimension is completely arbitrary
     m2=500; %[kg]
 end
-
-[value1,value2]=Valuing_model(eos(m),second_obj);
-
-HBR=1e-3*(sqrt(dim1)+sqrt(dim2)); % [km]
+HBR=1e-3*(dim1+dim2); % [km]
 HBRType='circle';
 
-%% Probability of collision
+%% Valuing the space objects
+[value1,value2]=Vulnerability_model(eos(m),second_obj);
+
+%% Probability of collision (using NASA software)
 
 
 if NoP2==0
@@ -118,7 +200,7 @@ end
 [Catastrophic,NumOfPieces] = CollisionConsequenceNumPieces(m1,norm(v1_f-v2_f)*1000,m2);
 
 cdm=CDM;
-cdm.label=event_detection(1);
+cdm.label=event_column(1);
 cdm.creation_date = mjd20002date(t);
 cdm.tca=mjd20002date(tca);
 cdm.miss_dist=single_event_matrix(5);

@@ -1,22 +1,30 @@
+% FUNCTION NAME:
+%   par2car
+%
+% DESCRIPTION:
+%   Keplerian parameters to Cartesian elements converter.
+%
+% INPUT:
+%   state_kep = [6x1] Keplerian state parameters of the object [km;-;rad;rad;rad;rad] 
+%                     in this order: [a,e,i,raan,aop,f]'
+%
+% OUTPUT:
+%   state_car = [6x1] Cartesian states of the space object in the ECI frame [km;km;km;km/s;km/s;km/s]
+%                     in this order: [x,y,z,vx,vy,vz]'
+%
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+% 
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+%
 function state_car = par2car(state_kep)
-%% Orbital mechanics course A.Y. 2020/2021
-% Developed by: Group 37
-% Sina Es haghi       10693213
-% Giulia Sala         10582449
-% Valerio Santolini   10568153
-% Pietro Zorzi        10607053
-%
-%PROTOTYPE:
-%[r_vect, v_vect] = par2car(kep, mu_E)
-%
-%% This function will compute the cartesian parameters ECI reference frame from the keplerian ones
-% Inputs:
-% kep [6x1] Keplerian parameters [km;-;rad;rad;rad;rad]
 
-% Outputs:
-% state_car [6x1] = [r;v]
-
-%mu_E=astroConstants(13);
 mu_E=3.986004330000000e+05;
 
 a = state_kep(1);
@@ -32,7 +40,7 @@ rr=[r.*cos(th), r.*sin(th), 0];
 vr=sqrt(mu_E./p).*e.*sin(th);
 vth=sqrt(mu_E./p).*(1+e.*cos(th));
 vv=[vr.*cos(th)-vth.*sin(th), vr.*sin(th)+vth.*cos(th), 0];
-%scrittura delle matrici di rotazione
+
 ROM=[cos(OM), sin(OM), 0; -sin(OM), cos(OM), 0; 0, 0, 1];
 Rom=[cos(om), sin(om), 0; -sin(om), cos(om), 0; 0, 0, 1];
 Ri=[1, 0, 0; 0, cos(i), sin(i); 0, -sin(i), cos(i)];
