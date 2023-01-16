@@ -66,6 +66,8 @@
 %
 function [event_column,conjunction_data,cost] = Technology_model (event_column,t,actual_objects_states,actual_objects_states_at_tca)
 
+global config;
+
 ssa_type=event_column(8);
 conjunction_data=zeros(84,1);
 
@@ -94,14 +96,14 @@ switch ssa_type
 
         acceptance_chance=rand(1,1);
 
-        if acceptance_chance<=0.8 %% What is the availability possibility of using the commercial ssa provider
+        if acceptance_chance<=config.commercial_SSA_availability %% What is the availability possibility of using the commercial ssa provider
             event_column(11)=1;
             [state_car1,P01,state_car_tca1]=LEOLABS (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
             [state_car2,P02,state_car_tca2]=LEOLABS (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
             
             %% Adding the OD and Covariance values to the conjunction data
             conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];
-            cost = 1; %% CHANGE THIS VALUE
+            cost = config.commercial_SSA_cost; 
             event_column(11)=1;
             event_column(5)=norm(state_car_tca1(1:3)-state_car_tca2(1:3));
             event_column(12)=t;
@@ -114,7 +116,7 @@ end
 %% returning to default setting for next update
 
 event_column(8)=0;
-event_column(7)=event_column(12)+1; % One day later from the last successful observation
+event_column(7)=event_column(12)+config.government_SSA_updateInterval; % One day later from the last successful observation
 
 
 %%%%% REMEMBER THAT IF NO COVARIANCE IS AVAILABLE FOR OBJECT 2 , THE COVARIANCE SHOULD BE ZERO COMPLETELY

@@ -30,6 +30,7 @@
 %       * Adding header
 %
 function moid = MOID_numerical (Primary, object2,distance)
+global config;
 %% Input setting
 if nargin<3
     flag1=0;
@@ -104,7 +105,10 @@ vmin=v(index);
 vminA=vmin;
 vminB=vmin;
 stepsize=0.06; %[rad]
-while stepsize>1e-9
+iter=0;
+while stepsize>1e-14 && iter<=config.Parallel_max_iter
+
+    iter=iter+1;
 
     A=[vminA-stepsize vminA vminA+stepsize];
 
@@ -132,16 +136,16 @@ while stepsize>1e-9
     [a_min,b_min]=find(D2_par==min_D2_par);
 
     %%ADDITIAL EXIT POINT BY ME
-    if abs(minD2-min_D2_par)<1 % Tolerance of 1 km
-        minD2=min_D2_par;
-        break;
-    end
+%     if abs(minD2-min_D2_par)<config.ParallelTuningTol % Tolerance selected
+%         minD2=min_D2_par;
+%         break;
+%     end
 
-    if min_D2_par>(minD2+1e-6)
-        error('Error in calculating MOID');
-    else
+%    if min_D2_par>(minD2+1e-6)
+%        error('Error in calculating MOID');
+%    else
         minD2=min_D2_par;
-    end
+%    end
 
 
 

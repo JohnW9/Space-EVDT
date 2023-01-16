@@ -10,7 +10,7 @@
 % INPUT:
 %   objects_list = (K objects) List of space objects to propagate [Space_object]
 %   final_time = [1x6] Final propagation time in Gregorian calender date [yy mm dd hr mn sc]
-%   timestep = [1x1] Propagation time step [sec]
+%   timestep = [1x1] Propagation time step [s]
 %   !additional input = If more than 3 input arguments exist, the function will calculate the cartestian 
 %                       states of the object as well at each timestep. 
 %   
@@ -38,6 +38,7 @@ if nargin == 3
 else
     bool =1;
 end
+
 
 objects_length = length(objects_list);
 

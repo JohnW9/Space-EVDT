@@ -1,5 +1,6 @@
 %% Test MOID
 
+addpath('..\');
 addpath('..\Functions\');
 addpath('..\Data\');
 addpath('..\Time_conversion\');
@@ -8,9 +9,12 @@ addpath('..\Time_conversion\');
 clc;
 clear;
 
+GetConfig;
+global config;
+
 obj1=Space_object;
 obj2=Space_object;
-AU=astroConstants(2); 
+AU=149597870.691; 
 
 q1=2.036; %[au]
 e1=0.164;
@@ -24,7 +28,7 @@ obj1.om=deg2rad(250.227);
 obj1.M=0;
 
 
-casenum=6;
+casenum=20;
 
 switch casenum
     case 1
@@ -88,4 +92,4 @@ obj2.M=0;
 
 moid = MOID_numerical (obj1, obj2);
 method_result=moid/AU;
-error=abs((method_result-expected_result))*astroConstants(2) %[km]
+error=abs((method_result-expected_result))*AU %[km]

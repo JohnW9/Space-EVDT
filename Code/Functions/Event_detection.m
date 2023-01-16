@@ -13,11 +13,8 @@
 %   Satellite = (1 object) Primary NASA satellites under consideration for collision avoidance [NASA_sat]
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
 %   no_days = [1x1] Simulation number of days after epoch [days]
-%   timestep = [1x1] Propagation time step [sec]
-%   conj_box = [1x3] The conjunction screening volume currently defined as a box in RSW directions [km km km]
-%   moid_distance = [1x1] The minimum orbit intersection distance treshold, to find the relative 
-%                         space objects from the space catalogue. [km]
 %   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
+%   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
 %   
 % OUTPUT:
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
@@ -36,12 +33,8 @@
 %       * Adding header
 %
 
-function event_list = Event_detection (Satellite,space_cat,no_days,timestep,conj_box,moid_distance,event_list,space_cat_ids)
-
-box_multiplier=ceil(timestep/3); %% Experimental relation (Since the best timestep for conjunction screening
-                                  % is in the order of 1 second, this value box multiplier value is used to 
-                                  % enlarge the screening volume so even with larger timesteps, conjunctions
-                                  % are not missed. The relation is completely imperical.
+function event_list = Event_detection (Satellite,space_cat,no_days,event_list,space_cat_ids)
+global config;
 
 
 %% Finding primary sat in space catalogue and initial relevant space objects
@@ -59,20 +52,20 @@ end
 
 Primary=space_cat(sat_index);
 
-Relevant_space_objects= MOID(Primary,moid_distance,space_cat);
+Relevant_space_objects= MOID(Primary,space_cat);
 
 
 %% Big Loop for avoiding ram overflow
 
 initial_date=space_cat(1).epoch; % Remember that all objects must have the same epoch
 
-cycle_days=0.5; % Time sections of half days to avoid RAM overflow
+cycle_days=config.cycle_days; % Time sections of half days to avoid RAM overflow
 time_cycle = initial_date:cycle_days:initial_date+no_days;
-relevent_SO_frequency=5; % Renews the relevant space objects every 5 days
+relevent_SO_frequency=config.relevent_SO_frequency; % Renews the relevant space objects every 5 days
 
 time_cycle(end+1)=initial_date+no_days;
 
-
+timestep = config.timestep;
 
 for cycle=1:length(time_cycle)-1
     
@@ -84,14 +77,14 @@ for cycle=1:length(time_cycle)-1
     % This is to renew the relevant space objects after the specified number of days
     if rem(cycle,ceil(relevent_SO_frequency/cycle_days))==0 && cycle~=1
         space_cat = Space_catalogue_reset_epoch (space_cat,initial_date);
-        Relevant_space_objects= MOID(Primary,moid_distance,space_cat);
+        Relevant_space_objects= MOID(Primary,space_cat);
     else
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
     end
 
     Propagated_primary = main_propagator (Primary,final_date,timestep,1);
     Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
-    event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,conj_box,event_list,space_cat,space_cat_ids,box_multiplier);
+    event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,space_cat,space_cat_ids);
     clear Propagated_primary;
     clear Propagated_Relevant_space_objects;
 end

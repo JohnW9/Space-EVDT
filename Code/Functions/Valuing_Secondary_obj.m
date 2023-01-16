@@ -23,14 +23,15 @@
 %       * Adding header
 %
 function obj = Valuing_Secondary_obj (obj)
+global config;
 
 if strcmp(obj.type,'PAYLOAD')
     if strcmp(obj.RCS,'SMALL') 
-        value=0.01;
+        value=config.small_value;
     elseif strcmp(obj.RCS,'MEDIUM')
-        value=0.1;
+        value=config.medium_value;
     else
-        value=1;
+        value=config.large_value;
     end
 else
     value = 0;

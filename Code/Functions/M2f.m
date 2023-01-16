@@ -8,7 +8,6 @@
 % INPUT:
 %   M = [N] Array of Mean anomalies [rad]
 %   e = [1x1] or [N] Eccentricity
-%   tol = [1x1] Accepted tolerance for values of true anomaly [rad]
 %   
 % OUTPUT:
 %   f = [N] Array of True anomalies [rad]
@@ -24,14 +23,18 @@
 %   11/1/2023 - Sina Es haghi
 %       * Adding header
 %
-function [f,E_out] = M2f(M,e,tol)
-
-max_iter=10;
+function [f,E_out] = M2f(M,e)
+global config;
+try
+    tol=config.tol;
+    max_iter=config.maxIter;
+catch
+    tol=1e-8;
+    max_iter=10;
+end
 
 %% M2E
-if nargin == 2
-    tol=1e-8;
-end
+
 func  = @(E) E - e.* sin(E) - M;
 dfunc = @(E) 1 - e.* cos(E);
 

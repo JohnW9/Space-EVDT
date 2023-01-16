@@ -37,8 +37,9 @@
 %
 function [state_car,P0,state_car_tca]=SDS18 (actual_state_at_t,actual_state_at_tca,t,tca)
 
-std=0.1; %standard deviation in orbit determination
-std=0; % For now
+global config;
+
+std=config.government_SSA_std; %standard deviation in orbit determination
 
 
 pos=actual_state_at_t(1:3)+normrnd(0,std,[3,1]); % Estimate of the position of the object at time t
@@ -49,11 +50,11 @@ end
 % Other stochastic methods can also be used
 
 %% Initial Covariance matrix in RSW frame
-e_r = 0.01; % Error in R direction position [km]
-e_s = 0.01; % Error in S direction position [km]
-e_w = 0.01; % Error in W direction position [km]
-e_vr= 0.001; % Error in R direction velocity [km/s]
-e_vs= 0.001; % Error in R direction velocity [km/s]
-e_vw= 0.001; % Error in R direction velocity [km/s]
+% e_r = 0.01; % Error in R direction position [km]
+% e_s = 0.01; % Error in S direction position [km]
+% e_w = 0.01; % Error in W direction position [km]
+% e_vr= 0.001; % Error in R direction velocity [km/s]
+% e_vs= 0.001; % Error in R direction velocity [km/s]
+% e_vw= 0.001; % Error in R direction velocity [km/s]
 
-P0 = diag([e_r^2 e_s^2 e_w^2 e_vr^2 e_vs^2 e_vw^2]); 
+P0 = config.government_SSA_cov;

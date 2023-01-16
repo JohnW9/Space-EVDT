@@ -18,10 +18,8 @@
 % INPUT:
 %   primary = (1 object) Propagated primary NASA satellites  [Propagated_space_object]
 %   objects_list = (G objects) List of propagated relevant space objects [Propagated_space_object]
-%   conj_box = [1x3] The conjunction screening volume currently defined as a box in RSW directions [km km km]
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
 %   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
-%   fine_prop_timestep
 %   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   
 % OUTPUT:
@@ -41,9 +39,17 @@
 %       * Adding header
 %
 
-function event_list = conj_assess (primary, objects_list,conj_box,event_list,space_cat,space_cat_ids,box_multiplier)
+function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids)
+global config;
+conj_box = config.conjunction_box;
+                                              %Experimental relation (Since the best timestep for conjunction screening
+                                              % is in the order of 1 second, this value box multiplier value is used to 
+                                              % enlarge the screening volume so even with larger timesteps, conjunctions
+                                              % are not missed. The relation is completely imperical.
 
-fine_prop_timestep=1; %[s]
+box_multiplier = config.screeningBoxMultiplier;
+
+fine_prop_timestep=config.fine_prop_timestep; %[s]
 
 timestep=primary.timestep;
 t=primary.t; %[mjd2000]
@@ -144,7 +150,7 @@ for k=1:objects_length
                     f_time=mjd20002date(temp_object_prop(1).t(minimum_dist_index+1));
                 end
                 super_temp_object(2)=Space_object;
-                super_temp_timestep=0.01; %% Super fine propagation timestep
+                super_temp_timestep=config.superfine_prop_timestep; %% Super fine propagation timestep
                 for gooz=1:2
                     super_temp_object(gooz).epoch=in_time;
                     super_temp_object(gooz).a=temp_object_prop(gooz).ma;

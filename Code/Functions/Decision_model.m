@@ -44,10 +44,10 @@
 %       * Header added
 %
 function [event_detection,cdm_list,action_list]=Decision_model (event_detection,cdm_list,action_list,total_cost,t)
-
+global config;
 for i=1:size(event_detection,2) %First detecting if there were any failed tasking requests (No CDM generated for the event at expected time)
     if event_detection(9,i)>t && event_detection(11,i)==-1 % The case where the commercial SSA provider was unavialable
-        event_detection(7,i)=t+0.2;
+        event_detection(7,i)=t+config.commercial_SSA_updateInterval;
         event_detection(8,i)=1;
         event_detection(11,i)=1;
         action=1;
@@ -81,17 +81,17 @@ for i=1:length(cdm_list) % loops through all the generated CDMs
 
         %% Simple decision making
 
-        if Pc<1e-7
+        if Pc<config.yellow_event_Pc
             %event_detection(7,event_detection_index)=event_detection(7,event_detection_index);
             event_detection(8,event_detection_index)=0;
             action=0;
-        elseif Pc<1e-4
-            event_detection(7,event_detection_index)=t+0.2;
+        elseif Pc<config.red_event_Pc
+            event_detection(7,event_detection_index)=t+config.commercial_SSA_updateInterval;
             event_detection(8,event_detection_index)=1;
             action=1;
-        elseif Pc>1e-4
-            if TimeToConjunction>1 % If there is more than 1 day till TCA, still just observe with high priority
-                event_detection(7,event_detection_index)=t+0.2;
+        elseif Pc>config.red_event_Pc
+            if TimeToConjunction>config.red_mitigation_days % If there is more than 1 day till TCA, still just observe with high priority
+                event_detection(7,event_detection_index)=t+config.commercial_SSA_updateInterval;
                 event_detection(8,event_detection_index)=1;
                 action=1;
             else    % if less than 1 day till TCA, take mitigation action

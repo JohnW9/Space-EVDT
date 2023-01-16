@@ -12,9 +12,6 @@
 %   end_date = [1x6] Simulation end date in Gregorian calender [yy mm dd hr mn sc]
 %   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance [NASA_sat]
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
-%   conj_box = [1x3] The conjunction screening volume currently defined as a box in RSW directions [km km km]
-%   moid_distance = [1x1] The minimum orbit intersection distance treshold, to find the relative 
-%                         space objects from the space catalogue. [km]
 %   accelerator = [1x1] This value is for the manipulating the miss distance of a conjunction at the time of 
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
@@ -40,20 +37,13 @@
 %       * Adding header
 %
 
-function [event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat, conj_box , moid_distance,accelerator)
+function [event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator)
 %% Input check
-if nargin<4
+if nargin<5
     error('Insufficient number of inputs.');
-elseif nargin==4
-    conj_box=[2,25,25];                   %[km,km,km] in order, RSW directions
-    moid_distance=200;                    %[km]
-    accelerator=0;
-elseif nargin==5
-    moid_distance=200;                    %[km]
-    accelerator=0;
-elseif nargin==6
-    accelerator=0;
 end
+
+GetConfig; %% Configuring the properties of the program using a global variable
 
 space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
 for j=1:length(space_cat)
@@ -61,13 +51,12 @@ for j=1:length(space_cat)
 end
 
 %% Pre-process
-timestep=15;                              % [s]
 space_cat = Space_catalogue_reset_epoch (space_cat,epoch); % all objects in the catalogue propagated to the same epoch
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
 event_list=Conjunction_event;
 for eos_sat=1:length(eos)
-    event_list = Event_detection (eos(eos_sat),space_cat,no_days,timestep,conj_box,moid_distance,event_list,space_cat_ids);
+    event_list = Event_detection (eos(eos_sat),space_cat,no_days,event_list,space_cat_ids);
 end
 disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
@@ -76,9 +65,11 @@ disp('Event list converted to conjunction event matrix');
 %% Saving 
 %save('Data\Intermediate_9Jan.mat');
 %save("Data\Intermediate_13Jan.mat");
+%save("Data\Intermediate_15Jan.mat");
 %% Loading
 %load('Data\Temp_modular_before_CARAPROCESS.mat');
-
+%load("Data\Intermediate_15Jan.mat");
+GetConfig;
 %%
-[cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,7,0);
+[cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator);
 disp('NASA CARA process replicated')

@@ -15,8 +15,6 @@
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
 %   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
 %   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance [NASA_sat]
-%   detection_time = [1x1] Number of days before a conjunction when the conjunction event is detected 
-%                          (basically the assumed realistic propagation time) [days]
 %   accelerator = [1x1] This value is for the manipulating the miss distance of a conjunction at the time of 
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
@@ -24,9 +22,6 @@
 % OUTPUT:
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
-%                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
 %   action_list = [5xL] A matrix containing all the actions taken by the Decision model [--,--,--,days,--]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %
@@ -63,21 +58,19 @@
 %       * Modified the event_detection matrix to include latest successful observation
 %
 
-function [cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,detection_date,accelerator)
+function [cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator)
+global config;
 
-if nargin<7
-    detection_date=7;
-    accelerator=0;
-end
+detection_time=config.detection_time;
 
 
 ti=date2mjd2000(epoch);
 tf=date2mjd2000(end_date);
 
 det_matrix=event_matrix(1:5,:);
-det_matrix(2,:)=det_matrix(2,:)-detection_date; % Basically det_matrix is the same as event_matrix, with detection time included instead of TCA
+det_matrix(2,:)=det_matrix(2,:)-detection_time; % Basically det_matrix is the same as event_matrix, with detection time included instead of TCA
 
-dt_default=1; % Days
+dt_default=config.dt_default; % Days
 
 t=ti;
 
@@ -136,7 +129,7 @@ while t<=tf %% Loops over Reality time
     [event_detection,cdm_list,action_list] = Decision_model (event_detection,cdm_list,action_list,total_cost,t);
 
     % Find minimum dt
-    min_dt=1;
+    min_dt=dt_default;
     for l=1:size(event_detection,2)
         delta=event_detection(7,l)-t;
         if delta>0 && delta<min_dt

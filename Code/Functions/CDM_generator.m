@@ -84,6 +84,7 @@
 %
 
 function cdm = CDM_generator (event_column,conjunction_data,t,space_cat,space_cat_ids,eos)
+global config;
 %% Converting R V vectors at time t to orbital elements and put in the single event matrix
 state_car1=conjunction_data(1:6);
 state_car2=conjunction_data(7:12);
@@ -173,17 +174,17 @@ second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are 
 % NASA does have a model called: "NASA_SEM_RCSToSizeVec.m" but requires the RCS normalized vectors
 % NASA also has a model called: "EstimateMassFromRCS.m" but requires the RCS value
 if strcmp(second_obj.RCS,'SMALL') 
-    dim2=0.1; % [m] This is the upper band dimension
-    m2=10; %[kg]
+    dim2=config.small_dim; % [m] This is the upper band dimension
+    m2=config.small_mass; %[kg]
 elseif strcmp(second_obj.RCS,'MEDIUM')
-    dim2=1; % [m]
-    m2=100; %[kg]
+    dim2=config.medium_dim; % [m]
+    m2=config.medium_mass; %[kg]
 else
-    dim2=10; % [m] % The maximum dimension is completely arbitrary
-    m2=500; %[kg]
+    dim2=config.large_dim; % [m] % The maximum dimension is completely arbitrary
+    m2=config.large_mass; %[kg]
 end
 HBR=1e-3*(dim1+dim2); % [km]
-HBRType='circle';
+HBRType=config.HBRType;
 
 %% Valuing the space objects
 [value1,value2]=Vulnerability_model(eos(m),second_obj);
