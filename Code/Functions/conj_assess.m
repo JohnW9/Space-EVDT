@@ -202,7 +202,7 @@ for k=1:objects_length
                 event.secondary_id=objects_list(k).id;
                 event.mis_dist=super_min_distance;
 
-                %% delete afterwards
+                %% This is only a result check, delete afterwards
                 obj1_index = find(space_cat_ids==primary.id);
                 obj2_index = find(space_cat_ids==objects_list(k).id);
                 temp_objects(1)=space_cat(obj1_index);

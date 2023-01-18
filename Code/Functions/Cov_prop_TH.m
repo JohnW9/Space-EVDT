@@ -57,11 +57,9 @@ function P = Cov_prop_TH (P0,object,final_time)
 
 
 %% Standard gravitational parameter of earth [km^3/s^2]
-%try
-%    miu=astroConstants(13); % If the astronomical constants function was unavailable
-%catch
+
     miu= 3.986004330000000e+05;
-%end
+
 
 %% Checking the type of object input
 

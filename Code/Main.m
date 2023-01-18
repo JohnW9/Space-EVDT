@@ -11,7 +11,7 @@ addpath("Data\");
 tic
 %% User inputs
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 1 19 0 0 0];          % Simulation end date and time in gregorian calender
+end_date= [2023 1 30 0 0 0];          % Simulation end date and time in gregorian calender
 accelerator=0;
 
 %% NASA satellites
@@ -20,10 +20,10 @@ disp('NASA satellites loaded')
 %% Space catalogue
 space_cat = Read_Space_catalogue(1);
 %% Main program run
-[event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
+[cdm_rep_list,event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
 runtime=toc;
 %% Post analysis
-cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+
 %% After a long run
 %save("Data\Final_9Jan.mat"); 
 %save("Data\Final_13Jan.mat");

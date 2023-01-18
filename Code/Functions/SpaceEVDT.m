@@ -17,6 +17,9 @@
 %                       10^-(accelerator). (0 by default)
 %   
 % OUTPUT:
+%   cdm_rep_list = [SxP] A cell matrix with each column representing a single conjunction event 
+%                        in an ascending chronological order, and rows containing the CDMs 
+%                        corresponding to that conjunction event.
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
 %   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
@@ -37,7 +40,7 @@
 %       * Adding header
 %
 
-function [event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator)
+function [cdm_rep_list,event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator)
 %% Input check
 if nargin<5
     error('Insufficient number of inputs.');
@@ -51,12 +54,12 @@ for j=1:length(space_cat)
 end
 
 %% Pre-process
-space_cat = Space_catalogue_reset_epoch (space_cat,epoch); % all objects in the catalogue propagated to the same epoch
+%space_cat = Space_catalogue_reset_epoch (space_cat,epoch); % all objects in the catalogue propagated to the same epoch
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
 event_list=Conjunction_event;
 for eos_sat=1:length(eos)
-    event_list = Event_detection (eos(eos_sat),space_cat,no_days,event_list,space_cat_ids);
+    event_list = Event_detection (eos(eos_sat),space_cat,epoch,no_days,event_list,space_cat_ids);
 end
 disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
@@ -70,6 +73,8 @@ disp('Event list converted to conjunction event matrix');
 %load('Data\Temp_modular_before_CARAPROCESS.mat');
 %load("Data\Intermediate_15Jan.mat");
 GetConfig;
-%%
+%% Replicating NASA CARA
 [cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator);
 disp('NASA CARA process replicated')
+%% CDM repetition list
+cdm_rep_list = CDM_rep_list (event_detection,cdm_list);

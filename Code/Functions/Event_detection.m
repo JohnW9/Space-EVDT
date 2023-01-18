@@ -12,6 +12,7 @@
 % INPUT:
 %   Satellite = (1 object) Primary NASA satellites under consideration for collision avoidance [NASA_sat]
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
+%   epoch = [1x6] Simulation start date in Gregorian calender [yy mm dd hr mn sc]
 %   no_days = [1x1] Simulation number of days after epoch [days]
 %   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
@@ -33,12 +34,14 @@
 %       * Adding header
 %
 
-function event_list = Event_detection (Satellite,space_cat,no_days,event_list,space_cat_ids)
+function event_list = Event_detection (Satellite,space_cat,epoch,no_days,event_list,space_cat_ids)
 global config;
 
 
 %% Finding primary sat in space catalogue and initial relevant space objects
 %finding the index in the space catalogue
+
+sat_index=NaN;
 for i=1:length(space_cat)
     if strcmp(Satellite.name,space_cat(i).name)
         sat_index=i;
@@ -46,20 +49,20 @@ for i=1:length(space_cat)
     end
 end
 
-if isempty(sat_index)
+if isnan(sat_index)
     error('Satellite name not found in the space catalogue')
 end
 
 Primary=space_cat(sat_index);
 
-Relevant_space_objects= MOID(Primary,space_cat);
+%Relevant_space_objects= MOID(Primary,space_cat);
 
 
 %% Big Loop for avoiding ram overflow
 
-initial_date=space_cat(1).epoch; % Remember that all objects must have the same epoch
+initial_date=date2mjd2000(epoch);
 
-cycle_days=config.cycle_days; % Time sections of half days to avoid RAM overflow
+cycle_days=config.cycle_days; % Time sections to avoid RAM overflow
 time_cycle = initial_date:cycle_days:initial_date+no_days;
 relevent_SO_frequency=config.relevent_SO_frequency; % Renews the relevant space objects every 5 days
 
@@ -75,7 +78,7 @@ for cycle=1:length(time_cycle)-1
     Primary = Space_catalogue_reset_epoch (Primary,initial_date);
 
     % This is to renew the relevant space objects after the specified number of days
-    if rem(cycle,ceil(relevent_SO_frequency/cycle_days))==0 && cycle~=1
+    if rem(cycle,ceil(relevent_SO_frequency/cycle_days))==0 || cycle==1
         space_cat = Space_catalogue_reset_epoch (space_cat,initial_date);
         Relevant_space_objects= MOID(Primary,space_cat);
     else
