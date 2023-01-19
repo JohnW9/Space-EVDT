@@ -53,14 +53,12 @@ config.dt_default = 1;                                     % Process simulation 
 
 %% Technology model
 config.government_SSA_updateInterval = 1;                  % The minimum time interval between two consecutive observations of the government SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
-config.government_SSA_std = 0.1;                           % Position determination error standard deviation value of the government SSA provider [km]
 config.government_SSA_cov = ...                            % Covariance matrix provided by the government SSA provider [units in km^2 and km^2/s^2]
     diag([0.01^2 0.01^2 0.01^2 0.001^2 0.001^2 0.001^2]);  
 
 config.commercial_SSA_cost = 1;                            % Cost of requesting an observation by the commercial SSA provider [k$]
 config.commercial_SSA_availability = 0.8;                  % Availability of commercial SSA data when requested
 config.commercial_SSA_updateInterval = 0.2;                % The minimum time interval between two consecutive observations of the commercial SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
-config.commercial_SSA_std = 0.01;                          % Position determination error standard deviation value of the commercial SSA provider [km]
 config.commercial_SSA_cov = ...                            % Covariance matrix provided by the commercial SSA provider [units in km^2 and km^2/s^2]
     diag([0.001^2 0.001^2 0.001^2 0.0001^2 0.0001^2 0.0001^2]);  
 

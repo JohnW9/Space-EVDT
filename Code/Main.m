@@ -11,7 +11,7 @@ addpath("Data\");
 tic
 %% User inputs
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 1 30 0 0 0];          % Simulation end date and time in gregorian calender
+end_date= [2023 1 22 0 0 0];          % Simulation end date and time in gregorian calender
 accelerator=0;
 
 %% NASA satellites

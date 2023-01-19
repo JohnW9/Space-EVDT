@@ -37,11 +37,23 @@
 %
 function [state_car,P0,state_car_tca]=LEOLABS (actual_state_at_t,actual_state_at_tca,t,tca)
 global config;
-std=config.commercial_SSA_std; %standard deviation in orbit determination
+
+P0 = config.commercial_SSA_cov;
+
+%% Extracting the standard deviations in the RSW direction from the covariance matrix
+std_r = sqrt(P0(1,1));
+std_s = sqrt(P0(2,2));
+std_w = sqrt(P0(3,3));
+
+%% Converting the states to RSW, sampling the OD with the standard deviations, and converting back to ECI
+pos=actual_state_at_t(1:3);
+vel=actual_state_at_t(4:6);
+[T_rsw2eci,T_eci2rsw] = ECI2RSW(pos,vel);
+pos_rsw = T_eci2rsw * pos;
+estimated_pos_rsw = pos_rsw + normrnd(0,std_r,[1 1])*[1;0;0] + normrnd(0,std_s,[1 1])*[0;1;0] + normrnd(0,std_w,[1 1])*[0;0;1];
+pos = T_rsw2eci*estimated_pos_rsw; % Estimated position of the satellite back in the ECI frame
 
 
-
-pos=actual_state_at_t(1:3)+normrnd(0,std,[3,1]);
 state_car=[pos;actual_state_at_t(4:6)];
 if nargout==3
     state_car_tca= TwoBP_J2_analytic_car_state (state_car,tca-t);
@@ -56,4 +68,3 @@ end
 % e_vs= 0.0001; % Error in R direction velocity [km/s]
 % e_vw= 0.0001; % Error in R direction velocity [km/s]
 
-P0 = config.commercial_SSA_cov;
