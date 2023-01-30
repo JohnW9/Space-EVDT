@@ -11,7 +11,7 @@ addpath("Data\");
 tic
 %% User inputs
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 1 22 0 0 0];          % Simulation end date and time in gregorian calender
+end_date= [2023 1 30 0 0 0];          % Simulation end date and time in gregorian calender
 accelerator=0;
 
 %% NASA satellites
@@ -31,7 +31,7 @@ runtime=toc;
 %% Load instead of the full run
 %load("Data\Final_9Jan.mat"); 
 %load("Data\Final_13Jan.mat");
-%load("Data\Final_15Jan.mat");
+load("Data\Final_15Jan.mat");
 %% Plotting
 disp('Plotting...');
 FinalPlot (epoch, end_date,cdm_rep_list,20,12)
@@ -42,3 +42,17 @@ FinalPlot (epoch, end_date,cdm_rep_list,20,12)
 % A=action_list';
 % B=sortrows(A,5);
 % sorted_action=B';
+%% Post processing
+cdm_values = zeros(1,length(cdm_list));
+for i=1:length(cdm_list)
+    cdm_values(i)=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/7000;
+end
+ind = 1:length(cdm_values);
+scatter(ind,cdm_values);
+%% Post processing
+cdm_collisions = zeros(1,length(cdm_list));
+for i=1:length(cdm_list)
+    cdm_collisions(i)=cdm_list(i).CC;
+end
+ind = 1:length(cdm_collisions);
+scatter(ind,cdm_collisions);

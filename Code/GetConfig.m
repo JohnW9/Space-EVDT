@@ -35,7 +35,7 @@ config.relevent_SO_frequency = 15;                         % Time period for rel
 
 %% MOID calculation
 config.FirstFilter = config.conjunction_box(1);            % Apogee and Perigee filtering to find the relevant objects efficiently [km] (Only works with secular J2 propagator)
-config.Parallel_max_iter = 20;                             % Maximum number of iterations for parallel tuning
+config.Parallel_max_iter = 5;                             % Maximum number of iterations for parallel tuning
 
 %% Mean to True anomaly converter
 config.tol = 1e-8;                                         % Function tolerance [rad]
@@ -45,7 +45,7 @@ config.maxIter = 10;                                       % Maximum number of i
 config.screeningBoxMultiplier = ceil(config.timestep/3);   % Conjunction screening volume multiplier
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
 config.superfine_prop_timestep = 0.01;                     % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
-% To add the possibility to switch between box and ellipsoid
+config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
 
 %% Conjunction Assessment and Risk Analysis process
 config.detection_time = 7;                                 % Number of days prior to an event's TCA when the event is detected by the SSA provider [days]
@@ -80,6 +80,8 @@ config.medium_value = 0.1;                                 % Monetized value of 
 config.large_value =1;                                     % Monetized value of large RCS payload [same units as the NASA EOS values]
 
 %% Decision making model
+config.CC_normalizer = 7000;                               % Number of pieces for normalizing the collision consequence (to have the CC value in the order of the object socio-economic values)
+
 config.red_event_Pc = 1e-4;                                % Red category Pc threshold
 config.yellow_event_Pc = 1e-7;                             % Yellow category Pc theshold
 config.red_mitigation_days = 1;                            % Number of days before TCA to take mitigation action [days]

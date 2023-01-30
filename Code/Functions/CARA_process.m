@@ -118,8 +118,8 @@ while t<=tf %% Loops over Reality time
             if event_detection(11,j)==-1
                 continue;
             end
-            cdm = CDM_generator (event_detection(:,j),conjunction_data,t,space_cat,space_cat_ids,eos);
             ind_cdm=ind_cdm+1;
+            cdm = CDM_generator (event_detection(:,j),conjunction_data,t,space_cat,space_cat_ids,eos,ind_cdm);
             cdm_list(ind_cdm)=cdm;
             total_cost=total_cost+cost;
         end

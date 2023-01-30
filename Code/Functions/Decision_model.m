@@ -71,7 +71,7 @@ for i=1:length(cdm_list) % loops through all the generated CDMs
     else
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
-        value_of_collision=cdm_list(i).value1+cdm_list(i).value2;
+        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/config.CC_normalizer;
         %CC=cdm_list(i).CC;
         catas_flag=cdm_list(i).catas_flag;
         Pc=cdm_list(i).Pc;

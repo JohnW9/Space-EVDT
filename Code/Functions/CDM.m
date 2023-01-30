@@ -1,5 +1,6 @@
 classdef CDM
     properties
+        Num                 % CDM number
         label               % Label of the Conjunction Data Message
         creation_date       % The CDM creation date [yyyy mm dd hr min sec]
         tca                 % The time of closest approach [yyyy mm dd hr min sec]

@@ -34,6 +34,8 @@
 %       * Adding header
 %   13/1/2023 - Sina Es haghi
 %       * Modifying the stochastic functions to the technology model
+%   20/1/2023 - Sina Es haghi
+%       * Modifying so that the object's estimated position is a sample in the middle of it's covariance matrix
 %
 function [state_car,P0,state_car_tca]=SDS18 (actual_state_at_t,actual_state_at_tca,t,tca)
 

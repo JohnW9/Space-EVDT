@@ -18,6 +18,7 @@
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
 %   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
 %   eos = (N objects)  Primary NASA satellites under consideration for collision avoidance [NASA_sat]
+%   ind_cdm = [1x1] The CDM number
 %
 %     event_column details:
 %     row1: Conjunction event ID number (in chronological order)
@@ -45,6 +46,7 @@
 %   cdm = (1 object) A conjunction data message including important data at TCA [CDM]
 %
 %   A cdm includes all the following data AT TCA:
+%   Num = [1x1] CDM number
 %   label = [1x1] Represents which conjunction event is this cdm representing (The conjunction event are numbered in the chronological order)
 %   creation_date = [1x6] Gregorian calender date of when the CDM is generated, which is realistic time (t) [yy mm dd hr mn sc]
 %   miss_dist = [1x1] This is the ESTIMATED miss distance from propagating the estimated states of the objects to TCA [km]
@@ -83,7 +85,7 @@
 %
 %
 
-function cdm = CDM_generator (event_column,conjunction_data,t,space_cat,space_cat_ids,eos)
+function cdm = CDM_generator (event_column,conjunction_data,t,space_cat,space_cat_ids,eos,ind_cdm)
 global config;
 %% Converting R V vectors at time t to orbital elements and put in the single event matrix
 state_car1=conjunction_data(1:6);
@@ -187,7 +189,7 @@ HBR=1e-3*(dim1+dim2); % [km]
 HBRType=config.HBRType;
 
 %% Valuing the space objects
-[value1,value2]=Vulnerability_model(eos(m),second_obj);
+[value1,value2,Catastrophic,NumOfPieces]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2);
 
 %% Probability of collision (using NASA software)
 
@@ -198,9 +200,8 @@ else
     Pc = FrisbeeMaxPc(r1_f',v1_f',P1,r2_f',v2_f',[],HBR,1e-8,HBRType);
 end
 
-[Catastrophic,NumOfPieces] = CollisionConsequenceNumPieces(m1,norm(v1_f-v2_f)*1000,m2);
-
 cdm=CDM;
+cdm.Num = ind_cdm;
 cdm.label=event_column(1);
 cdm.creation_date = mjd20002date(t);
 cdm.tca=mjd20002date(tca);
