@@ -129,6 +129,7 @@ if volume_type == 0 % If the screening volume is a box
 
                 weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
                 [min_distance,minimum_dist_index]=min(weird_distance);
+                
                 if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
                     distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
                 else

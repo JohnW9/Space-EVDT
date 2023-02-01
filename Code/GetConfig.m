@@ -44,7 +44,7 @@ config.maxIter = 10;                                       % Maximum number of i
 %% Conjunction screening
 config.screeningBoxMultiplier = ceil(config.timestep/3);   % Conjunction screening volume multiplier
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
-config.superfine_prop_timestep = 0.01;                     % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
+config.superfine_prop_timestep = 0.1;                      % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
 config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
 
 %% Conjunction Assessment and Risk Analysis process
@@ -85,4 +85,17 @@ config.CC_normalizer = 7000;                               % Number of pieces fo
 config.red_event_Pc = 1e-4;                                % Red category Pc threshold
 config.yellow_event_Pc = 1e-7;                             % Yellow category Pc theshold
 config.red_mitigation_days = 1;                            % Number of days before TCA to take mitigation action [days]
+
+config.TimeToConj_high = 5;
+config.TimeToConj_low = 2;
+
+config.value_high = 10;
+config.value_low = 7;
+
+config.budget_per_day = 5;
+
+config.budget_high = 0.8;
+config.budget_low = 0.2;
+
+
 

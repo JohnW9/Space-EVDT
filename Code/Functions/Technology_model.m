@@ -116,7 +116,8 @@ end
 %% returning to default setting for next update
 
 event_column(8)=0;
-event_column(7)=event_column(12)+config.government_SSA_updateInterval; % One day later from the last successful observation
+%event_column(7)=event_column(12)+config.government_SSA_updateInterval; % One day later from the last successful observation
+event_column(7)=NaN;
 
 
 %%%%% REMEMBER THAT IF NO COVARIANCE IS AVAILABLE FOR OBJECT 2 , THE COVARIANCE SHOULD BE ZERO COMPLETELY

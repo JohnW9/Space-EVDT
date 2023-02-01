@@ -58,31 +58,48 @@
 %       * Modified the event_detection matrix to include latest successful observation
 %
 
-function [cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator)
+function [cdm_list,event_detection,action_list,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost)
 global config;
-
-detection_time=config.detection_time;
 
 
 ti=date2mjd2000(epoch);
 tf=date2mjd2000(end_date);
 
+%% Giving a random detection time (within the range of +-1 of the configured detection time) and sorting them again
+detection_time=ones([1 size(event_matrix,2)])*config.detection_time + (-1)*ones([1 size(event_matrix,2)]) + 2*rand([1 size(event_matrix,2)]);
 det_matrix=event_matrix(1:5,:);
+det_matrix(6,:)=event_matrix(2,:); % actual TCA
 det_matrix(2,:)=det_matrix(2,:)-detection_time; % Basically det_matrix is the same as event_matrix, with detection time included instead of TCA
+
+[~,tca_index_sort]=sort(det_matrix(2,:));
+sorted_det_matrix=det_matrix(:,tca_index_sort);
+sorted_det_matrix(1,:)=1:size(sorted_det_matrix,2);
+det_matrix=sorted_det_matrix;
+%%
+
 
 dt_default=config.dt_default; % Days
 
 t=ti;
 
-total_cost=0;
-ind_det=0;
-ind_cdm=0;
 
-cdm_list=CDM;
+
+if isnan(event_detection(1))
+    ind_det=0;
+else
+    ind_det=size(event_detection,2);
+end
+
+if isempty(cdm_list(end).Num)
+    ind_cdm=0;
+else
+    ind_cdm=length(cdm_list);
+end
+
+ind_dec=0;
+
 action_list=[];
 
-event_detection=zeros(13,1);
-event_detection(1)=NaN;
 
 while t<=tf %% Loops over Reality time
     
@@ -91,11 +108,11 @@ while t<=tf %% Loops over Reality time
         if det_matrix(2,i)<=t
             if isnan(event_detection(1)) || isempty(find(event_detection(1,:)==det_matrix(1,i)))
                 ind_det=ind_det+1;
-                event_detection(1:5,ind_det)=det_matrix(:,i);
+                event_detection(1:5,ind_det)=det_matrix(1:5,i);
                 event_detection(6,ind_det)=0;
                 event_detection(7,ind_det)=t; % Basically saying that the government SSA provider should detect the event at this time cycle
                 event_detection(8,ind_det)=0;
-                event_detection(9,ind_det)=event_matrix(2,i);
+                event_detection(9,ind_det)=det_matrix(6,i);
                 event_detection(10,ind_det)=0;
                 event_detection(11,ind_det)=0;
                 event_detection(13,ind_det)=NaN;
@@ -108,7 +125,7 @@ while t<=tf %% Loops over Reality time
         
         if event_detection(10,j)~=0 % if the conjunction is mitigated or the TCA is passed, don't analyze it
             continue;
-        elseif event_detection(9,j)<t % If the TCA of the event just passed and no mitigation action was carried out, change the event status to "ignored"
+        elseif event_detection(9,j)<t % If the TCA of the event just passed and no mitigation action was carried out, change the event status to "Neglected"
             event_detection(10,j)= -1;
         elseif event_detection(7,j)<=t % If the next update time is passed, do the update
             
@@ -126,7 +143,12 @@ while t<=tf %% Loops over Reality time
 
     end
 
-    [event_detection,cdm_list,action_list] = Decision_model (event_detection,cdm_list,action_list,total_cost,t);
+    [event_detection,cdm_list,action_list,decision_list] = Decision_model (event_detection,cdm_list,action_list,decision_list,total_cost,t);
+
+
+    %% Next observation time
+
+    event_detection = NextUpdateIntervalAssignment (event_detection,t);
 
     % Find minimum dt
     min_dt=dt_default;
@@ -136,6 +158,11 @@ while t<=tf %% Loops over Reality time
             min_dt=delta;
         end
     end
-    dt=min([dt_default min_dt]);
+    if size(event_detection,2)<size(det_matrix,2)
+        next_conj_detect = det_matrix(2,size(event_detection,2)+1)-t;
+        dt = min([dt_default min_dt next_conj_detect]);
+    else
+        dt=min([dt_default min_dt]);
+    end
     t=t+dt;
 end

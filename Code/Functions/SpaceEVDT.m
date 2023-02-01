@@ -40,11 +40,25 @@
 %       * Adding header
 %
 
-function [cdm_rep_list,event_list,cdm_list,event_detection,action_list,total_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator)
+function [cdm_rep_list,event_list,cdm_list,event_detection,action_list,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,event_list,cdm_list,event_detection,action_list,total_cost)
 %% Input check
 if nargin<5
     error('Insufficient number of inputs.');
+elseif nargin == 5
+    event_list=Conjunction_event;
+    cdm_list=CDM;
+    decision_list=Decision_action;
+    event_detection=zeros(13,1);
+    event_detection(1)=NaN;
+    total_cost=0;
+else
+    for k=length(event_list):-1:1
+        if event_list(k).tca>date2mjd2000(epoch) % Deleting all the previously detected events with TCA's after the new epoch
+            event_list(k)=[];
+        end
+    end
 end
+decision_list=Decision_action;
 
 GetConfig; %% Configuring the properties of the program using a global variable
 
@@ -57,7 +71,6 @@ end
 %space_cat = Space_catalogue_reset_epoch (space_cat,epoch); % all objects in the catalogue propagated to the same epoch
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
-event_list=Conjunction_event;
 for eos_sat=1:length(eos)
     event_list = Event_detection (eos(eos_sat),space_cat,epoch,no_days,event_list,space_cat_ids);
 end
@@ -69,12 +82,20 @@ disp('Event list converted to conjunction event matrix');
 %save('Data\Intermediate_9Jan.mat');
 %save("Data\Intermediate_13Jan.mat");
 %save("Data\Intermediate_15Jan.mat");
+%save("Data\Intermediate_31Jan.mat");
+%save("Data\veryveryInterim.mat");
+%save("Data\Intermediate_1Feb.mat");
 %% Loading
 %load('Data\Temp_modular_before_CARAPROCESS.mat');
 %load("Data\Intermediate_15Jan.mat");
+%load("Data\Intermediate_31Jan.mat");
+%load("Data\veryveryInterim.mat");
+%load("Data\Intermediate_1Feb.mat");
+%load("Data\Intermediate_1Feb.mat");
 GetConfig;
 %% Replicating NASA CARA
-[cdm_list,event_detection,action_list,total_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator);
+[cdm_list,event_detection,action_list,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
 disp('NASA CARA process replicated')
 %% CDM repetition list
 cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+%cdm_rep_list=0;
