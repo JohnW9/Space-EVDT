@@ -63,6 +63,8 @@
 %       * Adding header
 %   12/1/2023 - Sina Es haghi
 %       * Adding the stochastic functions to the technology model
+%   1/2/2023 - Sina Es haghi
+%       * Deleted the next update interval factor
 %
 function [event_column,conjunction_data,cost] = Technology_model (event_column,t,actual_objects_states,actual_objects_states_at_tca)
 
@@ -116,7 +118,6 @@ end
 %% returning to default setting for next update
 
 event_column(8)=0;
-%event_column(7)=event_column(12)+config.government_SSA_updateInterval; % One day later from the last successful observation
 event_column(7)=NaN;
 
 

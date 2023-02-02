@@ -21,8 +21,7 @@
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %
 % ASSUMPTIONS AND LIMITATIONS:
-%   The epoch of all the space objects at input must be equal.
-%   It is suggested that the timestep not be higher than 15 seconds, otherwise conjunction will be missed.
+%   It is suggested that the timestep not be higher than 15 seconds, otherwise conjunctions may be missed.
 %   Remember that number of events in event_list must increase or stay constant after the simulation (F<=P)
 %
 %
@@ -32,6 +31,8 @@
 %
 %   11/1/2023 - Sina Es haghi
 %       * Adding header
+%   01/2/2023 - Sina Es haghi
+%       * Cleaned up the code a bit
 %
 
 function event_list = Event_detection (Satellite,space_cat,epoch,no_days,event_list,space_cat_ids)
@@ -54,9 +55,6 @@ if isnan(sat_index)
 end
 
 Primary=space_cat(sat_index);
-
-%Relevant_space_objects= MOID(Primary,space_cat);
-
 
 %% Big Loop for avoiding ram overflow
 

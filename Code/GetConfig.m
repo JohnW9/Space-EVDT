@@ -18,6 +18,8 @@
 %
 %   15/1/2023 - Sina Es haghi
 %       * Initial implementation
+%   01/2/2023 - Sina Es haghi
+%       * Added new configuration properties
 %
 function GetConfig
 
@@ -35,7 +37,7 @@ config.relevent_SO_frequency = 15;                         % Time period for rel
 
 %% MOID calculation
 config.FirstFilter = config.conjunction_box(1);            % Apogee and Perigee filtering to find the relevant objects efficiently [km] (Only works with secular J2 propagator)
-config.Parallel_max_iter = 5;                             % Maximum number of iterations for parallel tuning
+config.Parallel_max_iter = 5;                              % Maximum number of iterations for parallel tuning
 
 %% Mean to True anomaly converter
 config.tol = 1e-8;                                         % Function tolerance [rad]
@@ -86,16 +88,16 @@ config.red_event_Pc = 1e-4;                                % Red category Pc thr
 config.yellow_event_Pc = 1e-7;                             % Yellow category Pc theshold
 config.red_mitigation_days = 1;                            % Number of days before TCA to take mitigation action [days]
 
-config.TimeToConj_high = 5;
-config.TimeToConj_low = 2;
+config.TimeToConj_high = 5;                                % Number of days threshold for the time to conjunction to be considered high [days]
+config.TimeToConj_low = 2;                                 % Number of days threshold for the time to conjunction to be considered low [days]
 
-config.value_high = 10;
-config.value_low = 7;
+config.value_high = 10;                                    % Collision value threshold for a conjunction to be considered high value
+config.value_low = 7;                                      % Collision value threshold for a conjunction to be considered low value
 
-config.budget_per_day = 5;
+config.budget_per_day = 5;                                 % Budget available for NASA CARA to request commercial observation, per day [Units are in the same norm as monetized value]
 
-config.budget_high = 0.8;
-config.budget_low = 0.2;
+config.budget_high = 0.8;                                  % Percentage threshold of the total budget so the available budget is considered high
+config.budget_low = 0.2;                                   % Percentage threshold of the total budget so the available budget is considered low
 
 
 

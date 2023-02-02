@@ -15,6 +15,14 @@
 %   accelerator = [1x1] This value is for the manipulating the miss distance of a conjunction at the time of 
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
+%%%%%%% OPTIONAL INPUTS (For modular use) %%%%%%%%%%%%%
+%   event_list = (X objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
+%   cdm_list = (F objects) List of all CDMs generated in the chronological order [CDM]
+%   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
+%   event_detection = [13xB] A matrix with each column corresponding to conjunctions detected, in the
+%                            chronological order. Containing important space object informations. 
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   
 % OUTPUT:
 %   cdm_rep_list = [SxP] A cell matrix with each column representing a single conjunction event 
@@ -25,12 +33,13 @@
 %   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
-%   action_list = [5xL] A matrix containing all the actions taken by the Decision model [--,--,--,days,--]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
+%   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   The current program uses a simple analytic propagator, considering only secular J2 effects.
-%
+%   The program has completely become modular. In case some event_list, cdm_list ... are available,
+%   they can be fed as inputs and the module can continue the process with new space catalogue.
 %
 %
 % REVISION HISTORY:
@@ -38,9 +47,11 @@
 %
 %   11/1/2023 - Sina Es haghi
 %       * Adding header
-%
+%   1/2/2023 - Sina Es haghi
+%       * Completed the modulation mode of the function, inputs and outputs are modified
 
-function [cdm_rep_list,event_list,cdm_list,event_detection,action_list,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,event_list,cdm_list,event_detection,action_list,total_cost)
+
+function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,event_list,cdm_list,decision_list,event_detection,total_cost)
 %% Input check
 if nargin<5
     error('Insufficient number of inputs.');
@@ -58,7 +69,7 @@ else
         end
     end
 end
-decision_list=Decision_action;
+
 
 GetConfig; %% Configuring the properties of the program using a global variable
 
@@ -68,7 +79,6 @@ for j=1:length(space_cat)
 end
 
 %% Pre-process
-%space_cat = Space_catalogue_reset_epoch (space_cat,epoch); % all objects in the catalogue propagated to the same epoch
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
 for eos_sat=1:length(eos)
@@ -79,23 +89,12 @@ disp('All conjunctions throughout the simulation time detected')
 event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
 %% Saving 
-%save('Data\Intermediate_9Jan.mat');
-%save("Data\Intermediate_13Jan.mat");
-%save("Data\Intermediate_15Jan.mat");
-%save("Data\Intermediate_31Jan.mat");
-%save("Data\veryveryInterim.mat");
 %save("Data\Intermediate_1Feb.mat");
 %% Loading
-%load('Data\Temp_modular_before_CARAPROCESS.mat');
-%load("Data\Intermediate_15Jan.mat");
-%load("Data\Intermediate_31Jan.mat");
-%load("Data\veryveryInterim.mat");
-%load("Data\Intermediate_1Feb.mat");
 %load("Data\Intermediate_1Feb.mat");
 GetConfig;
 %% Replicating NASA CARA
-[cdm_list,event_detection,action_list,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
+[cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
 disp('NASA CARA process replicated')
 %% CDM repetition list
 cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
-%cdm_rep_list=0;

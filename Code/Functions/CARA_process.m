@@ -18,12 +18,20 @@
 %   accelerator = [1x1] This value is for the manipulating the miss distance of a conjunction at the time of 
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
+%   cdm_list = (F objects) List of all CDMs generated in the chronological order [CDM]
+%   event_detection = [13xB] A matrix with each column corresponding to conjunctions detected, in the
+%                            chronological order. Containing important space object informations. 
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
+%   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %
 % OUTPUT:
-%   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
-%   action_list = [5xL] A matrix containing all the actions taken by the Decision model [--,--,--,days,--]'
+%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%                            chronological order. Containing important space object informations. 
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
+%   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 %
 %     event_detection details:
@@ -43,10 +51,6 @@
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
-%   The next expected conjunction update is modeled in a very simple matter, and can be improved later.
-%   The minimum "Reality time step" is assumed to be 1 day.
-%   Most OD updates are assumed to be done at the same time in the day instead of being distributed thruogh
-%   out the day. This should be fixed.
 %
 %
 % REVISION HISTORY:
@@ -56,9 +60,13 @@
 %       * Adding header
 %   12/1/2023 - Sina Es haghi
 %       * Modified the event_detection matrix to include latest successful observation
+%   1/2/2023 - Sina Es haghi
+%       * Modified the function inputs, The detection time for each event is now a stochastic time ranging +-1 days 
+%         from the configured detection time, A new function "NextUpdate..." is added to give a better next update time.
+%
 %
 
-function [cdm_list,event_detection,action_list,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost)
+function [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost)
 global config;
 
 
@@ -95,11 +103,6 @@ if isempty(cdm_list(end).Num)
 else
     ind_cdm=length(cdm_list);
 end
-
-ind_dec=0;
-
-action_list=[];
-
 
 while t<=tf %% Loops over Reality time
     
@@ -143,7 +146,7 @@ while t<=tf %% Loops over Reality time
 
     end
 
-    [event_detection,cdm_list,action_list,decision_list] = Decision_model (event_detection,cdm_list,action_list,decision_list,total_cost,t);
+    [event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t);
 
 
     %% Next observation time
@@ -159,7 +162,7 @@ while t<=tf %% Loops over Reality time
         end
     end
     if size(event_detection,2)<size(det_matrix,2)
-        next_conj_detect = det_matrix(2,size(event_detection,2)+1)-t;
+        next_conj_detect = det_matrix(2,size(event_detection,2)+1)-t; % So the next time event may also be when an event is detected
         dt = min([dt_default min_dt next_conj_detect]);
     else
         dt=min([dt_default min_dt]);
