@@ -13,7 +13,7 @@ GetConfig;
 %% User inputs
 tic
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 2 3 0 0 0];          % Simulation end date and time in gregorian calender
+end_date= [2023 2 3 0 0 0];           % Simulation end date and time in gregorian calender
 accelerator=0;
 global total_budget;
 global config;

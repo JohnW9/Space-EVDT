@@ -32,7 +32,7 @@ config.moid_distance = 300;                                % MOID threshold for 
 
 %% Propagation properties
 config.timestep = 15;                                      % Propagation timestep [sec]
-config.cycle_days = 5;                                     % No. of propagation date cycle limiter [days] (This is to avoid RAM overflow)
+config.cycle_days = 3;                                     % No. of propagation date cycle limiter [days] (This is to avoid RAM overflow)
 config.relevent_SO_frequency = 15;                         % Time period for relevant object update [days] (Again uses the MOID function)
 
 %% MOID calculation
