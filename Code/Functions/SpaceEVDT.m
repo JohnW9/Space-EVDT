@@ -48,7 +48,7 @@
 %   11/1/2023 - Sina Es haghi
 %       * Adding header
 %   1/2/2023 - Sina Es haghi
-%       * Completed the modulation mode of the function, inputs and outputs are modified
+%       * Completed the modular mode of the function, inputs and outputs are modified
 
 
 function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,event_list,cdm_list,decision_list,event_detection,total_cost)

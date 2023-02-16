@@ -20,6 +20,8 @@
 %       * Initial implementation
 %   01/2/2023 - Sina Es haghi
 %       * Added new configuration properties
+%   14/2/2023 - Sina Es haghi
+%       * Screening box multiplier deleted and budget threshold modified
 %
 function GetConfig
 
@@ -44,7 +46,6 @@ config.tol = 1e-8;                                         % Function tolerance 
 config.maxIter = 10;                                       % Maximum number of iterations for Newton method
 
 %% Conjunction screening
-config.screeningBoxMultiplier = ceil(config.timestep/3);   % Conjunction screening volume multiplier
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
 config.superfine_prop_timestep = 0.1;                      % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
 config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
@@ -96,8 +97,8 @@ config.value_low = 7;                                      % Collision value thr
 
 config.budget_per_day = 5;                                 % Budget available for NASA CARA to request commercial observation, per day [Units are in the same norm as monetized value]
 
-config.budget_high = 0.8;                                  % Percentage threshold of the total budget so the available budget is considered high
-config.budget_low = 0.2;                                   % Percentage threshold of the total budget so the available budget is considered low
+config.budget_tres = 0.5;                                  % Fraction threshold of the total budget so the available budget is considered high or low
+
 
 
 

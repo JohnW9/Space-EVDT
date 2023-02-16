@@ -5,10 +5,9 @@
 %   This function does the conjunction assessment based on the propagated data of
 %   the space objects at specific timesteps. This function initially detects conjunctions
 %   inside the enlarged screening volume based on the initial timestep of the propagated objects.
-%   Since the timesteps might be large, an auxillary distance is also considered where the relative
-%   velocity of the two objects is multiplied by the timestep, resulting in a distance that can be
-%   subtracted from the actual distance, resulting in a possible minimum distance.
-%   If there was a conjunction in the enlarged screening volume, a new propagation is conducted
+%   To do so, the maximum orbital velocity of the objects is calculated, summed up and multiplied
+%   by the initial propagation timestep. This creates the maximum distance threshold corresponding to the chosen timestep.
+%   If the actual distance was less than the threshold, a new propagation is conducted
 %   with a finer time step and the conjunction is assessed with the real screening volume. If again
 %   the conjunction exists, a super fine propagation is carried out to find the exact time of conjunction
 %   with a higher accuracy (finer timestep). Since the conjunction box is defined in the RSW directions,
@@ -39,6 +38,8 @@
 %       * Adding header
 %   30/1/2023 - Sina Es haghi
 %       * Ellipsoid screening volume option added
+%   14/2/2023 - Sina Es haghi
+%       * Initial screening filter modified
 %
 
 function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids)
@@ -47,11 +48,7 @@ conj_box = config.conjunction_box;
 
 volume_type = config.screening_volume_type;
 
-box_multiplier = config.screeningBoxMultiplier;
-% Experimental relation (Since the best timestep for conjunction screening
-% is in the order of 1 second, this value box multiplier value is used to
-% enlarge the screening volume so even with larger timesteps, conjunctions
-% are not missed. The relation is completely imperical.
+miu= 3.986004330000000e+05;
 
 fine_prop_timestep=config.fine_prop_timestep; %[s]
 
@@ -62,30 +59,21 @@ objects_length = length(objects_list);
 if volume_type == 0 % If the screening volume is a box
     for k=1:objects_length
 
+        max_v_primary = sqrt(miu/primary.ma * (1+primary.me)/(1-primary.me));
+        max_v_object = sqrt(miu/objects_list(k).ma * (1+objects_list(k).me)/(1-objects_list(k).me));
+
+
         X_rel_eci=objects_list(k).rx-primary.rx;
         Y_rel_eci=objects_list(k).ry-primary.ry;
         Z_rel_eci=objects_list(k).rz-primary.rz;
 
-        [R_rel,S_rel,W_rel] = ECI2RSW_vect(primary.rx,primary.ry,primary.rz,primary.vx,primary.vy,primary.vz,X_rel_eci,Y_rel_eci,Z_rel_eci);
+        distance = sqrt(X_rel_eci.^2+Y_rel_eci.^2+Z_rel_eci.^2);
 
-        VX_rel_eci=objects_list(k).vx-primary.vx;
-        VY_rel_eci=objects_list(k).vy-primary.vy;
-        VZ_rel_eci=objects_list(k).vz-primary.vz;
-
-        [VR_rel,VS_rel,VW_rel] = ECI2RSW_vect(primary.rx,primary.ry,primary.rz,primary.vx,primary.vy,primary.vz,VX_rel_eci,VY_rel_eci,VZ_rel_eci);
-
-        % Auxillary distance calculation
-        virt_dist_r = timestep.*VR_rel;
-        virt_dist_s = timestep.*VS_rel;
-        virt_dist_w = timestep.*VW_rel;
-
-        aux_dist_r = abs(R_rel-virt_dist_r);
-        aux_dist_s = abs(S_rel-virt_dist_s);
-        aux_dist_w = abs(W_rel-virt_dist_w);
+        max_possible_distance = (max_v_primary+max_v_object)*timestep;
 
         for l=1:length(t)
 
-            if  min(abs(R_rel(l)),aux_dist_r(l))<conj_box(1)/2*box_multiplier  &&  min(abs(S_rel(l)),aux_dist_s(l))<conj_box(2)/2*box_multiplier  &&  min(abs(W_rel(l)),aux_dist_w(l))<conj_box(3)/2*box_multiplier
+            if  distance(l)<=max_possible_distance
 
                 temp_object(2)=Space_object;
                 temp_timestep=fine_prop_timestep;
@@ -130,14 +118,14 @@ if volume_type == 0 % If the screening volume is a box
                 weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
                 [min_distance,minimum_dist_index]=min(weird_distance);
                 
-                if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
-                    distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
-                else
-                    distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
-                end
-                if min_distance>distance+0.0001
-                    disp('Something wrong in fine propagation');
-                end
+%                 if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
+%                     distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
+%                 else
+%                     distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
+%                 end
+%                 if min_distance>distance+0.0001
+%                     disp('Something wrong in fine propagation');
+%                 end
 
                 minimum_dist_index=index_holder(minimum_dist_index);
 
@@ -258,38 +246,23 @@ if volume_type == 0 % If the screening volume is a box
 
 elseif volume_type == 1 % If the screening volume is an ellipsoid
 
-    a_el = conj_box(1)/2;
-    b_el = conj_box(2)/2;
-    c_el = conj_box(3)/2;
-
     for k=1:objects_length
+
+        max_v_primary = sqrt(miu/primary.ma * (1+primary.me)/(1-primary.me));
+        max_v_object = sqrt(miu/objects_list(k).ma * (1+objects_list(k).me)/(1-objects_list(k).me));
+
 
         X_rel_eci=objects_list(k).rx-primary.rx;
         Y_rel_eci=objects_list(k).ry-primary.ry;
         Z_rel_eci=objects_list(k).rz-primary.rz;
 
-        [R_rel,S_rel,W_rel] = ECI2RSW_vect(primary.rx,primary.ry,primary.rz,primary.vx,primary.vy,primary.vz,X_rel_eci,Y_rel_eci,Z_rel_eci);
+        distance = sqrt(X_rel_eci.^2+Y_rel_eci.^2+Z_rel_eci.^2);
 
-        VX_rel_eci=objects_list(k).vx-primary.vx;
-        VY_rel_eci=objects_list(k).vy-primary.vy;
-        VZ_rel_eci=objects_list(k).vz-primary.vz;
-
-        [VR_rel,VS_rel,VW_rel] = ECI2RSW_vect(primary.rx,primary.ry,primary.rz,primary.vx,primary.vy,primary.vz,VX_rel_eci,VY_rel_eci,VZ_rel_eci);
-
-        % Auxillary distance calculation
-        virt_dist_r = timestep.*VR_rel;
-        virt_dist_s = timestep.*VS_rel;
-        virt_dist_w = timestep.*VW_rel;
-
-        aux_dist_r = abs(R_rel-virt_dist_r);
-        aux_dist_s = abs(S_rel-virt_dist_s);
-        aux_dist_w = abs(W_rel-virt_dist_w);
-
+        max_possible_distance = (max_v_primary+max_v_object)*timestep;
 
         for l=1:length(t)
 
-            if  min(abs(R_rel(l)),aux_dist_r(l))^2/(a_el*box_multiplier)^2 + min(abs(S_rel(l)),aux_dist_s(l))^2/(b_el*box_multiplier)^2 + min(abs(W_rel(l)),aux_dist_w(l))^2/(c_el*box_multiplier)^2 <= 1
-
+            if  distance(l)<=max_possible_distance
                 temp_object(2)=Space_object;
                 temp_timestep=fine_prop_timestep;
                 if l==1
@@ -333,14 +306,14 @@ elseif volume_type == 1 % If the screening volume is an ellipsoid
                 weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
                 [min_distance,minimum_dist_index]=min(weird_distance);
                 
-                if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
-                    distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
-                else
-                    distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
-                end
-                if min_distance>distance+0.0001
-                    disp('Something wrong in fine propagation');
-                end
+%                 if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
+%                     distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
+%                 else
+%                     distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
+%                 end
+%                 if min_distance>distance+0.0001
+%                     disp('Something wrong in fine propagation');
+%                 end
 
                 minimum_dist_index=index_holder(minimum_dist_index);
 

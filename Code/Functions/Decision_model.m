@@ -39,6 +39,9 @@
 %       * Header added
 %   01/2/2023 - Sina Es haghi
 %       * More complex decision tree implemented, next_update_interval and action_list are deleted and a decision_list is replaced
+%   15/2/2023 - Sina Es haghi
+%       * New Decision tree implemented, the available budget is now categorized only as either high or low (one threshold)
+%
 %
 function [event_detection,cdm_list,decision_list]=Decision_model (event_detection,cdm_list,decision_list,total_cost,t)
 global config;
@@ -99,26 +102,24 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
 
         %% Summarized decision tree
         if ... % When to make maneuver
-                (Pc>=config.red_event_Pc && TimeToConjunction<=config.TimeToConj_low) || ...
-                (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision>=config.value_high)
-            action_det = "High Pc and medium to low time to TCA. A maneuver action is decided for the primary object (No time to contact the secondary object's owner";
+                (Pc>=config.red_event_Pc && TimeToConjunction<=config.TimeToConj_low) 
+            action_det = "High Pc and low time to TCA. A maneuver action is decided for the primary object (No time to contact the secondary object's owner";
             event_detection(10,event_detection_index)=1;
         elseif ... % When to contact the secondary object's owner
                 (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision>=config.value_low)
             if Possibility_of_contacting == 1
-                action_det = "High Pc. The secondary object is an active payload and we are able to decide with them on a mitigation action";
+                action_det = "High Pc and medium time to TCA. The secondary object is an active payload and we are able to decide with them on a mitigation action";
                 event_detection(10,event_detection_index)=1;
             else
-                action_det = "High Pc. The secondary object is NOT an active payload and we are unable to contact them. A maneuver action is decided for the primary object";
+                action_det = "High Pc and medium time to TCA. The secondary object is NOT an active payload and we are unable to contact them. A maneuver action is decided for the primary object";
                 event_detection(10,event_detection_index)=1;
             end
         elseif ... % When to request tasking
                 (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision<=config.value_low) || ...
-                (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_high && budget>=total_budget*config.budget_low) || ...
-                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision>=config.value_high && budget>=total_budget*config.budget_low) || ...
-                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_low && value_of_collision<config.value_high && budget>=total_budget*config.budget_high) || ...
-                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_high && budget>=total_budget*config.budget_low) || ...
-                (Pc<=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_high && budget>=total_budget*config.budget_high)
+                (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_high && budget>=total_budget*config.budget_tres) || ...
+                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision>=config.value_high && budget>=total_budget*config.budget_tres) || ...
+                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_low && budget>=total_budget*config.budget_tres) || ...
+                (Pc<=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_high && budget>=total_budget*config.budget_tres)
             action_det = "Tasking. Commercial SSA provider data requested.";
             event_detection(10,event_detection_index)=0;
             event_detection(8,event_detection_index)=1;
