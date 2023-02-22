@@ -21,9 +21,12 @@
 %
 function Read_spacetrack
 
+
 %% Credentials
-username='SpaceEVDT@gmail.com';
-password='Space-enabled2022';
+fileID=fopen("Credentials.txt");
+if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
+username=fgetl(fileID);
+password=fgetl(fileID);
 
 %% Saving the space catalogue as .csv
 URL='https://www.space-track.org/ajaxauth/login';
