@@ -1,0 +1,5 @@
+Since the program downloads the space catalogue from Space-Track, a login username and password are required.
+After cloning the repository, please add a text file named "Credentials.txt" to the "Code" folder.
+the text file should contain only two lines.
+The first one shall be the Email which is the username for Space-Track.
+The second line shall be the password.
