@@ -9,9 +9,9 @@
 %   very simple estimation of the size and mass of the secondary space object.
 %
 % INPUT:
-%   event_column = [13x1] A matrix with one column corresponding to a conjunction,Containing important 
+%   event_column = [14x1] A matrix with one column corresponding to a conjunction,Containing important 
 %                         space object informations. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   conjunction_data = [84x1] A matrix containing all the orbital data and covariances of the two
 %                             space objects at the real observation time.
 %   t = [1x1] Realistic observation time [mjd2000]
@@ -34,6 +34,7 @@
 %     row11: Request status (0-no special tasking request 1-commercial SSA request -1-commercial request denied by the provider)
 %     row12: Last successful observation time [MJD2000]
 %     row13: Real miss distance (either manipulated or not) [km]
+%     row14: Real Time of Closes Approach [mjd2000]
 %
 %
 %     conjunction_data matrix details:

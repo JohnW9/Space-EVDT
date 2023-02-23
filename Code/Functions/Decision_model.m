@@ -7,9 +7,9 @@
 %   how CARA deals with detected events and generated CDMs.
 %
 % INPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (H objects) A list of all the CDM's generated [CDM]
 %   decision_list = (L objects) The list containing all the actions taken by the decision model [Decision_action]
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
@@ -17,9 +17,9 @@
 %
 %
 % OUTPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (H objects) A list of all the CDM's generated [CDM]
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %

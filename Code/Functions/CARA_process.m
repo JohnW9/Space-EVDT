@@ -19,17 +19,17 @@
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
 %   cdm_list = (F objects) List of all CDMs generated in the chronological order [CDM]
-%   event_detection = [13xB] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xB] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %
 % OUTPUT:
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
@@ -43,11 +43,12 @@
 %     row6: Number of times the cdm is generated for the event
 %     row7: Next expected conjunction update [MJD2000]
 %     row8: Type of SSA to use
-%     row9: TCA [MJD2000]
+%     row9: Estimated TCA [MJD2000]
 %     row10: Mitigation status (0-not mitigated 1-mitigated -1-not mitigated and TCA passed)
 %     row11: Request status (0-no special tasking request 1-commercial SSA request -1-commercial request denied by the provider)
 %     row12: Last successful observation time [MJD2000]
 %     row13: Real miss distance (either manipulated or not) [km]
+%     row14: Real Time of Closes Approach
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
@@ -119,6 +120,7 @@ while t<=tf %% Loops over Reality time
                 event_detection(10,ind_det)=0;
                 event_detection(11,ind_det)=0;
                 event_detection(13,ind_det)=NaN;
+                event_detection(14,ind_det)=det_matrix(6,i);
             end
         end
     end
@@ -128,7 +130,7 @@ while t<=tf %% Loops over Reality time
         
         if event_detection(10,j)~=0 % if the conjunction is mitigated or the TCA is passed, don't analyze it
             continue;
-        elseif event_detection(9,j)<t % If the TCA of the event just passed and no mitigation action was carried out, change the event status to "Neglected"
+        elseif event_detection(14,j)<t % If the TCA of the event just passed and no mitigation action was carried out, change the event status to "Neglected"
             event_detection(10,j)= -1;
         elseif event_detection(7,j)<=t % If the next update time is passed, do the update
             

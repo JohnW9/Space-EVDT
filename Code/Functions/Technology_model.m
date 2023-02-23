@@ -12,9 +12,9 @@
 %   total cost of the operation.
 %
 % INPUT:
-%   event_column = [13x1] A matrix with one column corresponding to a conjunction,Containing important 
+%   event_column = [14x1] A matrix with one column corresponding to a conjunction,Containing important 
 %                         space object informations. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   t = [1x1] Realistic observation time [mjd2000]
 %   actual_objects_states = [12x1] Actual cartesian states of the 2 objects at real time t [units in km and km/s]
 %   actual_objects_states_at_tca = [12x1] Actual cartesian states of the 2 objects at TCA [units in km and km/s]
@@ -33,11 +33,12 @@
 %     row11: Request status (0-no special tasking request 1-commercial SSA request -1-commercial request denied by the provider)
 %     row12: Last successful observation time [MJD2000]
 %     row13: Real miss distance (either manipulated or not) [km]
+%     row14: Real Time of Closes Approach [mjd2000]
 %
 % OUTPUT:
-%   event_column = [13x1] A matrix with one column corresponding to the same conjunction,Containing important 
+%   event_column = [14x1] A matrix with one column corresponding to the same conjunction,Containing important 
 %                         space object informations. Some are modified since input. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   conjunction_data = [84x1] A matrix containing all the orbital data and covariances of the two
 %                             space objects at the real observation time.
 %   cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
@@ -73,7 +74,7 @@ global config;
 ssa_type=event_column(8);
 conjunction_data=zeros(84,1);
 
-tca = event_column(9);
+tca = event_column(14);
 
 actual_stats_at_t1=actual_objects_states(1:6);
 actual_stats_at_t2=actual_objects_states(7:12);
@@ -86,13 +87,15 @@ switch ssa_type
         
         [state_car1,P01,state_car_tca1]=SDS18 (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
         [state_car2,P02,state_car_tca2]=SDS18 (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
-
+        %% After an estimate of the current state of the objects is available, an estimated TCA and miss distance should also be calculated
+        [miss_dist,tca_estimate] = conjunction_tuning (state_car_tca1,state_car_tca2,tca);
         %% Adding the OD and Covariance values to the conjunction data
         conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];
         cost = 0;
+        event_column(9)=tca_estimate;
         event_column(11)=0;
         event_column(12)=t;
-        event_column(5)=norm(state_car_tca1(1:3)-state_car_tca2(1:3)); % Estimated miss distance
+        event_column(5)=miss_dist; % Estimated miss distance
 
     case 1 % Using the commercial version
 
@@ -102,12 +105,14 @@ switch ssa_type
             event_column(11)=1;
             [state_car1,P01,state_car_tca1]=LEOLABS (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
             [state_car2,P02,state_car_tca2]=LEOLABS (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
-            
+            %% After an estimate of the current state of the objects is available, an estimated TCA and miss distance should also be calculated
+            [miss_dist,tca_estimate] = conjunction_tuning (state_car_tca1,state_car_tca2,tca);
             %% Adding the OD and Covariance values to the conjunction data
             conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];
             cost = config.commercial_SSA_cost; 
             event_column(11)=1;
-            event_column(5)=norm(state_car_tca1(1:3)-state_car_tca2(1:3));
+            event_column(9)=tca_estimate;
+            event_column(5)=miss_dist; % Estimated miss distance
             event_column(12)=t;
         else
             event_column(11)=-1;

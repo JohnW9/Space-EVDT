@@ -7,9 +7,9 @@
 %   and then propagate the objects back to find the states of the objects at time t (manipulated).
 %
 % INPUT:
-%   event_column = [13x1] A matrix with one column corresponding to a conjunction,Containing important 
+%   event_column = [14x1] A matrix with one column corresponding to a conjunction,Containing important 
 %                         space object informations. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   t = [1x1] Realistic observation time [mjd2000]
 %   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
 %   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
@@ -31,12 +31,13 @@
 %     row11: Request status (0-no special tasking request 1-commercial SSA request -1-commercial request denied by the provider)
 %     row12: Last successful observation time [MJD2000]
 %     row13: Real miss distance (either manipulated or not) [km]
+%     row14: Real Time of Closes Approach [mjd2000]
 %
 % OUTPUT:
 %   actual_objects_states = [12x1] Actual cartesian states of the 2 objects at real time t [units in km and km/s]
-%   event_column = [13x1] A matrix with one column corresponding to the same conjunction,Containing important 
+%   event_column = [14x1] A matrix with one column corresponding to the same conjunction,Containing important 
 %                         space object informations. Some are modified since input. 
-%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                         [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   actual_objects_states_at_tca = [12x1] Actual cartesian states of the 2 objects at TCA [units in km and km/s]
 %
 %

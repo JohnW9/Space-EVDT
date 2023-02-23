@@ -6,9 +6,9 @@
 %   to each specific conjunction event, along with some basic data
 %
 % INPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
 %
 % OUTPUT:

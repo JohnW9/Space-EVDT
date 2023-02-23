@@ -9,15 +9,15 @@
 %   the pre-defined interval.
 %
 % INPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   t = [1x1] Realistic observation time [mjd2000]
 %
 % OUTPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
