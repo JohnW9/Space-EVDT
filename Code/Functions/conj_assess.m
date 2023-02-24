@@ -9,8 +9,8 @@
 %   by the initial propagation timestep. This creates the maximum distance threshold corresponding to the chosen timestep.
 %   If the actual distance was less than the threshold, a new propagation is conducted
 %   with a finer time step and the conjunction is assessed with the real screening volume. If again
-%   the conjunction exists, a super fine propagation is carried out to find the exact time of conjunction
-%   with a higher accuracy (finer timestep). Since the conjunction box is defined in the RSW directions,
+%   the conjunction exists, a super fine tuning is carried out to find the exact time of conjunction
+%   with a higher accuracy. Since the conjunction box is defined in the RSW directions,
 %   a conversion of the relative positions from ECI to local RSW is implemented.
 %
 %
@@ -40,6 +40,8 @@
 %       * Ellipsoid screening volume option added
 %   14/2/2023 - Sina Es haghi
 %       * Initial screening filter modified
+%   23/2/2023 - Sina Es haghi
+%       * Final conjuncrion layer modified to find the real minimum miss distance
 %
 
 function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids)
@@ -101,119 +103,29 @@ if volume_type == 0 % If the screening volume is a box
                 weird_z_rel=temp_object_prop(2).rz-temp_object_prop(1).rz;
 
                 [weird_r_rel,weird_s_rel,weird_w_rel]=ECI2RSW_vect(temp_object_prop(1).rx,temp_object_prop(1).ry,temp_object_prop(1).rz,temp_object_prop(1).vx,temp_object_prop(1).vy,temp_object_prop(1).vz,weird_x_rel,weird_y_rel,weird_z_rel);
-                index_holder=1:length(temp_object_prop(1).t);
-                for g=length(temp_object_prop(1).t):-1:1
-                    if abs(weird_r_rel(g))>conj_box(1)/2 || abs(weird_s_rel(g))>conj_box(2)/2 || abs(weird_w_rel(g))>conj_box(3)/2
-                        weird_r_rel(g)=[];
-                        weird_s_rel(g)=[];
-                        weird_w_rel(g)=[];
-                        index_holder(g)=[];
+
+                conjunction_existance = 0;
+
+                for g = 1 : length(temp_object_prop(1).t)
+                    if abs(weird_r_rel(g))<conj_box(1)/2 && abs(weird_s_rel(g))<conj_box(2)/2 && abs(weird_w_rel(g))<conj_box(3)/2
+                        % Conjunction exists
+                        conjunction_existance = 1;
+                        state0_1 = [temp_object_prop(1).rx(g) temp_object_prop(1).ry(g) temp_object_prop(1).rz(g) temp_object_prop(1).vx(g) temp_object_prop(1).vy(g) temp_object_prop(1).vz(g)]';
+                        state0_2 = [temp_object_prop(2).rx(g) temp_object_prop(2).ry(g) temp_object_prop(2).rz(g) temp_object_prop(2).vx(g) temp_object_prop(2).vy(g) temp_object_prop(2).vz(g)]';
+                        t0 = temp_object_prop(1).t(g);
+                        break;
                     end
                 end
 
-                if isempty(index_holder)
-                    continue;
-                end
+                if conjunction_existance == 1
 
-                weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
-                [min_distance,minimum_dist_index]=min(weird_distance);
-                
-%                 if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
-%                     distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
-%                 else
-%                     distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
-%                 end
-%                 if min_distance>distance+0.0001
-%                     disp('Something wrong in fine propagation');
-%                 end
-
-                minimum_dist_index=index_holder(minimum_dist_index);
-
-
-                if true %min_distance<box
-                    if minimum_dist_index==1
-                        in_time=temp_object_prop(1).t(1);
-                        kol=minimum_dist_index;
-                    else
-                        in_time=temp_object_prop(1).t(minimum_dist_index-1);
-                        kol=minimum_dist_index-1;
-                    end
-                    if minimum_dist_index==length(temp_object_prop(1).t)
-                        f_time=mjd20002date(temp_object_prop(1).t(end));
-                    else
-                        f_time=mjd20002date(temp_object_prop(1).t(minimum_dist_index+1));
-                    end
-                    super_temp_object(2)=Space_object;
-                    super_temp_timestep=config.superfine_prop_timestep; %% Super fine propagation timestep
-                    for gooz=1:2
-                        super_temp_object(gooz).epoch=in_time;
-                        super_temp_object(gooz).a=temp_object_prop(gooz).ma;
-                        super_temp_object(gooz).e=temp_object_prop(gooz).me;
-                        super_temp_object(gooz).i=temp_object_prop(gooz).mi;
-                        super_temp_object(gooz).raan=temp_object_prop(gooz).mraan(kol);
-                        super_temp_object(gooz).om=temp_object_prop(gooz).mom(kol);
-                        super_temp_object(gooz).M=temp_object_prop(gooz).M(kol);
-                    end
-                    super_temp_object_prop = main_propagator (super_temp_object,f_time,super_temp_timestep,1);
-
-
-                    super_weird_x_rel=super_temp_object_prop(2).rx-super_temp_object_prop(1).rx;
-                    super_weird_y_rel=super_temp_object_prop(2).ry-super_temp_object_prop(1).ry;
-                    super_weird_z_rel=super_temp_object_prop(2).rz-super_temp_object_prop(1).rz;
-
-                    [super_weird_r_rel,super_weird_s_rel,super_weird_w_rel]=ECI2RSW_vect(super_temp_object_prop(1).rx,super_temp_object_prop(1).ry,super_temp_object_prop(1).rz,super_temp_object_prop(1).vx,super_temp_object_prop(1).vy,super_temp_object_prop(1).vz,super_weird_x_rel,super_weird_y_rel,super_weird_z_rel);
-
-
-                    super_index_holder=1:length(super_temp_object_prop(1).t);
-
-                    for d=length(super_temp_object_prop(1).t):-1:1
-                        if abs(super_weird_r_rel(d))>conj_box(1)/2 || abs(super_weird_s_rel(d))>conj_box(2)/2 || abs(super_weird_w_rel(d))>conj_box(3)/2
-                            super_weird_r_rel(d)=[];
-                            super_weird_s_rel(d)=[];
-                            super_weird_w_rel(d)=[];
-                            super_index_holder(d)=[];
-                        end
-                    end
-
-                    if isempty(super_index_holder)
-                        continue;
-                    end
-
-
-                    super_weird_distance=sqrt(super_weird_r_rel.^2+super_weird_s_rel.^2+super_weird_w_rel.^2);
-                    [super_min_distance,super_minimum_dist_index]=min(super_weird_distance);
-
-
-                    if super_min_distance>min_distance+0.0001
-                        disp('Something wrong in Super fine propagation');
-                    end
-
-                    super_minimum_dist_index=super_index_holder(super_minimum_dist_index);
+                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0);
 
                     event=Conjunction_event;
-                    event.tca=super_temp_object_prop(1).t(super_minimum_dist_index);
+                    event.tca=tca;
                     event.primary_id=primary.id;
                     event.secondary_id=objects_list(k).id;
-                    event.mis_dist=super_min_distance;
-
-                    %% This is only a result check, delete afterwards
-                    obj1_index = find(space_cat_ids==primary.id);
-                    obj2_index = find(space_cat_ids==objects_list(k).id);
-                    temp_objects(1)=space_cat(obj1_index);
-                    temp_objects(2)=space_cat(obj2_index);
-                    temp_objects(1) = TwoBP_J2_analytic (temp_objects(1),super_temp_object_prop(1).t(super_minimum_dist_index),'mjd2000');
-                    temp_objects(2) = TwoBP_J2_analytic (temp_objects(2),super_temp_object_prop(1).t(super_minimum_dist_index),'mjd2000');
-                    single_event_matrix=zeros(18,1);
-                    single_event_matrix(7:18)=[temp_objects(1).a temp_objects(1).e temp_objects(1).i temp_objects(1).raan temp_objects(1).om temp_objects(1).M ...
-                        temp_objects(2).a temp_objects(2).e temp_objects(2).i temp_objects(2).raan temp_objects(2).om temp_objects(2).M]';
-                    state1_f = par2car([single_event_matrix(7:11);M2f(single_event_matrix(12),single_event_matrix(8))]);
-                    r1_f=state1_f(1:3);
-                    state2_f = par2car([single_event_matrix(13:17);M2f(single_event_matrix(18),single_event_matrix(14))]);
-                    r2_f=state2_f(1:3);
-                    if abs(norm(r1_f-r2_f)-super_min_distance)>0.001
-                        disp('Inconsistency between the mis distance and the final positions of the space objects')
-                    end
-                    %%
+                    event.mis_dist=miss_dist;
 
 
                     if ~isempty(event_list(1).tca)
@@ -289,120 +201,26 @@ elseif volume_type == 1 % If the screening volume is an ellipsoid
                 weird_z_rel=temp_object_prop(2).rz-temp_object_prop(1).rz;
 
                 [weird_r_rel,weird_s_rel,weird_w_rel]=ECI2RSW_vect(temp_object_prop(1).rx,temp_object_prop(1).ry,temp_object_prop(1).rz,temp_object_prop(1).vx,temp_object_prop(1).vy,temp_object_prop(1).vz,weird_x_rel,weird_y_rel,weird_z_rel);
-                index_holder=1:length(temp_object_prop(1).t);
-                for g=length(temp_object_prop(1).t):-1:1
-                    if abs(weird_r_rel(g))^2/(conj_box(1)/2)^2 + abs(weird_s_rel(g))^2/(conj_box(2)/2)^2 + abs(weird_w_rel(g))^2/(conj_box(3)/2)^2 >1
-                        weird_r_rel(g)=[];
-                        weird_s_rel(g)=[];
-                        weird_w_rel(g)=[];
-                        index_holder(g)=[];
+                conjunction_existance = 0;
+                for g=1:length(temp_object_prop(1).t)
+                    if abs(weird_r_rel(g))^2/(conj_box(1)/2)^2 + abs(weird_s_rel(g))^2/(conj_box(2)/2)^2 + abs(weird_w_rel(g))^2/(conj_box(3)/2)^2 <= 1
+                        % Conjunction exists
+                        conjunction_existance = 1;
+                        state0_1 = [temp_object_prop(1).rx(g) temp_object_prop(1).ry(g) temp_object_prop(1).rz(g) temp_object_prop(1).vx(g) temp_object_prop(1).vy(g) temp_object_prop(1).vz(g)]';
+                        state0_2 = [temp_object_prop(2).rx(g) temp_object_prop(2).ry(g) temp_object_prop(2).rz(g) temp_object_prop(2).vx(g) temp_object_prop(2).vy(g) temp_object_prop(2).vz(g)]';
+                        t0 = temp_object_prop(1).t(g);
+                        break;
                     end
                 end
+                if conjunction_existance == 1
 
-                if isempty(index_holder)
-                    continue;
-                end
-
-                weird_distance=sqrt(weird_r_rel.^2+weird_s_rel.^2+weird_w_rel.^2);
-                [min_distance,minimum_dist_index]=min(weird_distance);
-                
-%                 if abs(R_rel(l))<conj_box(1)/2 && abs(S_rel(l))<conj_box(2)/2 && abs(W_rel(l))<conj_box(3)/2
-%                     distance=norm([X_rel_eci(l),Y_rel_eci(l),Z_rel_eci(l)]);
-%                 else
-%                     distance=0.5*box_multiplier*sqrt(conj_box(1)^2+conj_box(2)^2+conj_box(3)^2);
-%                 end
-%                 if min_distance>distance+0.0001
-%                     disp('Something wrong in fine propagation');
-%                 end
-
-                minimum_dist_index=index_holder(minimum_dist_index);
-
-
-                if true %min_distance<box
-                    if minimum_dist_index==1
-                        in_time=temp_object_prop(1).t(1);
-                        kol=minimum_dist_index;
-                    else
-                        in_time=temp_object_prop(1).t(minimum_dist_index-1);
-                        kol=minimum_dist_index-1;
-                    end
-                    if minimum_dist_index==length(temp_object_prop(1).t)
-                        f_time=mjd20002date(temp_object_prop(1).t(end));
-                    else
-                        f_time=mjd20002date(temp_object_prop(1).t(minimum_dist_index+1));
-                    end
-                    super_temp_object(2)=Space_object;
-                    super_temp_timestep=config.superfine_prop_timestep; %% Super fine propagation timestep
-                    for gooz=1:2
-                        super_temp_object(gooz).epoch=in_time;
-                        super_temp_object(gooz).a=temp_object_prop(gooz).ma;
-                        super_temp_object(gooz).e=temp_object_prop(gooz).me;
-                        super_temp_object(gooz).i=temp_object_prop(gooz).mi;
-                        super_temp_object(gooz).raan=temp_object_prop(gooz).mraan(kol);
-                        super_temp_object(gooz).om=temp_object_prop(gooz).mom(kol);
-                        super_temp_object(gooz).M=temp_object_prop(gooz).M(kol);
-                    end
-                    super_temp_object_prop = main_propagator (super_temp_object,f_time,super_temp_timestep,1);
-
-
-                    super_weird_x_rel=super_temp_object_prop(2).rx-super_temp_object_prop(1).rx;
-                    super_weird_y_rel=super_temp_object_prop(2).ry-super_temp_object_prop(1).ry;
-                    super_weird_z_rel=super_temp_object_prop(2).rz-super_temp_object_prop(1).rz;
-
-                    [super_weird_r_rel,super_weird_s_rel,super_weird_w_rel]=ECI2RSW_vect(super_temp_object_prop(1).rx,super_temp_object_prop(1).ry,super_temp_object_prop(1).rz,super_temp_object_prop(1).vx,super_temp_object_prop(1).vy,super_temp_object_prop(1).vz,super_weird_x_rel,super_weird_y_rel,super_weird_z_rel);
-
-
-                    super_index_holder=1:length(super_temp_object_prop(1).t);
-
-                    for d=length(super_temp_object_prop(1).t):-1:1
-                        if abs(super_weird_r_rel(d))^2/(conj_box(1)/2)^2 + abs(super_weird_s_rel(d))^2/(conj_box(2)/2)^2 + abs(super_weird_w_rel(d))^2/(conj_box(3)/2)^2 > 1
-                            super_weird_r_rel(d)=[];
-                            super_weird_s_rel(d)=[];
-                            super_weird_w_rel(d)=[];
-                            super_index_holder(d)=[];
-                            %error("This shouldn't happen");
-                        end
-                    end
-
-                    if isempty(super_index_holder)
-                        continue;
-                    end
-
-
-                    super_weird_distance=sqrt(super_weird_r_rel.^2+super_weird_s_rel.^2+super_weird_w_rel.^2);
-                    [super_min_distance,super_minimum_dist_index]=min(super_weird_distance);
-
-
-                    if super_min_distance>min_distance+0.0001
-                        disp('Something wrong in Super fine propagation');
-                    end
-
-                    super_minimum_dist_index=super_index_holder(super_minimum_dist_index);
+                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0);
 
                     event=Conjunction_event;
-                    event.tca=super_temp_object_prop(1).t(super_minimum_dist_index);
+                    event.tca=tca;
                     event.primary_id=primary.id;
                     event.secondary_id=objects_list(k).id;
-                    event.mis_dist=super_min_distance;
-
-                    %% This is only a result check, delete afterwards
-                    obj1_index = find(space_cat_ids==primary.id);
-                    obj2_index = find(space_cat_ids==objects_list(k).id);
-                    temp_objects(1)=space_cat(obj1_index);
-                    temp_objects(2)=space_cat(obj2_index);
-                    temp_objects(1) = TwoBP_J2_analytic (temp_objects(1),super_temp_object_prop(1).t(super_minimum_dist_index),'mjd2000');
-                    temp_objects(2) = TwoBP_J2_analytic (temp_objects(2),super_temp_object_prop(1).t(super_minimum_dist_index),'mjd2000');
-                    single_event_matrix=zeros(18,1);
-                    single_event_matrix(7:18)=[temp_objects(1).a temp_objects(1).e temp_objects(1).i temp_objects(1).raan temp_objects(1).om temp_objects(1).M ...
-                        temp_objects(2).a temp_objects(2).e temp_objects(2).i temp_objects(2).raan temp_objects(2).om temp_objects(2).M]';
-                    state1_f = par2car([single_event_matrix(7:11);M2f(single_event_matrix(12),single_event_matrix(8))]);
-                    r1_f=state1_f(1:3);
-                    state2_f = par2car([single_event_matrix(13:17);M2f(single_event_matrix(18),single_event_matrix(14))]);
-                    r2_f=state2_f(1:3);
-                    if abs(norm(r1_f-r2_f)-super_min_distance)>0.001
-                        disp('Inconsistency between the mis distance and the final positions of the space objects')
-                    end
-                    %%
+                    event.mis_dist=miss_dist;
 
 
                     if ~isempty(event_list(1).tca)

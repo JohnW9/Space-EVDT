@@ -13,19 +13,21 @@ GetConfig;
 %% User inputs
 tic
 epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
-end_date= [2023 2 17 0 0 0];           % Simulation end date and time in gregorian calender
+epoch = [2023 2 1 0 0 0];
+end_date= [2023 2 6 0 0 0];           % Simulation end date and time in gregorian calender
 accelerator=0;                          % details to be added
 global total_budget;
 global config;
 total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 %% NASA satellites
 eos = Read_NASA_satellites;
+eos = eos(1);
 disp('NASA satellites loaded')
 %% Space catalogue
 fileID=fopen("Credentials.txt");
 if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
 fclose(fileID);
-space_cat = Read_Space_catalogue(1);
+space_cat = Read_Space_catalogue(0);
 %% Main program run
 [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
 runtime=toc;

@@ -74,8 +74,8 @@ global config;
 ti=date2mjd2000(epoch);
 tf=date2mjd2000(end_date);
 
-%% Giving a random detection time (within the range of +-1 of the configured detection time) and sorting them again
-detection_time=ones([1 size(event_matrix,2)])*config.detection_time + (-1)*ones([1 size(event_matrix,2)]) + 2*rand([1 size(event_matrix,2)]);
+%% Giving a random detection time and sorting them again
+detection_time=random_generator (config.detection_time_lower,config.detection_time_upper,[1 size(event_matrix,2)]);
 det_matrix=event_matrix(1:5,:);
 det_matrix(6,:)=event_matrix(2,:); % actual TCA
 det_matrix(2,:)=det_matrix(2,:)-detection_time; % Basically det_matrix is the same as event_matrix, with detection time included instead of TCA

@@ -66,6 +66,8 @@
 %       * Adding the stochastic functions to the technology model
 %   1/2/2023 - Sina Es haghi
 %       * Deleted the next update interval factor
+%   23/2/2023 - Sina Es haghi
+%       * New conjunction tuning function added to find the miss distance using estimated states of the objects
 %
 function [event_column,conjunction_data,cost] = Technology_model (event_column,t,actual_objects_states,actual_objects_states_at_tca)
 

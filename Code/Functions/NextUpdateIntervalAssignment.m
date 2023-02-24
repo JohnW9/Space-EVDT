@@ -28,12 +28,14 @@
 %
 %   1/2/2023 - Sina Es haghi
 %       * Initial implementation
+%   23/2/2023 - Sina Es haghi
+%       * Using the random_generator function
 %
 
 function event_detection = NextUpdateIntervalAssignment (event_detection,t)
 
 global config;
-randomer = @(a,b) a+(b-a)*rand([1 1]);
+
 for i = size(event_detection,2):-1:1
     
     if ~isnan(event_detection(7,i))
@@ -41,12 +43,8 @@ for i = size(event_detection,2):-1:1
     end
 
     if event_detection(8,i)==1
-        a=0.5*config.commercial_SSA_updateInterval;
-        b=1.5*config.commercial_SSA_updateInterval;
-        event_detection(7,i) = t + randomer(a,b);
+        event_detection(7,i) = t + random_generator(config.commercial_SSA_updateInterval_lower,config.commercial_SSA_updateInterval_upper,[1,1]);
     else
-        a=0.5*config.government_SSA_updateInterval;
-        b=1.5*config.government_SSA_updateInterval;
-        event_detection(7,i) = t + randomer(a,b);
+        event_detection(7,i) = t + random_generator(config.government_SSA_updateInterval_lower,config.government_SSA_updateInterval_upper,[1,1]);
     end
 end
