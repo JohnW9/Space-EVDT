@@ -53,22 +53,22 @@
 %   miss_dist = [1x1] This is the ESTIMATED miss distance from propagating the estimated states of the objects to TCA [km]
 %   Pc = [1x1] Probability of collision value calculated by NASA function (Default is 2D, then Max Pc)
 %   CC = [1x1] Collision consequenc, number of fragments generated in case of collision. Obtained through the NASA software
-%   catas_flag = [1x1] A flag showing whether the collision will be catastrophic or not (0-not catastrophic, 1-catastrophic)
 %   HBR = [1x1] The hard body radius of the two objects summed and projected on a plane for maximum cross area [m]
 %   id1 = [1x1] NORAD ID of object 1 (The primary NASA satellite)
 %   id2 = [1x1] NORAD ID of object 2 (The secondary space object)
 %   r1 = [3x1] The position vector of object 1 in the ECI frame [km;km;km]
 %   v1 = [3x1] The velocity vector of object 1 in the ECI frame [km/s;km/s;km/s]
-%   cov1 = [6x6] The propagated covariance matrix of object 1 in the ECI frame [units is km^2 and km^2/s^2]
+%   cov1 = [6x6] The propagated covariance matrix of object 1 in the RSW frame [units is km^2, km^2/s, and km^2/s^2]
 %   dim1 = [1x1] conjuncting dimension of object 1 [m]
 %   m1 = [1x1] Mass of object 1 [kg]
 %   value1 = [1x1] Socio-economic value of object 1 
 %   r2 = [3x1] The position vector of object 2 in the ECI frame [km;km;km]
 %   v2 = [3x1] The velocity vector of object 2 in the ECI frame [km/s;km/s;km/s]
-%   cov2 = [6x6] The propagated covariance matrix of object 2 in the ECI frame [units is km^2 and km^2/s^2]
+%   cov2 = [6x6] The propagated covariance matrix of object 2 in the RSW frame [units is km^2, km^2/s, and km^2/s^2]
 %   dim2 = [1x1] conjuncting dimension of object 2 [m]
 %   m2 = [1x1] Mass of object 2 [kg]
 %   value2 = [1x1] Socio-economic value of object 2
+%   value_CC = [1x1] Collision consequence value
 %   read_status = [1x1] Read status of the CDM (0-the CDM is not read by the decision model, 1-the CDM is read by the decision model)
 %
 %
@@ -83,6 +83,8 @@
 %       * Header added
 %   13/1/2023 - Sina Es haghi
 %       * Modified the hard body radius calculation
+%   06/3/2023 - Sina Es haghi
+%       * Covariance matrices in CDM are now in RSW frame along with function header
 %
 %
 
@@ -190,7 +192,7 @@ HBR=1e-3*(dim1+dim2); % [km]
 HBRType=config.HBRType;
 
 %% Valuing the space objects
-[value1,value2,Catastrophic,NumOfPieces]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2);
+[value1,value2,value_CC,NumOfPieces]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2);
 
 %% Probability of collision (using NASA software)
 
@@ -209,21 +211,25 @@ cdm.tca=mjd20002date(tca);
 cdm.miss_dist=single_event_matrix(5);
 cdm.Pc=Pc;
 cdm.CC=NumOfPieces;
-cdm.catas_flag=Catastrophic;
-cdm.HBR=HBR;
+cdm.HBR=HBR*1e3;
 cdm.id1=single_event_matrix(3);
 cdm.id2=single_event_matrix(4);
 cdm.r1=r1_f;
 cdm.v1=v1_f;
-cdm.cov1=P1;
+cdm.cov1=prop_cov1; % In RSW frame
 cdm.dim1=dim1;
 cdm.m1=m1;
 cdm.value1=value1;
 cdm.r2=r2_f;
 cdm.v2=v2_f;
-cdm.cov2=P2;
+if NoP2 == 0
+    cdm.cov2=prop_cov2; % In RSW frame
+else
+    cdm.cov2=NaN;
+end
 cdm.dim2=dim2;
 cdm.m2=m2;
 cdm.value2=value2;
+cdm.CC_value =value_CC;
 cdm.read_status=0;
 end

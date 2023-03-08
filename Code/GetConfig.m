@@ -50,7 +50,7 @@ config.maxIter = 10;                                       % Maximum number of i
 %% Conjunction screening
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
 config.superfine_prop_timestep = 0.1;                      % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
-config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
+config.screening_volume_type = 1;                          % If the screening volume is a box (0) or an ellipsoid (1)
 
 %% Conjunction Assessment and Risk Analysis process
 config.detection_time = 7;                                 % Number of days prior to an event's TCA when the event is detected by the SSA provider [days]
@@ -90,9 +90,9 @@ config.large_mass = 500;                                   % Mass of a large RCS
 config.HBRType = 'circle';                                 % Hard Body Radius type input for Pc calculation (Choose between 'circle', 'square', 'squareEquArea')
 
 %% Vulnerability model (Secondary object properties, in case the object is a Payload)
-config.small_value = 0.01;                                 % Monetized value of small RCS payload [same units as the NASA EOS values]
-config.medium_value = 0.1;                                 % Monetized value of medium RCS payload [same units as the NASA EOS values]
-config.large_value =1;                                     % Monetized value of large RCS payload [same units as the NASA EOS values]
+config.small_value = 0.005;                                 % Monetized value of small RCS payload [same units as the NASA EOS values]
+config.medium_value = 0.05;                                 % Monetized value of medium RCS payload [same units as the NASA EOS values]
+config.large_value =0.5;                                     % Monetized value of large RCS payload [same units as the NASA EOS values]
 
 %% Decision making model
 config.CC_normalizer = 7000;                               % Number of pieces for normalizing the collision consequence (to have the CC value in the order of the object socio-economic values)

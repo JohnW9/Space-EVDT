@@ -93,7 +93,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     else
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
-        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/config.CC_normalizer;
+        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
         budget = total_budget - total_cost;
         Pc=cdm_list(i).Pc;
         TimeToConjunction=date2mjd2000(cdm_list(i).tca)-t;
