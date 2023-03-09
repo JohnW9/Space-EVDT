@@ -1,5 +1,5 @@
 % FUNCTION NAME:
-%   TwoBP_J2_analytic
+%   TwoBP_J2_analytic_car_state
 %
 % DESCRIPTION:
 %   This function propagates a cartesian state of an object for a desired amount of time

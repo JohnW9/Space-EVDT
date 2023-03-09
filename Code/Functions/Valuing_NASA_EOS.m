@@ -43,7 +43,7 @@ function eos = Valuing_NASA_EOS (eos)
 %% VALUING EACH SCIENCE APPLICATION (based on 2021)
 % GDP data taken from The World Bank at https://data.worldbank.org/indicator/NY.GDP.MKTP.CD?locations=US
 % USD from 2020 is converted to December 2021 in CPI inflation calculator at https://data.bls.gov/cgi-bin/cpicalc.pl?cost1=1.00&year1=202012&year2=202112
-usd2020to2021=1.07;
+usd2020to2021=1;
 TUSD=1e12; % Trillion US dollars [USD]
 BUSD=1e9; % Billion US dollars [USD]
 GDP2020=20.89*TUSD; % [USD]
@@ -63,7 +63,7 @@ score_agriculture=AgricultureGDP2021/TUSD;
 % Inspiration by "Fine particulate matter damages and value added in the US economy", 2019 Paper
 % New results used by "Environmental performance index" , Carnegie Mellon University at: https://esgindex.cmu.edu/
 % GED without Greenhouse gases
-GEDtoGDPpercentage2021=mean([0.03696 0.03212 0.0490 0.02792]);
+GEDtoGDPpercentage2021=0.0363;
 GED2021=GEDtoGDPpercentage2021*GDP2021; % [USD]
 score_airquality=GED2021/TUSD;
 
@@ -75,7 +75,7 @@ score_aviation=aviation_economic_value2021/TUSD;
 
 %% Carbon management
 % Basically effects of CO2 as GED from https://esgindex.cmu.edu/
-CO2toGDPpercentage2021=mean([0.01410 0.01392 0.01391 0.01370]);
+CO2toGDPpercentage2021=0.0126;
 CO22021=CO2toGDPpercentage2021*GDP2021;
 score_carbon=CO22021/TUSD;
 
@@ -87,14 +87,15 @@ score_coast=coast_erosion/TUSD;
 
 %% Disaster management
 % Disaster overall damages/costs for 2021 taken from https://www.ncei.noaa.gov/access/billions/
-disasters_cost=152.6*1e9;
+disasters_cost=155.3*1e9;
 score_disaster=disasters_cost/TUSD;
 
 %% Energy management
 % total Energy expenditure 2020 per state taken from https://www.eia.gov/state/seds/sep_sum/html/pdf/rank_pr.pdf
 energy_gdp_percentage2020=4.82/100;
-energy_expenditure2020=energy_gdp_percentage2020*GDP2020;
-score_energy=energy_expenditure2020*usd2020to2021/TUSD;
+%energy_expenditure2020=energy_gdp_percentage2020*GDP2020;
+energy_expenditure2021 = energy_gdp_percentage2020*GDP2021;
+score_energy=energy_expenditure2021/TUSD;
 
 %% Homeland security
 % Annual budget of Department of Homeland Security year 2021 taken from https://www.usaspending.gov/agency/department-of-homeland-security?fy=2021
@@ -108,10 +109,10 @@ score_invasive=Invasive_costs/TUSD;
 
 %% Public health
 % Health expenditure 2019 US percentage from GDP taken from https://data.worldbank.org/indicator/SH.XPD.CHEX.GD.ZS?locations=US
-% Percentage of GDP in 2020 (After COVID) taken from CMS at https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/NationalHealthExpendData/NationalHealthAccountsHistorical
-health_gdp_percentage2019=16.8/100;
-health_gdp_percentage2020=19.7/100;
-health_cost2021=GDP2020*health_gdp_percentage2020*usd2020to2021;
+% Percentage of GDP in 2021 (After COVID) taken from CMS at https://www.cms.gov/Research-Statistics-Data-and-Systems/Statistics-Trends-and-Reports/NationalHealthExpendData/NationalHealthAccountsHistorical
+
+health_gdp_percentage2021=18.3/100;
+health_cost2021=GDP2021*health_gdp_percentage2021;
 score_health=health_cost2021/TUSD;
 
 %% Water management

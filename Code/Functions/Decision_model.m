@@ -7,9 +7,9 @@
 %   how CARA deals with detected events and generated CDMs.
 %
 % INPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (H objects) A list of all the CDM's generated [CDM]
 %   decision_list = (L objects) The list containing all the actions taken by the decision model [Decision_action]
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
@@ -17,9 +17,9 @@
 %
 %
 % OUTPUT:
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (H objects) A list of all the CDM's generated [CDM]
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
@@ -93,7 +93,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     else
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
-        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/config.CC_normalizer;
+        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
         budget = total_budget - total_cost;
         Pc=cdm_list(i).Pc;
         TimeToConjunction=date2mjd2000(cdm_list(i).tca)-t;
@@ -118,8 +118,8 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision<=config.value_low) || ...
                 (Pc>=config.red_event_Pc && TimeToConjunction>=config.TimeToConj_high && budget>=total_budget*config.budget_tres) || ...
                 (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction>=config.TimeToConj_low && TimeToConjunction<=config.TimeToConj_high && value_of_collision>=config.value_high && budget>=total_budget*config.budget_tres) || ...
-                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_low && budget>=total_budget*config.budget_tres) || ...
-                (Pc<=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_high && budget>=total_budget*config.budget_tres)
+                (Pc<config.red_event_Pc && Pc>=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_low && budget>=total_budget*config.budget_tres) %|| ...
+                %(Pc<=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_low && value_of_collision>=config.value_high && budget>=total_budget*config.budget_tres)
             action_det = "Tasking. Commercial SSA provider data requested.";
             event_detection(10,event_detection_index)=0;
             event_detection(8,event_detection_index)=1;

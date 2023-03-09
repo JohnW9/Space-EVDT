@@ -22,6 +22,8 @@
 %       * Added new configuration properties
 %   14/2/2023 - Sina Es haghi
 %       * Screening box multiplier deleted and budget threshold modified
+%   23/2/2023 - Sina Es haghi
+%       * Upper and Lower bound time values for detection time and update interval have been introduced
 %
 function GetConfig
 
@@ -33,7 +35,7 @@ config.conjunction_box = [2,25,25];                        % Conjunction box dim
 config.moid_distance = 300;                                % MOID threshold for finding relevant objects [km]
 
 %% Propagation properties
-config.timestep = 15;                                      % Propagation timestep [sec]
+config.timestep = 20;                                      % Propagation timestep [sec]
 config.cycle_days = 3;                                     % No. of propagation date cycle limiter [days] (This is to avoid RAM overflow)
 config.relevent_SO_frequency = 15;                         % Time period for relevant object update [days] (Again uses the MOID function)
 
@@ -48,20 +50,30 @@ config.maxIter = 10;                                       % Maximum number of i
 %% Conjunction screening
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
 config.superfine_prop_timestep = 0.1;                      % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
-config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
+config.screening_volume_type = 1;                          % If the screening volume is a box (0) or an ellipsoid (1)
 
 %% Conjunction Assessment and Risk Analysis process
 config.detection_time = 7;                                 % Number of days prior to an event's TCA when the event is detected by the SSA provider [days]
+config.detection_time_lower = config.detection_time - 1;   % Lower bound for random detection days prior to TCA [days]
+config.detection_time_upper = config.detection_time + 1;   % Upper bound for random detection days prior to TCA [days]
 config.dt_default = 1;                                     % Process simulation default timestep [days] (discrete event simulation fixed timestep)
 
 %% Technology model
 config.government_SSA_updateInterval = 1;                  % The minimum time interval between two consecutive observations of the government SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
+config.government_SSA_updateInterval_lower = ...           % Lower bound of minimum time interval [days]
+    config.government_SSA_updateInterval*0.5;
+config.government_SSA_updateInterval_upper = ...           % Upper bound of minimum time interval [days]
+    config.government_SSA_updateInterval*1.5;
 config.government_SSA_cov = ...                            % Covariance matrix provided by the government SSA provider [units in km^2 and km^2/s^2]
     diag([0.01^2 0.01^2 0.01^2 0.001^2 0.001^2 0.001^2]);  
 
 config.commercial_SSA_cost = 1;                            % Cost of requesting an observation by the commercial SSA provider [k$]
 config.commercial_SSA_availability = 0.8;                  % Availability of commercial SSA data when requested
 config.commercial_SSA_updateInterval = 0.2;                % The minimum time interval between two consecutive observations of the commercial SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
+config.commercial_SSA_updateInterval_lower = ...           % Lower bound of minimum time interval [days]
+    config.commercial_SSA_updateInterval*0.5;
+config.commercial_SSA_updateInterval_upper = ...           % Upper bound of minimum time interval [days]
+    config.commercial_SSA_updateInterval*1.5;
 config.commercial_SSA_cov = ...                            % Covariance matrix provided by the commercial SSA provider [units in km^2 and km^2/s^2]
     diag([0.001^2 0.001^2 0.001^2 0.0001^2 0.0001^2 0.0001^2]);  
 
@@ -78,9 +90,9 @@ config.large_mass = 500;                                   % Mass of a large RCS
 config.HBRType = 'circle';                                 % Hard Body Radius type input for Pc calculation (Choose between 'circle', 'square', 'squareEquArea')
 
 %% Vulnerability model (Secondary object properties, in case the object is a Payload)
-config.small_value = 0.01;                                 % Monetized value of small RCS payload [same units as the NASA EOS values]
-config.medium_value = 0.1;                                 % Monetized value of medium RCS payload [same units as the NASA EOS values]
-config.large_value =1;                                     % Monetized value of large RCS payload [same units as the NASA EOS values]
+config.small_value = 0.005;                                 % Monetized value of small RCS payload [same units as the NASA EOS values]
+config.medium_value = 0.05;                                 % Monetized value of medium RCS payload [same units as the NASA EOS values]
+config.large_value =0.5;                                     % Monetized value of large RCS payload [same units as the NASA EOS values]
 
 %% Decision making model
 config.CC_normalizer = 7000;                               % Number of pieces for normalizing the collision consequence (to have the CC value in the order of the object socio-economic values)

@@ -19,9 +19,9 @@
 %   event_list = (X objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (F objects) List of all CDMs generated in the chronological order [CDM]
 %   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
-%   event_detection = [13xB] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xB] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   
 % OUTPUT:
@@ -30,9 +30,9 @@
 %                        corresponding to that conjunction event.
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
-%   event_detection = [13xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
-%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km]'
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
@@ -89,9 +89,11 @@ disp('All conjunctions throughout the simulation time detected')
 event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
 %% Saving 
-%save("Data\Intermediate_1Feb.mat");
+%save("Data\Intermediate_6March.mat");
 %% Loading
-%load("Data\Intermediate_1Feb.mat");
+load("Data\Intermediate_6March.mat");
+global total_budget;
+total_budget=305;
 GetConfig;
 %% Replicating NASA CARA
 [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
