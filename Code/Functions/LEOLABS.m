@@ -36,6 +36,8 @@
 %       * Modifying the stochastic functions to the technology model
 %   20/1/2023 - Sina Es haghi
 %       * Modifying so that the object's estimated position is a sample in the middle of it's covariance matrix
+%   08/3/2023 - Sina Es haghi
+%       * Modifying so that the object's estimated velocity is a sample in the middle of it's covariance matrix
 %
 function [state_car,P0,state_car_tca]=LEOLABS (actual_state_at_t,actual_state_at_tca,t,tca)
 global config;
@@ -46,17 +48,22 @@ P0 = config.commercial_SSA_cov;
 std_r = sqrt(P0(1,1));
 std_s = sqrt(P0(2,2));
 std_w = sqrt(P0(3,3));
-
+std_vr = sqrt (P0(4,4));
+std_vs = sqrt (P0(5,5));
+std_vw = sqrt (P0(6,6));
 %% Converting the states to RSW, sampling the OD with the standard deviations, and converting back to ECI
 pos=actual_state_at_t(1:3);
 vel=actual_state_at_t(4:6);
 [T_rsw2eci,T_eci2rsw] = ECI2RSW(pos,vel);
 pos_rsw = T_eci2rsw * pos;
+vel_rsw = T_eci2rsw * vel;
 estimated_pos_rsw = pos_rsw + normrnd(0,std_r,[1 1])*[1;0;0] + normrnd(0,std_s,[1 1])*[0;1;0] + normrnd(0,std_w,[1 1])*[0;0;1];
+estimated_vel_rsw = vel_rsw + normrnd(0,std_vr,[1 1])*[1;0;0] + normrnd(0,std_vs,[1 1])*[0;1;0] + normrnd(0,std_vw,[1 1])*[0;0;1];
 pos = T_rsw2eci*estimated_pos_rsw; % Estimated position of the satellite back in the ECI frame
+vel = T_rsw2eci*estimated_vel_rsw;
 
 
-state_car=[pos;actual_state_at_t(4:6)];
+state_car=[pos;vel];
 if nargout==3
     state_car_tca= TwoBP_J2_analytic_car_state (state_car,tca-t);
 end

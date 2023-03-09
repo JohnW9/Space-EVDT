@@ -7,7 +7,7 @@ classdef CDM
         miss_dist           % Miss distance [km]
         Pc                  % Probability of collision
         CC                  % Collision consequence number of pieces
-        catas_flag          % Catastrophy flag [bool]
+        CC_value            % Value of the collision consequence
         HBR                 % Hard body radius [km]
         read_status         % Read status by the decision model [bool]
         

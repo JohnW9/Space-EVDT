@@ -52,7 +52,7 @@ while timestep >= config.superfine_prop_timestep/86400
 
     [minimum_dist,minimum_index] = min(distances);
 
-    if minimum_index == 2 || norm(minimum_dist-d)<0.00001
+    if minimum_index == 2 || norm(minimum_dist-d)/d<0.01
         timestep = timestep * 0.1 ;
     else
         if minimum_index == 3

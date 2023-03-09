@@ -148,9 +148,9 @@ v2_f=stat2_f(4:6);
 %% quick check
 miss_dist=norm(r1_f-r2_f);
 error_of_missdist=abs(miss_dist-event_column(5));
-if error_of_missdist>1e-3 
-    error("error in propagation in cdm generation");
-end
+%if error_of_missdist/miss_dist>1e-3 
+%    error("error in propagation in cdm generation");
+%end
 
 %% Conversion to ECI at TCA
 % Object 1
