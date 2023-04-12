@@ -8,7 +8,7 @@ addpath('..\Data\');
 addpath('..\Time_conversion\');
 
 
-obj_num=4; % CHANGE THIS NUMBER FOR THE OBJECTS LISTED IN THE BOOK CHAPTER 2
+obj_num=3; % CHANGE THIS NUMBER FOR THE OBJECTS LISTED IN THE BOOK CHAPTER 2
 
 
 switch obj_num
@@ -81,6 +81,10 @@ for i=1:length(time_range)
     v_W(i)=sqrt(cov(6,6));
 end
 
+pos_error = sqrt(r_R.^2+r_S.^2+r_W.^2);
+
+figure()
+plot(pos_error);
 
 figure()
 tiledlayout(3, 2, 'TileSpacing','Compact','Padding','Compact');

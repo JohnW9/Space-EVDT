@@ -8,22 +8,21 @@ end
 GetConfig;
 global config;
 
-% set(groot,'defaultTextInterpreter','latex'); 
-% set(groot,'defaultAxesTickLabelInterpreter','latex');  
-% set(groot,'defaulttextinterpreter','latex');
-% set(groot,'defaultLegendInterpreter','latex');
+set(groot,'defaultTextInterpreter','latex'); 
+set(groot,'defaultAxesTickLabelInterpreter','latex');  
+set(groot,'defaulttextinterpreter','latex');
+set(groot,'defaultLegendInterpreter','latex');
 
 figure()
 tiledlayout(1, 1, 'TileSpacing','Compact','Padding','Compact');
 nexttile;
 hold on;
-title("Probability of collision over time");
 
 % The regions
 X=[date2mjd2000(epoch) date2mjd2000(epoch) date2mjd2000(end_date) date2mjd2000(end_date)];
-Y_green=[config.yellow_event_Pc*1e-4 config.yellow_event_Pc config.yellow_event_Pc config.yellow_event_Pc*1e-4];
+Y_green=[config.yellow_event_Pc*1e-5 config.yellow_event_Pc config.yellow_event_Pc config.yellow_event_Pc*1e-5];
 Y_yellow=[config.yellow_event_Pc config.red_event_Pc config.red_event_Pc config.yellow_event_Pc];
-Y_red=[config.red_event_Pc config.red_event_Pc*1e2 config.red_event_Pc*1e2 config.red_event_Pc];
+Y_red=[config.red_event_Pc config.red_event_Pc*1e3 config.red_event_Pc*1e3 config.red_event_Pc];
 green=fill(X,Y_green,'r','FaceColor',"#77AC30",'FaceAlpha',0.1,'EdgeColor','none');
 yellow=fill(X,Y_yellow,'r','FaceColor',	"#EDB120",'FaceAlpha',0.1,'EdgeColor','none');
 red=fill(X,Y_red,'r','FaceColor',"#A2142F",'FaceAlpha',0.1,'EdgeColor','none');
@@ -31,7 +30,7 @@ red=fill(X,Y_red,'r','FaceColor',"#A2142F",'FaceAlpha',0.1,'EdgeColor','none');
 
 yr=yline(config.red_event_Pc,'r','LineWidth',2);
 yy=yline(config.yellow_event_Pc,'Color',"#EDB120",'LineWidth',2);
-for k=1:1:size(cdm_rep_list,2)
+for k=1:1:size(cdm_rep_list,2) %5:10:
     time_series=[];
     Pc_series=[];
     for v=5:(cdm_rep_list{4,k}+4)
@@ -50,11 +49,11 @@ dummy_yellow=fill(NaN,NaN,'r','FaceColor',	"#EDB120",'FaceAlpha',0.6,'EdgeColor'
 dummy_red=fill(NaN,NaN,'r','FaceColor',"#A2142F",'FaceAlpha',0.6,'EdgeColor','none');
 
 xlabel('Time [MJD2000]');
-ylabel('Pc');
+ylabel('$P_C$');
 set(gca, 'YScale', 'log');
 grid on;
 grid minor;
-ylim([config.yellow_event_Pc*1e-3 config.red_event_Pc*1e1]);
+ylim([config.yellow_event_Pc*1e-3 config.red_event_Pc*1e3]);
 %xlim([8410 8417]);
 xlim([date2mjd2000(epoch) date2mjd2000(end_date)]);
 legend([dummy_red dummy_yellow dummy_green dummy1 dummy2],{'Red event region','Yellow event region','Green event region','Event detected','CDM generated'});

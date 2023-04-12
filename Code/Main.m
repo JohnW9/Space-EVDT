@@ -14,13 +14,14 @@ GetConfig;
 tic
 %epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
 epoch = [2023 3 15 0 0 0];
-end_date= [2023 5 15 0 0 0];           % Simulation end date and time in gregorian calender
+end_date= [2024 3 15 0 0 0];           % Simulation end date and time in gregorian calender
 accelerator=0;                          % details to be added
 global total_budget;
 global config;
 total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 %% NASA satellites
 eos = Read_NASA_satellites;
+eos (2:3) = [];
 disp('NASA satellites loaded')
 %% Space catalogue
 fileID=fopen("Credentials.txt");
@@ -31,29 +32,14 @@ space_cat = Read_Space_catalogue(0); % Local SC downloaded at 11:12 AM (EST) Mar
 [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
 runtime=toc;
 %% After a long run
-%save("Data\Final_6March.mat");
+%save("Data\Final_28March.mat");
+%save("Data\Final_28March_new_withCommercial.mat");
 %% Load instead of the full run
 %load("Data\Final_6March.mat");
+%load("Data\Final_28March.mat");
 %% Plotting
 disp('Plotting...');
-FinalPlot (epoch, end_date,cdm_rep_list,20,12)
+FinalPlot ([2023 4 20 0 0 0], [2023 4 25 0 0 0],cdm_rep_list,20,10)
 %% For the long run
 %system('shutdown -s');
-%% Post processing (Collision value)
-%{
-figure()
-cdm_values = zeros(1,length(cdm_list));
-for i=1:length(cdm_list)
-    cdm_values(i)=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/config.CC_normalizer;
-end
-ind = 1:length(cdm_values);
-scatter(ind,cdm_values);
-%% Post processing (Collision number of pieces)
-figure()
-cdm_collisions = zeros(1,length(cdm_list));
-for i=1:length(cdm_list)
-    cdm_collisions(i)=cdm_list(i).CC;
-end
-ind = 1:length(cdm_collisions);
-scatter(ind,cdm_collisions);
-%}
+

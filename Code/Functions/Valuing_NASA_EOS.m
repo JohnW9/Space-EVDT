@@ -137,6 +137,33 @@ for u=1:length(eos)
     if any(strcmp(eos(u).applications,"Public Health")); value=value+score_health; end
     if any(strcmp(eos(u).applications,"Water Management")); value=value+score_water; end
     %%LEAVING A PART HERE FOR MAIN, SECONDARY, REST TYPE OF APPLICATIONS, WILL ADD VALUE
+    value = value/10;
+    
+    if any(strcmp(eos(u).main_app,"Agricultural Efficiency")); value=value+score_agriculture*0.9; end
+    if any(strcmp(eos(u).main_app,"Air Quality")); value=value+score_airquality*0.9; end
+    if any(strcmp(eos(u).main_app,"Aviation")); value=value+score_aviation*0.9; end
+    if any(strcmp(eos(u).main_app,"Carbon Management")); value=value+score_carbon*0.9; end
+    if any(strcmp(eos(u).main_app,"Coastal Management")); value=value+score_coast*0.9; end
+    if any(strcmp(eos(u).main_app,"Disaster Management")); value=value+score_disaster*0.9; end
+    if any(strcmp(eos(u).main_app,"Energy Management")); value=value+score_energy*0.9; end
+    if any(strcmp(eos(u).main_app,"Homeland Security")); value=value+score_security*0.9; end
+    if any(strcmp(eos(u).main_app,"Invasive Species")); value=value+score_invasive*0.9; end
+    if any(strcmp(eos(u).main_app,"Public Health")); value=value+score_health*0.9; end
+    if any(strcmp(eos(u).main_app,"Water Management")); value=value+score_water*0.9; end
+
+    if any(strcmp(eos(u).secn_app,"Agricultural Efficiency")); value=value+score_agriculture*0.4; end
+    if any(strcmp(eos(u).secn_app,"Air Quality")); value=value+score_airquality*0.4; end
+    if any(strcmp(eos(u).secn_app,"Aviation")); value=value+score_aviation*0.4; end
+    if any(strcmp(eos(u).secn_app,"Carbon Management")); value=value+score_carbon*0.4; end
+    if any(strcmp(eos(u).secn_app,"Coastal Management")); value=value+score_coast*0.4; end
+    if any(strcmp(eos(u).secn_app,"Disaster Management")); value=value+score_disaster*0.4; end
+    if any(strcmp(eos(u).secn_app,"Energy Management")); value=value+score_energy*0.4; end
+    if any(strcmp(eos(u).secn_app,"Homeland Security")); value=value+score_security*0.4; end
+    if any(strcmp(eos(u).secn_app,"Invasive Species")); value=value+score_invasive*0.4; end
+    if any(strcmp(eos(u).secn_app,"Public Health")); value=value+score_health*0.4; end
+    if any(strcmp(eos(u).secn_app,"Water Management")); value=value+score_water*0.4; end
+
+    %%
     score_cost = eos(u).cost/1000;
     eos(u).value = value+score_cost;
 end

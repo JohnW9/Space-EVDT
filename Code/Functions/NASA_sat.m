@@ -12,5 +12,7 @@ classdef NASA_sat
         no_instruments          % Number of instruments onboard the satellite
         instruments             % Instrument names onboard the satellite
         value                   % Value of the satellite assigned by the Vulnerability model
+        main_app
+        secn_app
     end
 end

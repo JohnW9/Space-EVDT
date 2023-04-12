@@ -28,7 +28,7 @@ eos(5)=NASA_sat;
 %% LANDSAT 7
 eos(1).id=25682;
 eos(1).name='LANDSAT 7';   
-eos(1).dimensions=[4.3,2.8]; % NASA LANDSAT 7 Press kit 1999
+eos(1).dimensions=[2.8 + 7.6,4.6]; % NASA LANDSAT 7 Press kit 1999 + deployed solar panel from Landsat6: overview since they have the same bus
 eos(1).mass=2200;   % NASA LANDSAT 7 Press kit 1999 (total launch weight)
 eos(1).science=["Carbon Cycle, Ecosystems, and Biogeochemistry","Earth Surface and Interior"]; % NASA EOS website
 eos(1).applications=["Agricultural Efficiency" "Air Quality" "Aviation" "Carbon Management" "Coastal Management" "Disaster Management" "Ecological Forecasting" "Energy Management" "Homeland Security" "Invasive Species" "Public Health" "Water Management"]; % NASA EOS website
@@ -37,6 +37,8 @@ eos(1).instruments='ETM+';% NASA EOS website
 eos(1).cost=666+51; % Satellite cost taken from NASA LANDSAT 7 Press kit 1999 , Launch vehicle taken from NASA science writer's guide to LANDSAT 7
 % estimated launch cost of boeing delta 2 7920 - 10C (type taken from NASA data sheet about delta2). Launch cost is from https://web.archive.org/web/20140714122955/http://www.spaceflight101.com/delta-ii-7920h-10.html
 eos(1).cost=eos(1).cost*1.66; % Adjusted to 2021 USD (from data.bls.gov)
+eos(1).main_app = "Agricultural Efficiency";
+eos(1).secn_app = "Disaster Management";
 %% LANDSAT 8
 eos(2).id=39084;
 eos(2).name='LANDSAT 8';
@@ -61,7 +63,7 @@ eos(3).cost=750; % Based on https://www.space.com/nasa-landsat-9-earth-observati
 %% TERRA
 eos(4).id=25994;
 eos(4).name='TERRA';
-eos(4).dimensions=[6.8,3.5]; % NASA Terra press kit 1999
+eos(4).dimensions=[6.8,3.5 + 8.9]; % NASA Terra press kit 1999
 eos(4).mass=5190; % NASA Terra press kit 1999
 eos(4).science=["Atmospheric Composition" "Carbon Cycle, Ecosystems, and Biogeochemistry" "Climate Variability and Change" "Earth Surface and Interior" "Water and Energy Cycles" "Weather"];% NASA EOS website
 eos(4).applications=["Agricultural Efficiency" "Air Quality" "Carbon Management" "Coastal Management" "Disaster Management" "Ecological Forecasting" "Energy Management" "Homeland Security" "Invasive Species" "Public Health" "Water Management"];% NASA EOS website
@@ -69,6 +71,8 @@ eos(4).no_instruments=5;% NASA EOS website
 eos(4).instruments=["ASTER" "CERES" "MISR" "MODIS" "MOPITT"];% NASA EOS website
 eos(4).cost=1300;% NASA Terra press kit 1999
 eos(4).cost=eos(4).cost*1.66; % Adjusted to 2021 USD (from data.bls.gov)
+eos(4).main_app = "Air Quality";
+eos(4).secn_app = "Carbon Management";
 %% AQUA
 eos(5).id=27424;
 eos(5).name='AQUA';
@@ -80,3 +84,5 @@ eos(5).no_instruments=6;% NASA EOS website
 eos(5).instruments=["AIRS" "AMSR-E" "AMSU-A" "CERES" "HSB" "MODIS"];% NASA EOS website
 eos(5).cost=952; % NASA Aqua press kit 2002
 eos(5).cost=eos(5).cost*1.54; % Adjusted to 2021 USD (from data.bls.gov)
+eos(5).main_app = "Water Management";
+eos(5).secn_app = "Coastal Management";

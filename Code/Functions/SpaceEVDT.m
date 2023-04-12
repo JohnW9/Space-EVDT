@@ -72,7 +72,7 @@ end
 
 
 GetConfig; %% Configuring the properties of the program using a global variable
-
+%%
 space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
 for j=1:length(space_cat)
     space_cat_ids(j)=space_cat(j).id;
@@ -85,18 +85,35 @@ for eos_sat=1:length(eos)
     event_list = Event_detection (eos(eos_sat),space_cat,epoch,no_days,event_list,space_cat_ids);
 end
 disp('All conjunctions throughout the simulation time detected')
-%% Event list to matrix conversion
+%% Saving 
+%save("Data\Intermediate_28March.mat");
+%% Loading
+%load("Data\Intermediate_17March.mat");
+%load("Data\Intermediate_28March.mat");
+%global total_budget;
+%total_budget=1830;
+%GetConfig;
+%% Contracting the screening volume
+ %event_list = screening_vol_contractor (event_list,1,[2 25 25],space_cat,space_cat_ids);
+ %% Event list to matrix conversion
 event_matrix = list2matrix (event_list);
 disp('Event list converted to conjunction event matrix');
-%% Saving 
-%save("Data\Intermediate_6March.mat");
-%% Loading
-load("Data\Intermediate_6March.mat");
-global total_budget;
-total_budget=305;
-GetConfig;
 %% Replicating NASA CARA
 [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
 disp('NASA CARA process replicated')
+%%
+%save("Data\Intermediate_28March_noCommercialSSA.mat");
+%save("Data\Intermediate_28March_WithCommercialSSA.mat");
+%load("Data\Intermediate_28March_WithCommercialSSA.mat");
+%load("Data\Intermediate_28March_noCommercialSSA.mat");
+%% Converting all small Pc values to 10^(-30)
+for k=1:length(cdm_list)
+    if cdm_list(k).Pc <1e-30
+        cdm_list(k).Pc = 1e-30;
+    end
+end
 %% CDM repetition list
 cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+%% Data storage, for faster analysis
+%save("Data\Intermediate_28March_WithCommercialSSA_afterRepList.mat");
+%load("Data\Intermediate_28March_WithCommercialSSA_afterRepList.mat");
