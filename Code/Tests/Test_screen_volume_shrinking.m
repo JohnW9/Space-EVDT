@@ -1,4 +1,11 @@
-%%Test
+%% Testing different conjunction screening volumes
+% only applicable to a specific .mat file =  "Data\Intermediate_28March_WithCommercialSSA_afterRepList.mat"
+%
+%
+%
+%
+
+load("Data\Intermediate_28March_WithCommercialSSA_afterRepList.mat");
 screening_volumes = {[0.4 25 25],[0.4 12 12],[0.4 2 2],[0.5 5 5]};
 no_conj = zeros(1,length(screening_volumes)+1);
 no_conj(1) = length(event_list);

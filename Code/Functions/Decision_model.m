@@ -88,8 +88,8 @@ end
 
 for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     if cdm_list(i).read_status==1 % discards read CDMs
-        %continue;
-        break;
+        continue;
+        %break;
     else
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;

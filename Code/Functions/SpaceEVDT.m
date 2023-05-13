@@ -87,6 +87,7 @@ end
 disp('All conjunctions throughout the simulation time detected')
 %% Saving 
 %save("Data\Intermediate_28March.mat");
+save("Data\Intermediate_short_oneSat_April19.mat");
 %% Loading
 %load("Data\Intermediate_17March.mat");
 %load("Data\Intermediate_28March.mat");
@@ -102,6 +103,7 @@ disp('Event list converted to conjunction event matrix');
 [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
 disp('NASA CARA process replicated')
 %%
+%save("Data\AfterProcess_short_oneSat_April19.mat");
 %save("Data\Intermediate_28March_noCommercialSSA.mat");
 %save("Data\Intermediate_28March_WithCommercialSSA.mat");
 %load("Data\Intermediate_28March_WithCommercialSSA.mat");

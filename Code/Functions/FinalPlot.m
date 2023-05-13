@@ -49,7 +49,7 @@ dummy_yellow=fill(NaN,NaN,'r','FaceColor',	"#EDB120",'FaceAlpha',0.6,'EdgeColor'
 dummy_red=fill(NaN,NaN,'r','FaceColor',"#A2142F",'FaceAlpha',0.6,'EdgeColor','none');
 
 xlabel('Time [MJD2000]');
-ylabel('$P_C$');
+ylabel('$P_C$ [-]');
 set(gca, 'YScale', 'log');
 grid on;
 grid minor;

@@ -33,26 +33,38 @@
 %
 %   13/1/2023 - Sina Es haghi
 %       * Adding header
+%   12/5/2023 - Sina Es haghi
+%       * Change the calculation method, much faster
 %
 
 function cdm_rep_list = CDM_rep_list (event_detection,cdm_list)
 cdm_rep_list=cell(1,size(event_detection,2));
-for i=1:size(event_detection,2)
-    cdm_rep_list{1,i}=i;
-    index=4;
-    Pcmax=0;
-    for j=1:length(cdm_list)
-        if cdm_list(j).label==cdm_rep_list{1,i}
-            index=index+1;
-            cdm_rep_list{index,i}=cdm_list(j);
-            if cdm_list(j).Pc>Pcmax
-                Pcmax=cdm_list(j).Pc;
-                index_of_max=index;
-            end
-        end
-    end
-    cdm_rep_list{2,i}=Pcmax;
-    cdm_rep_list{3,i}=index_of_max;
-    cdm_rep_list{4,i}=index-4;
+
+for m=1:size(event_detection,2)
+    cdm_rep_list{1,m} = m;
+    cdm_rep_list{2,m} = 0;
+    cdm_rep_list{3,m} = 0;
+    cdm_rep_list{4,m} = 0;
 end
 
+%%
+for i=1:length(cdm_list)
+    event_no = cdm_list(i).label;
+    no_cdms = cdm_rep_list{4,event_no}+1;
+    cdm_rep_list{4+no_cdms,event_no} = cdm_list(i);
+    cdm_rep_list{4,event_no} = no_cdms;
+end
+
+for j=1:size(cdm_rep_list,2)
+    max_Pc = 0;
+    max_Pc_index = 0;
+    for k = 5:cdm_rep_list{4,j}+4
+        cdm = cdm_rep_list{k,j};
+        if cdm.Pc>max_Pc
+            max_Pc = cdm.Pc;
+            max_Pc_index = k;
+        end
+    end
+    cdm_rep_list{2,j} = max_Pc;
+    cdm_rep_list{3,j} = max_Pc_index;
+end
