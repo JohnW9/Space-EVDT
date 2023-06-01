@@ -87,13 +87,17 @@ end
 disp('All conjunctions throughout the simulation time detected')
 %% Saving 
 %save("Data\Intermediate_28March.mat");
-save("Data\Intermediate_short_oneSat_April19.mat");
+%save("Data\Intermediate_20May.mat");
+%save("Data\Intermediate_short_oneSat_April19.mat");
 %% Loading
 %load("Data\Intermediate_17March.mat");
-%load("Data\Intermediate_28March.mat");
-%global total_budget;
-%total_budget=1830;
-%GetConfig;
+% clear
+% clc
+% load("Data\Intermediate_28March.mat");
+% %load("Data\Intermediate_20May.mat");
+% global total_budget;
+% total_budget=1830;
+% GetConfig;
 %% Contracting the screening volume
  %event_list = screening_vol_contractor (event_list,1,[2 25 25],space_cat,space_cat_ids);
  %% Event list to matrix conversion

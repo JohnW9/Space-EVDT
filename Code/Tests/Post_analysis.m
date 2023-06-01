@@ -139,7 +139,8 @@ date1=mjd20002date(8499);
 FinalPlot (date1, date2,HIE_rep_list(:,35),20,12)
 %% Covariance
 x=35;
-HIE_event = HIE_rep_list(5:4+cell2mat(HIE_rep_list(4,x)),x);
+%HIE_event = HIE_rep_list(5:4+cell2mat(HIE_rep_list(4,x)),x);
+HIE_event = cdm_rep_list(5:4+cell2mat(cdm_rep_list(4,x)),x);
 clear time_series pos_error vel_error
 for l = 1:length(HIE_event)
     cov1 = HIE_event{l}.cov1;
@@ -150,7 +151,7 @@ for l = 1:length(HIE_event)
     time_series(l) = date2mjd2000(HIE_event{l}.creation_date);
 end
 
-time_series = time_series - event_detection(14,205);
+time_series = time_series - date2mjd2000(HIE_event{1}.tca);
 
 set(groot,'defaultTextInterpreter','latex'); 
 set(groot,'defaultAxesTickLabelInterpreter','latex');  
@@ -164,13 +165,13 @@ hold on;
 yyaxis left
 area(time_series,pos_error,'FaceColor',"#0072BD");
 plot(time_series,pos_error,'o','Color',"black");
-ylim([0 200]);
+%ylim([0 200]);
 ylabel('Position error [km]')
 yyaxis right
 area(time_series,vel_error,'FaceColor',"#D95319");
 %plot(time_series,vel_error,'o','Color',"black");
 ylabel('Velocity error [km/s]')
-ylim([0 0.5])
+%ylim([0 0.5])
 xlim([time_series(1) time_series(end)]);
 xticks(-7:0);
 xlabel("Time with respect to event's TCA [days]")

@@ -51,28 +51,56 @@ config.Parallel_max_iter = 5;                              % Maximum number of i
 
 %% Conjunction Assessment and Risk Analysis process
 config.detection_time = 7;                                 % Number of days prior to an event's TCA when the event is detected by the SSA provider [days]
-config.detection_time_lower = config.detection_time; %- 1;   % Lower bound for random detection days prior to TCA [days]
-config.detection_time_upper = config.detection_time; %+ 1;   % Upper bound for random detection days prior to TCA [days]
+config.detection_time_lower = config.detection_time- 1;   % Lower bound for random detection days prior to TCA [days]
+config.detection_time_upper = config.detection_time+ 1;   % Upper bound for random detection days prior to TCA [days]
 config.dt_default = 1;                                     % Process simulation default timestep [days] (discrete event simulation fixed timestep)
 
 %% Technology model
 config.government_SSA_updateInterval = 0.33;                  % The minimum time interval between two consecutive observations of the government SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
 config.government_SSA_updateInterval_lower = ...           % Lower bound of minimum time interval [days]
-    config.government_SSA_updateInterval;%*0.5;
+    config.government_SSA_updateInterval*0.5;
 config.government_SSA_updateInterval_upper = ...           % Upper bound of minimum time interval [days]
-    config.government_SSA_updateInterval;%*1.5;
+    config.government_SSA_updateInterval*1.5;
 config.government_SSA_cov = ...                            % Covariance matrix provided by the government SSA provider [units in km^2 and km^2/s^2]
     diag([0.01^2 0.01^2 0.01^2 0.0001^2 0.0001^2 0.0001^2]);  
 
 config.commercial_SSA_cost = 1;                            % Cost of requesting an observation by the commercial SSA provider [k$]
-config.commercial_SSA_availability = 1;%0.8;                  % Availability of commercial SSA data when requested
+config.commercial_SSA_availability = 1; %0.8;                  % Availability of commercial SSA data when requested
 config.commercial_SSA_updateInterval = 0.16;                % The minimum time interval between two consecutive observations of the commercial SSA provider for the same event [days] (Assuming the 2 conjucting space objects are observable at the same time)
 config.commercial_SSA_updateInterval_lower = ...           % Lower bound of minimum time interval [days]
-    config.commercial_SSA_updateInterval;%*0.5;
+    config.commercial_SSA_updateInterval*0.5;
 config.commercial_SSA_updateInterval_upper = ...           % Upper bound of minimum time interval [days]
-    config.commercial_SSA_updateInterval;%*1.5;
+    config.commercial_SSA_updateInterval*1.5;
 config.commercial_SSA_cov = ...                            % Covariance matrix provided by the commercial SSA provider [units in km^2 and km^2/s^2]
     diag([0.001^2 0.001^2 0.001^2 0.00001^2 0.00001^2 0.00001^2]);  
+
+%% Negative correlation factor
+% config.rho_r_vs = -1;
+% config.rho_s_vr = -1;
+% 
+% config.government_SSA_cov(1,5) = config.rho_r_vs * sqrt(config.government_SSA_cov(1,1)*config.government_SSA_cov(5,5));
+% config.government_SSA_cov(5,1) = config.government_SSA_cov(1,5);
+% config.government_SSA_cov(2,4) = config.rho_s_vr * sqrt(config.government_SSA_cov(2,2)*config.government_SSA_cov(4,4));
+% config.government_SSA_cov(4,2) = config.government_SSA_cov(2,4);
+% 
+%% Other Initial Covariance matrix samples
+% P0=diag([25 100 25 4e-4 1e-4 1e-4]); % Initial covariance matrix in RSW and [m^2 , m^2/s^2]
+% P0(5,1) = -0.045;
+% P0(4,2) = -0.18;
+% 
+% P0=diag([1 1 1 0 0 0]); % Initial covariance matrix in RSW and [m^2 , m^2/s^2]
+% P0(5,1) = 0;
+% P0(4,2) = 0;
+% 
+% config.government_SSA_cov = P0*1e-6;
+% 
+% config.rho_r_vs = -1;
+% config.rho_s_vr = -1;
+%
+% config.commercial_SSA_cov(1,5) = config.rho_r_vs * sqrt(config.commercial_SSA_cov(1,1)*config.commercial_SSA_cov(5,5));
+% config.commercial_SSA_cov(5,1) = config.commercial_SSA_cov(1,5);
+% config.commercial_SSA_cov(2,4) = config.rho_s_vr * sqrt(config.commercial_SSA_cov(2,2)*config.commercial_SSA_cov(4,4));
+% config.commercial_SSA_cov(4,2) = config.commercial_SSA_cov(2,4);
 
 %% Size and Mass estimation for CDM generation (since RCS values are unavailable)
 config.small_dim = 0.1;                                    % Maximum surface dimension of a small RCS object [m]

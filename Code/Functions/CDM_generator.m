@@ -131,6 +131,10 @@ v2_i=state_car2(4:6);
 prop_cov1=Cov_prop_TH (P01_rsw,temp_objects(1),tca);
 if NoP2==0;prop_cov2=Cov_prop_TH (P02_rsw,temp_objects(2),tca);end
 
+%% Re-symmetricizing the propagated covatiance matrices
+prop_cov1 = (prop_cov1+prop_cov1')/2;
+prop_cov2 = (prop_cov2+prop_cov2')/2;
+
 %% Position and velocity of space objects at TCA
 temp_objects(1) = TwoBP_J2_analytic (temp_objects(1),tca,'mjd2000');
 temp_objects(2) = TwoBP_J2_analytic (temp_objects(2),tca,'mjd2000');
