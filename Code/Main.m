@@ -2,11 +2,12 @@
 % New header will be added here
 clc;
 clear;
+close all;
 
-addpath('Functions\');
-addpath('Functions\NASA\');
-addpath('Time_conversion\');
-addpath("Data\");
+addpath('Functions/');
+addpath('Functions/NASA/');
+addpath('Time_conversion/');
+addpath('Data/');
 GetConfig;
 
 
@@ -28,7 +29,7 @@ disp('NASA satellites loaded')
 fileID=fopen("Credentials.txt");
 if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
 fclose(fileID);
-space_cat = Read_Space_catalogue(1); % Local SC downloaded at 11:12 AM (EST) March 6th 2023
+space_cat = Read_Space_catalogue(0); % Local SC downloaded at 11:12 AM (EST) March 6th 2023
 %% Main program run
 [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
 runtime=toc;
@@ -43,4 +44,4 @@ disp('Plotting...');
 FinalPlot (epoch, end_date,cdm_rep_list,20,10)
 %% For the long run
 %system('shutdown -s');
-
+toc
