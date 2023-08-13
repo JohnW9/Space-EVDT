@@ -29,6 +29,8 @@ function GetConfig
 
 global config;
 
+%% Time Prefilter/Brute Force
+config.TPF = 1;                                            % Whether time prefilter with parallel computation to be used (1 for yes, 0 for no)
 
 %% Conjunction screening volume
 config.conjunction_box = [2,25,25];                        % Conjunction box dimensions in RSW directions [km,km,km]

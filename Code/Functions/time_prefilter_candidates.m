@@ -2,7 +2,6 @@
 
 function event_list = time_prefilter_candidates (primary0,secondary0,D,time_initial,time_final,event_list,config_data)
 % time input is in Date
-
 primary = TwoBP_J2_analytic (primary0,time_initial);
 secondary = TwoBP_J2_analytic (secondary0,time_initial);
 
@@ -10,19 +9,13 @@ secondary = TwoBP_J2_analytic (secondary0,time_initial);
 %% Now we have the states at time_initial
 
 % Finding relative inclination
-
 h_i =@(I,Om) [sin(Om)*sin(I);-cos(Om)*sin(I);cos(I)]; % Modified from Hoots 1984
-
 h_p = h_i(primary.i,primary.raan);
 h_s = h_i(secondary.i,secondary.raan);
-
 K = cross(h_s,h_p);
-
 sin_I_R = norm(K); 
 
 % Deltas, the angle between K and line and ascending node
-
-%%
 Ip = primary.i;
 Is = secondary.i;
 Omp = primary.raan;
@@ -39,25 +32,19 @@ if sin_deltaP<0; delta_p=2*pi - delta_p; end
 delta_s = acos(cos_deltaS);
 if sin_deltaS<0; delta_s=2*pi - delta_s; end
 
-%%
-%cos_delta_i =@(I_i,I_j,Om_i,Om_j) 1/sin_I_R*(sin(I_i)*cos(I_j)-sin(I_j)*cos(I_i)*cos(Om_i-Om_j));
-%sin_delta_i =@(I_i,I_j,Om_i,Om_j) 1/sin_I_R*(sin(I_j)*sin(Om_i-Om_j)); % Notice that for secondary, the input of raans should be inverted
-
-% delta_p = acos(cos_delta_i(primary.i,secondary.i,primary.raan,secondary.raan));
-% if sin_delta_i(primary.i,secondary.i,primary.raan,secondary.raan)<0; delta_p=2*pi - delta_p; end
-% 
-% delta_s = acos(cos_delta_i(secondary.i,primary.i,secondary.raan,primary.raan));
-% if sin_delta_i(secondary.i,primary.i,primary.raan,secondary.raan)<0 % Notice the sine input for RAAN!!
-%     delta_s=2*pi - delta_s; 
-% end
-
 % Finding u_r
 u_r_p = u_r_calculator (primary.a,primary.e,primary.om,delta_p,D);
 u_r_s = u_r_calculator (secondary.a,secondary.e,secondary.om,delta_s,D);
 
+% What if Coplanar?
 if isempty(u_r_p) || isempty(u_r_s)
     disp('sth must be done, co-planar');
-    return;
+    objects_list=Space_object;
+    objects_list(1)=primary;
+    objects_list(2)=secondary;
+    propagated_object_list = main_propagator (objects_list,time_final,config_data.timestep,1);
+    event_list = conj_assess (propagated_object_list(1), propagated_object_list(2),event_list,space_cat,space_cat_ids,config_data);
+    return
 end
 
 % converting to f
@@ -72,36 +59,14 @@ M_windows_s = f2M_window(f_windows_s,secondary.e);
 t_p = M2t_window (M_windows_p,primary.M,primary.epoch,primary.a);
 t_s = M2t_window (M_windows_s,secondary.M,secondary.epoch,secondary.a);
 
-%% Trial
-
-% car1 = prop_car(primary,(t_p(1,1)+t_p(1,2))/2);
-%     car2 = prop_car(secondary,(t_s(1,1)+t_s(1,2))/2);
-%     distance = car1(1:3) - car2(1:3);
-
-%%
-
 % Initial time windows have been found, now, series of time windows must be found
 [t_list1,t_list2] = time_window_extender (primary,secondary,t_p,t_s,date2mjd2000(time_final));
-
 
 % Now need to find the overlaps
 t_candidate = time_window_overlap_finder(t_list1,t_list2);
 
-% try
-%     car1 = prop_car(primary,(t_candidate(1,1)+t_candidate(1,2))/2);
-%     car2 = prop_car(secondary,(t_candidate(1,1)+t_candidate(1,2))/2);
-% 
-%     distance = car1(1:3) - car2(1:3);
-%     
-% catch
-%     return;
-% end
-
-event_list = t_window_conj_assess (t_candidate,primary,secondary,event_list,config_data);
-
 % Now need for propagating and finding conjunctions
-
-
+event_list = t_window_conj_assess (t_candidate,primary,secondary,event_list,config_data);
 
 %% Functions
     function u_r = u_r_calculator (a,e,om,delta,D)

@@ -5,6 +5,7 @@ clear;
 
 addpath('Functions\');
 addpath('Functions\NASA\');
+addpath('Functions\');
 addpath('Time_conversion\');
 addpath("Data\");
 GetConfig;
@@ -14,20 +15,30 @@ GetConfig;
 tic
 %epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
 epoch = [2023 3 15 0 0 0];
-end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
+end_date= [2023 4 15 0 0 0];           % Simulation end date and time in gregorian calender
 accelerator=0;                          % details to be added
 global total_budget;
 global config;
 total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 %% NASA satellites
 eos = Read_NASA_satellites;
-%eos = eos(1);
 disp('NASA satellites loaded')
 %% Space catalogue
 fileID=fopen("Credentials.txt");
 if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
 fclose(fileID);
 space_cat = Read_Space_catalogue(0); % Local SC downloaded at 11:12 AM (EST) March 6th 2023
+%% Additional info
+if config.TPF == 1
+    disp("Time prefilter method selected; Using parallel pool")
+    try
+        parpool;
+    catch
+        disp("Parallel pool already running")
+    end
+elseif config.TPF == 0
+    delete(gcp('nocreate'));
+end
 %% Main program run
 [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
 runtime=toc;

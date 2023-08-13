@@ -62,7 +62,9 @@ initial_date=date2mjd2000(epoch);
 
 cycle_days=config.cycle_days; % Time sections to avoid RAM overflow
 
-cycle_days = 20;  
+if config.TPF == 1
+    cycle_days = no_days+1;
+end
 
 time_cycle = initial_date:cycle_days:initial_date+no_days;
 relevent_SO_frequency=config.relevent_SO_frequency; % Renews the relevant space objects every 5 days
@@ -74,10 +76,10 @@ timestep = config.timestep;
 
 
 for cycle=1:length(time_cycle)-1
-    
+
     initial_date=mjd20002date(time_cycle(cycle));
     final_date=mjd20002date(time_cycle(cycle+1));
-    
+
     Primary = Space_catalogue_reset_epoch (Primary,initial_date);
 
     % This is to renew the relevant space objects after the specified number of days
@@ -88,40 +90,41 @@ for cycle=1:length(time_cycle)-1
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
     end
 
-%%
-    temp_list = cell(length(Relevant_space_objects),1);
-    parfor ok=1:length(Relevant_space_objects) % Can be parfor
-        
-        fake_event = Conjunction_event;
-        fake_event = time_prefilter_candidates (Primary,Relevant_space_objects(ok),config.moid_distance,initial_date,final_date,fake_event,config);
-        
-        if length(fake_event)==1 && isempty(fake_event(1).id)
-            continue;
-        end
+    if config.TPF == 1
+        %% Time Prefilter applied
+        temp_list = cell(length(Relevant_space_objects),1);
+        parfor ok=1:length(Relevant_space_objects) % Can be parfor
 
-        temp_list{ok}=fake_event;
+            fake_event = Conjunction_event;
+            fake_event = time_prefilter_candidates (Primary,Relevant_space_objects(ok),config.moid_distance,initial_date,final_date,fake_event,config);
 
-        %event_list = time_prefilter_candidates (Primary,Relevant_space_objects(ok),config.moid_distance,initial_date,final_date,event_list);
-    end
-    temp_list = temp_list(~cellfun('isempty',temp_list));
-    if ~isempty(temp_list)
-        if length(event_list)==1 && isempty(event_list(1).id)
-            event_list = temp_list{1};
-            for kj=2:length(temp_list)
-                event_list = [event_list temp_list{kj}];
+            if length(fake_event)==1 && isempty(fake_event(1).id)
+                continue;
             end
-        else
-            for kj=1:length(temp_list)
-                event_list = [event_list temp_list{kj}];
+
+            temp_list{ok}=fake_event;
+        end
+        temp_list = temp_list(~cellfun('isempty',temp_list));
+        if ~isempty(temp_list)
+            if length(event_list)==1 && isempty(event_list(1).id)
+                event_list = temp_list{1};
+                for kj=2:length(temp_list)
+                    event_list = [event_list temp_list{kj}];
+                end
+            else
+                for kj=1:length(temp_list)
+                    event_list = [event_list temp_list{kj}];
+                end
             end
         end
+    else
+        %% Brute Force
+        Propagated_primary = main_propagator (Primary,final_date,timestep,1);
+        Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
+        event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,space_cat,space_cat_ids);
+        clear Propagated_primary;
+        clear Propagated_Relevant_space_objects;
     end
-%%
-%     Propagated_primary = main_propagator (Primary,final_date,timestep,1);
-%     Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
-%     event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,space_cat,space_cat_ids);
-%     clear Propagated_primary;
-%     clear Propagated_Relevant_space_objects;
 end
 
 
