@@ -14,13 +14,14 @@ GetConfig;
 tic
 %epoch = datevec(datetime('now'));     % Setting the epoch to the current time in the local timezone (Gregorian calender)
 epoch = [2023 3 15 0 0 0];
-end_date= [2023 5 15 0 0 0];           % Simulation end date and time in gregorian calender
+end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
 accelerator=0;                          % details to be added
 global total_budget;
 global config;
 total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 %% NASA satellites
 eos = Read_NASA_satellites;
+%eos = eos(1);
 disp('NASA satellites loaded')
 %% Space catalogue
 fileID=fopen("Credentials.txt");

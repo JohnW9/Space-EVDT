@@ -25,18 +25,21 @@
 %   23/2/2023 - Sina Es haghi
 %       * Initial implementation
 %
-function [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0)
+function [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0,config_data)
+if nargin<4
+    global config;
+    config_data = config;
 
-global config;
+end
 
-timestep = config.fine_prop_timestep/86400;
+timestep = config_data.fine_prop_timestep/86400;
 min_d = norm(state0_1(1:3)-state0_2(1:3));
 state1 = state0_1;
 state2 = state0_2;
 d = min_d;
 tca = t0;
 
-while timestep >= config.superfine_prop_timestep/86400
+while timestep >= config_data.superfine_prop_timestep/86400
 
     % Backward propagation
     state_back_1 = TwoBP_J2_analytic_car_state (state1,-timestep);

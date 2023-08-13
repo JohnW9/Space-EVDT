@@ -88,12 +88,12 @@ for cycle=1:length(time_cycle)-1
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
     end
 
-%%
     temp_list = cell(length(Relevant_space_objects),1);
-    parfor ok=1:length(Relevant_space_objects) % Can be parfor
+
+    parfor ok=1:length(Relevant_space_objects)
         
         fake_event = Conjunction_event;
-        fake_event = time_prefilter_candidates (Primary,Relevant_space_objects(ok),config.moid_distance,initial_date,final_date,fake_event,config);
+        fake_event = time_prefilter_candidates (Primary,Relevant_space_objects(ok),config.moid_distance,initial_date,final_date,fake_event);
         
         if length(fake_event)==1 && isempty(fake_event(1).id)
             continue;
@@ -116,7 +116,7 @@ for cycle=1:length(time_cycle)-1
             end
         end
     end
-%%
+
 %     Propagated_primary = main_propagator (Primary,final_date,timestep,1);
 %     Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
 %     event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,space_cat,space_cat_ids);

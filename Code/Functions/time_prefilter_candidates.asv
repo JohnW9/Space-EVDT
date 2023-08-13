@@ -1,0 +1,156 @@
+
+
+function event_list = time_prefilter_candidates (primary0,secondary0,D,time_initial,time_final,event_list)
+% time input is in Date
+
+primary = TwoBP_J2_analytic (primary0,time_initial);
+secondary = TwoBP_J2_analytic (secondary0,time_initial);
+
+
+%% Now we have the states at time_initial
+
+% Finding relative inclination
+
+%primary.f = M2f(primary.M,primary.e);
+%secondary.f = M2f(secondary.M,secondary.e);
+
+%p_car = par2car([primary.a primary.e primary.i primary.raan primary.om primary.f]);
+%s_car = par2car([secondary.a secondary.e secondary.i secondary.raan secondary.om secondary.f]);
+
+%h_p = cross(p_car(1:3),p_car(4:6))/norm(cross(p_car(1:3),p_car(4:6)));
+%h_s = cross(s_car(1:3),s_car(4:6))/norm(cross(s_car(1:3),s_car(4:6)));
+
+
+h_i =@(I,Om) [sin(Om)*sin(I);-cos(Om)*sin(I);cos(I)];
+
+h_p = h_i(primary.i,primary.raan);
+h_s = h_i(secondary.i,secondary.raan);
+
+K = cross(h_s,h_p); % There is another way to calculate this as well without cartesian info
+
+sin_I_R = norm(K); 
+
+% Deltas, the angle between K and line and ascending node
+
+%%
+Ip = primary.i;
+Is = secondary.i;
+Omp = primary.raan;
+Oms = secondary.raan;
+cos_deltaP = 1/sin_I_R * (sin(Ip)*cos(Is)-sin(Is)*cos(Ip)*cos(Omp-Oms));
+sin_deltaP = 1/sin_I_R * (sin(Is)*sin(Omp-Oms));
+
+cos_deltaS = 1/sin_I_R * (sin(Ip)*cos(Is)*cos(Omp-Oms)-sin(Is)*cos(Ip));
+sin_deltaS = 1/sin_I_R * (sin(Ip)*sin(Omp - Oms));
+
+delta_p = acos(cos_deltaP);
+if sin_deltaP<0; delta_p=2*pi - delta_p; end
+
+delta_s = acos(cos_deltaS);
+if sin_deltaS<0; delta_s=2*pi - delta_s; end
+
+%%
+%cos_delta_i =@(I_i,I_j,Om_i,Om_j) 1/sin_I_R*(sin(I_i)*cos(I_j)-sin(I_j)*cos(I_i)*cos(Om_i-Om_j));
+%sin_delta_i =@(I_i,I_j,Om_i,Om_j) 1/sin_I_R*(sin(I_j)*sin(Om_i-Om_j)); % Notice that for secondary, the input of raans should be inverted
+
+% delta_p = acos(cos_delta_i(primary.i,secondary.i,primary.raan,secondary.raan));
+% if sin_delta_i(primary.i,secondary.i,primary.raan,secondary.raan)<0; delta_p=2*pi - delta_p; end
+% 
+% delta_s = acos(cos_delta_i(secondary.i,primary.i,secondary.raan,primary.raan));
+% if sin_delta_i(secondary.i,primary.i,primary.raan,secondary.raan)<0 % Notice the sine input for RAAN!!
+%     delta_s=2*pi - delta_s; 
+% end
+
+% Finding u_r
+u_r_p = u_r_calculator (primary.a,primary.e,primary.om,delta_p,D);
+u_r_s = u_r_calculator (secondary.a,secondary.e,secondary.om,delta_s,D);
+
+if isempty(u_r_p) || isempty(u_r_s)
+    disp('sth must be done, co-planar');
+    return;
+end
+
+% converting to f
+f_windows_p = mod(u_r_p-primary.om+delta_p,2*pi);
+f_windows_s = mod(u_r_s-secondary.om+delta_s,2*pi);
+
+% converting to M
+M_windows_p = f2M_window(f_windows_p,primary.e);
+M_windows_s = f2M_window(f_windows_s,secondary.e);
+
+% converting to time window
+t_p = M2t_window (M_windows_p,primary.M,primary.epoch,primary.a);
+t_s = M2t_window (M_windows_s,secondary.M,secondary.epoch,secondary.a);
+
+%% Trial
+
+car1 = prop_car(primary,(t_p(1,1)+t_p(1,2))/2);
+    car2 = prop_car(secondary,(t_s(1,1)+t_s(1,2))/2);
+
+%%
+
+% Initial time windows have been found, now, series of time windows must be found
+[t_list1,t_list2] = time_window_extender (primary,secondary,t_p,t_s,date2mjd2000(time_final));
+
+
+% Now need to find the overlaps
+t_candidate = time_window_overlap_finder(t_list1,t_list2);
+
+try
+    car1 = prop_car(primary,(t_candidate(1,1)+t_candidate(1,2))/2);
+    car2 = prop_car(secondary,(t_candidate(1,1)+t_candidate(1,2))/2);
+
+    distance = car1(1:3) - car2(1:3);
+    event_list = t_window_conj_assess (t_candidate,primary,secondary,event_list);
+catch
+    return;
+end
+
+% Now need for propagating and finding conjunctions
+
+
+
+%% Functions
+    function u_r = u_r_calculator (a,e,om,delta,D)
+        alpha = a*(1-e^2);
+        ax = e*cos(om-delta);
+        ay = e*sin(om-delta);
+        Q = alpha*(alpha - 2*D*ay) - (1-e^2)*D^2;
+        eq1 = (-D^2*ax+(alpha-D*ay)*Q^0.5)/(alpha*(alpha - 2*D*ay)+D^2*e^2);
+        eq2 = (-D^2*ax-(alpha-D*ay)*Q^0.5)/(alpha*(alpha - 2*D*ay)+D^2*e^2);
+
+        if Q<0 || (abs(eq1)>1 && abs(eq2)>1)
+            u_r = [];
+            return;
+        end
+
+        ur2 = acos(eq1);
+        ur1 = -ur2;
+        ur3 = acos(eq2);
+        ur4 = -ur3;
+
+        u_r = [ur1,ur2;ur3,ur4];
+    end
+
+    function M_window = f2M_window (f_window,e)
+        mat_size = size(f_window);
+        M_window = f_window;
+        for v = 1:mat_size(1)
+            for g = 1:mat_size(2)
+                M_window(v,g) = f2M(f_window(v,g),e);
+            end
+        end
+    end
+
+    function [t,date] = M2t_window (M_window,M0,epoch,a)
+        miu= 3.986004330000000e+05;
+        delta_t = (M_window-M0)*sqrt(a^3/miu)/86400; %in hr
+        t = delta_t + epoch;
+        t = sort(t,1);
+        if nargout ==2
+            date = [mjd20002date(t(1,1)) mjd20002date(t(1,2));mjd20002date(t(2,1)) mjd20002date(t(2,2))];
+        end
+    end
+
+    
+end

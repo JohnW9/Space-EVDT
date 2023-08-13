@@ -44,15 +44,19 @@
 %       * Final conjuncrion layer modified to find the real minimum miss distance
 %
 
-function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids)
-global config;
-conj_box = config.conjunction_box;
+function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids,config_data)
+if nargin<6
+    global config;
+    config_data = config;
+end
 
-volume_type = config.screening_volume_type;
+conj_box = config_data.conjunction_box;
+
+volume_type = config_data.screening_volume_type;
 
 miu= 3.986004330000000e+05;
 
-fine_prop_timestep=config.fine_prop_timestep; %[s]
+fine_prop_timestep=config_data.fine_prop_timestep; %[s]
 
 timestep=primary.timestep;
 t=primary.t; %[mjd2000]
@@ -119,7 +123,7 @@ if volume_type == 0 % If the screening volume is a box
 
                 if conjunction_existance == 1
 
-                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0);
+                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0,config_data);
 
                     event=Conjunction_event;
                     event.tca=tca;
@@ -214,7 +218,7 @@ elseif volume_type == 1 % If the screening volume is an ellipsoid
                 end
                 if conjunction_existance == 1
 
-                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0);
+                    [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0,config_data);
 
                     event=Conjunction_event;
                     event.tca=tca;
