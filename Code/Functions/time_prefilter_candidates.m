@@ -43,7 +43,7 @@ if isempty(u_r_p) || isempty(u_r_s)
     objects_list(1)=primary;
     objects_list(2)=secondary;
     propagated_object_list = main_propagator (objects_list,time_final,config_data.timestep,1);
-    event_list = conj_assess (propagated_object_list(1), propagated_object_list(2),event_list,space_cat,space_cat_ids,config_data);
+    event_list = conj_assess (propagated_object_list(1), propagated_object_list(2),event_list,config_data);
     return
 end
 

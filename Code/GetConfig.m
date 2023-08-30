@@ -104,7 +104,7 @@ config.yellow_event_Pc = 1e-7;                             % Yellow category Pc 
 config.red_mitigation_days = 1;                            % Number of days before TCA to take mitigation action [days]
 
 config.TimeToConj_high = 5;                                % Number of days threshold for the time to conjunction to be considered high [days]
-config.TimeToConj_low = 2;                                 % Number of days threshold for the time to conjunction to be considered low [days]
+config.TimeToConj_low = 1;                                 % Number of days threshold for the time to conjunction to be considered low [days]
 
 config.value_high = 10;                                    % Collision value threshold for a conjunction to be considered high value
 config.value_low = 7;                                      % Collision value threshold for a conjunction to be considered low value

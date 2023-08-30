@@ -17,8 +17,6 @@
 % INPUT:
 %   primary = (1 object) Propagated primary NASA satellites  [Propagated_space_object]
 %   objects_list = (G objects) List of propagated relevant space objects [Propagated_space_object]
-%   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
-%   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
 %   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %
 % OUTPUT:
@@ -42,10 +40,12 @@
 %       * Initial screening filter modified
 %   23/2/2023 - Sina Es haghi
 %       * Final conjuncrion layer modified to find the real minimum miss distance
+%   28/8/2023 - Sina Es haghi
+%       * Deleted the extra inputs
 %
 
-function event_list = conj_assess (primary, objects_list,event_list,space_cat,space_cat_ids,config_data)
-if nargin<6
+function event_list = conj_assess (primary, objects_list,event_list,config_data)
+if nargin<4
     global config;
     config_data = config;
 end

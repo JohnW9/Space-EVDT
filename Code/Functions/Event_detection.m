@@ -121,7 +121,7 @@ for cycle=1:length(time_cycle)-1
         %% Brute Force
         Propagated_primary = main_propagator (Primary,final_date,timestep,1);
         Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
-        event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,space_cat,space_cat_ids);
+        event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list);
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
     end

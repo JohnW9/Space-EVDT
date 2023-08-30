@@ -203,6 +203,10 @@ else
     Pc = FrisbeeMaxPc(r1_f',v1_f',P1,r2_f',v2_f',[],HBR,1e-8,HBRType);
 end
 
+if Pc < 1e-30  % This is just added to have the plots clean
+    Pc = 1e-30;
+end
+
 cdm=CDM;
 cdm.Num = ind_cdm;
 cdm.label=event_column(1);

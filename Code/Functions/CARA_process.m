@@ -148,8 +148,8 @@ while t<=tf %% Loops over Reality time
 
     end
 
-    [event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t);
-
+    %[event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t);
+    [event_detection,cdm_list,decision_list] = Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t);
 
     %% Next observation time
 

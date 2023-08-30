@@ -15,7 +15,7 @@ for i=1:size(t_windows,1)
 
     timestep = 10; %s
     prop_obj = main_propagator (obj,mjd20002date(final),timestep,1);
-    event_list = conj_assess (prop_obj(1), prop_obj(2),event_list,0,0,config_data);
+    event_list = conj_assess (prop_obj(1), prop_obj(2),event_list,config_data);
 
 end
 

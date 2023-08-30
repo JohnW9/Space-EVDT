@@ -27,7 +27,8 @@ disp('NASA satellites loaded')
 fileID=fopen("Credentials.txt");
 if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
 fclose(fileID);
-space_cat = Read_Space_catalogue(0); % Local SC downloaded at 11:12 AM (EST) March 6th 2023
+%space_cat = Read_Space_catalogue(0); % Local SC downloaded at 11:12 AM (EST) March 6th 2023
+space_cat = Read_Space_catalogue(2,'2015-01-01','2015-01-05'); % Use 
 %% Additional info
 if config.TPF == 1
     disp("Time prefilter method selected; Using parallel pool")
