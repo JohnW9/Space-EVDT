@@ -71,6 +71,10 @@ time_to_tca=TCA-t;
 state_f_1 = TwoBP_J2_analytic_car_state (state_car1,-time_to_tca);
 state_f_2 = TwoBP_J2_analytic_car_state (state_car2,-time_to_tca);
 
+if isnan(state_f_1(1))
+      error('is NaN');
+end
+
 actual_objects_states=[state_f_1;state_f_2];
 if nargout==3
     actual_objects_states_at_tca=[state_car1;state_car2];

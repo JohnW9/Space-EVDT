@@ -40,7 +40,7 @@
 %       * Modifying so that the object's estimated velocity is a sample in the middle of it's covariance matrix
 %
 function [state_car,P0,state_car_tca]=LEOLABS (actual_state_at_t,actual_state_at_tca,t,tca)
-global config;
+config=GetConfig;
 
 P0 = config.commercial_SSA_cov;
 

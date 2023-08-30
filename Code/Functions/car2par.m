@@ -39,6 +39,12 @@ h=norm(hh);
 ee=cross(vv,hh)./mu - rr./r;
 e=norm(ee);
 i=acos(hh(3)./h);
+
+% Singularity Catching
+if e == 0; e=eps; end
+if i == 0; i=eps; end
+
+
 NN=cross([0,0,1],hh);
 if NN(:)==0
     NN=[0 0 0];

@@ -24,7 +24,14 @@
 %       * Adding header
 %
 function [f,E_out] = M2f(M,e)
-global config;
+
+if e == 0
+    f = M;
+    E_out = M;
+    return;
+end
+
+config = GetConfig;
 try
     tol=config.tol;
     max_iter=config.maxIter;

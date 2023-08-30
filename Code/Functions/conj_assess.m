@@ -46,8 +46,8 @@
 
 function event_list = conj_assess (primary, objects_list,event_list,config_data)
 if nargin<4
-    global config;
-    config_data = config;
+   
+    config_data = GetConfig;
 end
 
 conj_box = config_data.conjunction_box;

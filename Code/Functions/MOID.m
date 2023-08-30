@@ -30,7 +30,7 @@
 %
 
 function close_orbits = MOID(Primary,space_cat)
-global config;
+config = GetConfig;
 distance = config.moid_distance;
 rarp_distance = config.FirstFilter;
 %% First Filter (ra-rp)

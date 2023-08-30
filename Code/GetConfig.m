@@ -25,9 +25,13 @@
 %   23/2/2023 - Sina Es haghi
 %       * Upper and Lower bound time values for detection time and update interval have been introduced
 %
-function GetConfig
+function config = GetConfig
 
-global config;
+if nargin == 0
+    %global config;
+else
+    config = struct;
+end
 
 %% Time Prefilter/Brute Force
 config.TPF = 1;                                            % Whether time prefilter with parallel computation to be used (1 for yes, 0 for no)
@@ -68,6 +72,8 @@ config.government_SSA_updateInterval_upper = ...           % Upper bound of mini
     config.government_SSA_updateInterval*1.5;
 config.government_SSA_cov = ...                            % Covariance matrix provided by the government SSA provider [units in km^2 and km^2/s^2]
     diag([0.01^2 0.01^2 0.01^2 0.001^2 0.001^2 0.001^2]);  
+config.government_SSA_cov = ...                            % Covariance matrix provided by the government SSA provider [units in km^2 and km^2/s^2]
+    diag([0.01^2 0.01^2 0.01^2 0.0001^2 0.0001^2 0.0001^2]);  
 
 config.commercial_SSA_cost = 1;                            % Cost of requesting an observation by the commercial SSA provider [k$]
 config.commercial_SSA_availability = 0.8;                  % Availability of commercial SSA data when requested
@@ -78,6 +84,8 @@ config.commercial_SSA_updateInterval_upper = ...           % Upper bound of mini
     config.commercial_SSA_updateInterval*1.5;
 config.commercial_SSA_cov = ...                            % Covariance matrix provided by the commercial SSA provider [units in km^2 and km^2/s^2]
     diag([0.001^2 0.001^2 0.001^2 0.0001^2 0.0001^2 0.0001^2]);  
+config.commercial_SSA_cov = ...                            % Covariance matrix provided by the commercial SSA provider [units in km^2 and km^2/s^2]
+    diag([0.001^2 0.001^2 0.001^2 0.00001^2 0.00001^2 0.00001^2]);  
 
 %% Size and Mass estimation for CDM generation (since RCS values are unavailable)
 config.small_dim = 0.1;                                    % Maximum surface dimension of a small RCS object [m]

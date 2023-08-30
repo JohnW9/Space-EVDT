@@ -23,6 +23,12 @@
 %       * Adding header
 %
 function M=f2M (f,e)
+
+if e == 0
+    M=f;
+    return;
+end
+
 E=2.*atan(tan(f./2).*sqrt((1-e)./(1+e)));
 M=E-e.*sin(E);
 M=mod(M,2*pi);

@@ -30,7 +30,7 @@
 %       * Adding header
 %
 function moid = MOID_numerical (Primary, object2,distance)
-global config;
+config = GetConfig;
 %% Input setting
 if nargin<3
     flag1=0;

@@ -37,7 +37,8 @@
 
 function [event_list,Relevant_object_list] = Event_detection (Satellite,space_cat,epoch,no_days,event_list)
 
-global config;
+%global config;
+config = GetConfig;
 %%
 
 if nargout == 2

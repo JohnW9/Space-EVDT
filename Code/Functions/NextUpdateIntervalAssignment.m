@@ -34,7 +34,7 @@
 
 function event_detection = NextUpdateIntervalAssignment (event_detection,t)
 
-global config;
+config = GetConfig;
 
 for i = size(event_detection,2):-1:1
     

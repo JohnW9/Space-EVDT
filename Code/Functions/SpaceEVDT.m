@@ -51,17 +51,29 @@
 %       * Completed the modular mode of the function, inputs and outputs are modified
 
 
-function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,event_list,cdm_list,decision_list,event_detection,total_cost)
+function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,total_budget] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,MC,event_list,cdm_list,decision_list,event_detection,total_cost,total_budget)
 %% Input check
 if nargin<5
     error('Insufficient number of inputs.');
 elseif nargin == 5
+    MC = 1;
     event_list=Conjunction_event;
     cdm_list=CDM;
     decision_list=Decision_action;
-    event_detection=zeros(13,1);
+    event_detection=zeros(14,1);
     event_detection(1)=NaN;
     total_cost=0;
+    config = GetConfig; %% Configuring the properties of the program using a global variable
+    total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
+elseif nargin == 6
+    event_list=Conjunction_event;
+    cdm_list=CDM;
+    decision_list=Decision_action;
+    event_detection=zeros(14,1);
+    event_detection(1)=NaN;
+    total_cost=0;
+    config = GetConfig; %% Configuring the properties of the program using a global variable
+    total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 else
     for k=length(event_list):-1:1
         if event_list(k).tca>date2mjd2000(epoch) % Deleting all the previously detected events with TCA's after the new epoch
@@ -71,7 +83,8 @@ else
 end
 
 
-GetConfig; %% Configuring the properties of the program using a global variable
+%config = GetConfig; %% Configuring the properties of the program using a global variable
+
 
 space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
 for j=1:length(space_cat)
@@ -82,25 +95,69 @@ end
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
 MOID_list = cell(length(eos),1);
+WaitBar = waitbar(0,['Conjunction Assessment Initialization (0/' num2str(length(eos)) ')']);
 for eos_sat=1:length(eos)
     [event_list,MOID_list{eos_sat}] = Event_detection (eos(eos_sat),space_cat,epoch,no_days,event_list);
+    waitbar(eos_sat/length(eos),WaitBar,['Events for ' eos(eos_sat).name ' determined (' num2str(eos_sat) '/' num2str(length(eos)) ')' ]);
 end
+close(WaitBar);
 disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
-event_matrix = list2matrix (event_list);
+try
+    event_matrix = list2matrix (event_list);
+catch
+    error('No conjunction events detected with the current inputs')
+end
 disp('Event list converted to conjunction event matrix (and sorted)');
 %% Saving 
 %save("Data\Intermediate_6March.mat");
 %% Loading
 % clc
 % clear
-% %load("Data\Intermediate_6March.mat");
+% load("Data\Intermediate_6March.mat");
+% MC = 10;
+% config = GetConfig; %% Configuring the properties of the program using a global variable
+% total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 % load("Data\Intermediate_28March.mat")
 % global total_budget;
 % total_budget=305;
 % GetConfig;
-%% Replicating NASA CARA
-[cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost);
-disp('NASA CARA process replicated')
-%% CDM repetition list
-cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+%% Monte Carlo Run
+if MC == 1
+    % Replicating NASA CARA
+    [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
+    disp('NASA CARA process replicated')
+    % CDM repetition list
+    cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+else
+    MC_cdm_list = cell(MC,1);
+    %MC_event_detection = cell(MC,1);
+    MC_total_cost = cell(MC,1);
+    MC_decision_list = cell(MC,1);
+    MC_cdm_rep_list = cell(MC,1);
+    WaitBar_Assess = waitbar(0,'Starting Monte Carlo simulation...');
+    %parfor ind = 1:MC
+    for ind = 1:MC
+        cdm_list=CDM;
+        decision_list=Decision_action;
+        event_detection=zeros(14,1);
+        event_detection(1)=NaN;
+        total_cost=0;
+        [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
+        cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
+
+        MC_cdm_list{ind} = cdm_list;
+        MC_event_detection{ind} = event_detection;
+        MC_total_cost{ind} = total_cost;
+        MC_decision_list{ind} = decision_list;
+        MC_cdm_rep_list{ind} = cdm_rep_list;
+
+        waitbar(ind/MC,WaitBar_Assess,['Simulation ' num2str(ind) ' out of ' num2str(MC) ' completed']);
+    end
+    close(WaitBar_Assess);
+    cdm_list = MC_cdm_list;
+    cdm_rep_list = MC_cdm_rep_list;
+    %event_detection = MC_event_detection;
+    total_cost = MC_total_cost;
+    decision_list = MC_decision_list;
+end

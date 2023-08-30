@@ -89,7 +89,7 @@
 %
 
 function cdm = CDM_generator (event_column,conjunction_data,t,space_cat,space_cat_ids,eos,ind_cdm)
-global config;
+config = GetConfig;
 %% Converting R V vectors at time t to orbital elements and put in the single event matrix
 state_car1=conjunction_data(1:6);
 state_car2=conjunction_data(7:12);

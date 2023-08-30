@@ -71,7 +71,7 @@
 %
 function [event_column,conjunction_data,cost] = Technology_model (event_column,t,actual_objects_states,actual_objects_states_at_tca)
 
-global config;
+config=GetConfig;
 
 ssa_type=event_column(8);
 conjunction_data=zeros(84,1);
@@ -90,6 +90,9 @@ switch ssa_type
         [state_car1,P01,state_car_tca1]=SDS18 (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
         [state_car2,P02,state_car_tca2]=SDS18 (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
         %% After an estimate of the current state of the objects is available, an estimated TCA and miss distance should also be calculated
+        if isnan(state_car_tca1(1))
+                error('is NaN');
+        end
         [miss_dist,tca_estimate] = conjunction_tuning (state_car_tca1,state_car_tca2,tca);
         %% Adding the OD and Covariance values to the conjunction data
         conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];
@@ -108,6 +111,9 @@ switch ssa_type
             [state_car1,P01,state_car_tca1]=LEOLABS (actual_stats_at_t1,actual_stats_at_tca1,t,tca);
             [state_car2,P02,state_car_tca2]=LEOLABS (actual_stats_at_t2,actual_stats_at_tca2,t,tca);
             %% After an estimate of the current state of the objects is available, an estimated TCA and miss distance should also be calculated
+            if isnan(state_car_tca1(1))
+                error('is NaN');
+            end
             [miss_dist,tca_estimate] = conjunction_tuning (state_car_tca1,state_car_tca2,tca);
             %% Adding the OD and Covariance values to the conjunction data
             conjunction_data=[state_car1;state_car2;reshape(P01,[36,1]);reshape(P02,[36,1])];

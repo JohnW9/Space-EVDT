@@ -39,9 +39,9 @@
 %       * Created
 %
 %
-function [event_detection,cdm_list,decision_list]=Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t)
-global config;
-global total_budget;
+function [event_detection,cdm_list,decision_list]=Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
+config=GetConfig;
+
 for i=1:size(event_detection,2) %First detecting if there were any failed tasking requests (No CDM generated for the event at expected time)
     if event_detection(9,i)>t && event_detection(11,i)==-1 % The case where the commercial SSA provider was unavialable
         %event_detection(7,i)=t+config.commercial_SSA_updateInterval;

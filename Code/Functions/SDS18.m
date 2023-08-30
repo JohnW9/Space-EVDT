@@ -41,7 +41,7 @@
 %
 function [state_car,P0,state_car_tca]=SDS18 (actual_state_at_t,actual_state_at_tca,t,tca)
 
-global config;
+config=GetConfig;
 
 P0 = config.government_SSA_cov;
 

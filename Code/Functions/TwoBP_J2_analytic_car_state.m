@@ -60,4 +60,8 @@ f=M2f(M,e);
 
 state_f=par2car([a e i raan om f]);
 
+if isnan(state_f(1))
+      error('is NaN');
+end
+
 end

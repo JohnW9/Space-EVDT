@@ -27,8 +27,9 @@
 %
 function [miss_dist,tca] = conjunction_tuning (state0_1,state0_2,t0,config_data)
 if nargin<4
-    global config;
-    config_data = config;
+    %global config;
+    %config_data = config;
+    config_data = GetConfig;
 
 end
 
