@@ -35,15 +35,12 @@
 %       * Cleaned up the code a bit
 %
 
-function [event_list,Relevant_object_list] = Event_detection (Satellite,space_cat,epoch,no_days,event_list)
+function event_list = Event_detection (Satellite,space_cat,epoch,no_days,event_list)
 
 global config;
 %%
 
-if nargout == 2
-    Relevant_object_list(length(space_cat)) = Space_object;
-    list_length = 0;
-end
+Relevant_object_list(length(space_cat)) = Space_object;
 
 
 %% Finding primary sat in space catalogue and initial relevant space objects
@@ -95,20 +92,7 @@ for cycle=1:length(time_cycle)-1
         Relevant_space_objects= MOID(Primary,space_cat);
 
         %% Adding to the relevant object list
-        if nargout==2
-            for pl = 1:length(Relevant_space_objects)
-                exist = 0;
-                for dh = 1:list_length
-                    if Relevant_object_list(dh).id == Relevant_space_objects(pl).id
-                        exist =1;
-                    end
-                end
-                if exist == 0
-                    list_length = list_length+1;
-                    Relevant_object_list(list_length)=Relevant_space_objects(pl);
-                end
-            end
-        end
+        
 
     else
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
@@ -149,9 +133,6 @@ for cycle=1:length(time_cycle)-1
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
     end
-end
-if nargout == 2
-    Relevant_object_list(list_length+1:end) = [];
 end
 
 
