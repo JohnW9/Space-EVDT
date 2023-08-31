@@ -147,7 +147,7 @@ else
         cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
 
         MC_cdm_list{ind} = cdm_list;
-        MC_event_detection{ind} = event_detection;
+        %MC_event_detection{ind} = event_detection;
         MC_total_cost{ind} = total_cost;
         MC_decision_list{ind} = decision_list;
         MC_cdm_rep_list{ind} = cdm_rep_list;

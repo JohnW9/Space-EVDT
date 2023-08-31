@@ -23,7 +23,7 @@
 %       * Adding header
 %
 function obj = Valuing_Secondary_obj (obj)
-global config;
+config = GetConfig;
 
 if strcmp(obj.type,'PAYLOAD')
     if strcmp(obj.RCS,'SMALL') 

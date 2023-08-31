@@ -27,8 +27,9 @@
 %
 function config = GetConfig
 
-if nargin == 0
+if nargout == 0
     %global config;
+    error('No more global variable usage');
 else
     config = struct;
 end

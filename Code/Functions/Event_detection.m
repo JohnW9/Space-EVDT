@@ -72,6 +72,8 @@ cycle_days=config.cycle_days; % Time sections to avoid RAM overflow
 
 if config.TPF == 1
     cycle_days = no_days+1;
+else
+    WB_conjAssess = waitbar(0,['Finding conjunctions for ' Primary.name]);
 end
 
 time_cycle = initial_date:cycle_days:initial_date+no_days;
@@ -149,8 +151,13 @@ for cycle=1:length(time_cycle)-1
         event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,config);
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
+        waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name]);
     end
 end
+if config.TPF == 0
+    close(WB_conjAssess);
+end
+
 if nargout == 2
     Relevant_object_list(list_length+1:end) = [];
 end
