@@ -152,8 +152,8 @@ while t<=tf %% Loops over Reality time
 
     %[event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
     %[event_detection,cdm_list,decision_list] = Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
-    [event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_gov (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
-    %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
+    %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_gov (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
+    [event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
 
     %% Next observation time
 
@@ -176,4 +176,4 @@ while t<=tf %% Loops over Reality time
     t=t+dt;
 end
 
-%operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used
+operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used

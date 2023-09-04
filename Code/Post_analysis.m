@@ -75,8 +75,8 @@ for i = 1:length(MC_cdm_list)
             temp_yellow = temp_yellow+1;
         end
     end
-    events_red_average = temp_red;
-    events_yellow_average = temp_yellow;
+    events_red_average = events_red_average+temp_red;
+    events_yellow_average = events_yellow_average+temp_yellow;
     %
     temp_drop = 0;
     temp_decision_list = MC_decision_list{i};
