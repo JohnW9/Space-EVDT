@@ -146,8 +146,8 @@ r2_f=stat2_f(1:3);
 v2_f=stat2_f(4:6);
 
 %% quick check
-miss_dist=norm(r1_f-r2_f);
-error_of_missdist=abs(miss_dist-event_column(5));
+%miss_dist=norm(r1_f-r2_f);
+%error_of_missdist=abs(miss_dist-event_column(5));
 %if error_of_missdist/miss_dist>1e-3 
 %    error("error in propagation in cdm generation");
 %end
@@ -174,7 +174,9 @@ for m=1:length(eos)
     end
 end
 
-second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are completely arbitrary
+%second_obj=space_cat(find(space_cat_ids==temp_objects(2).id)); % The masses are completely arbitrary
+second_obj=space_cat(space_cat_ids==temp_objects(2).id); % The masses are completely arbitrary
+
 %% Estimating the size and mass of the secondary space object
 % NASA does have a model called: "NASA_SEM_RCSToSizeVec.m" but requires the RCS normalized vectors
 % NASA also has a model called: "EstimateMassFromRCS.m" but requires the RCS value
@@ -191,9 +193,6 @@ end
 HBR=1e-3*(dim1+dim2); % [km]
 HBRType=config.HBRType;
 
-%% Valuing the space objects
-[value1,value2,value_CC,NumOfPieces]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2);
-
 %% Probability of collision (using NASA software)
 
 
@@ -206,6 +205,11 @@ end
 if Pc < 1e-30  % This is just added to have the plots clean
     Pc = 1e-30;
 end
+%% Valuing the space objects
+%[value1,value2,value_CC,NumOfPieces]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2);
+[value1,value2,value_CC,NumOfPieces,CDM_cost]=Vulnerability_model(eos(m),second_obj,m1,norm(v1_f-v2_f)*1000,m2,Pc);
+
+%%
 
 cdm=CDM;
 cdm.Num = ind_cdm;
@@ -236,4 +240,6 @@ cdm.m2=m2;
 cdm.value2=value2;
 cdm.CC_value =value_CC;
 cdm.read_status=0;
+
+cdm.cost = CDM_cost;
 end

@@ -74,6 +74,7 @@ if config.TPF == 1
     cycle_days = no_days+1;
 else
     WB_conjAssess = waitbar(0,['Finding conjunctions for ' Primary.name]);
+    start_timer = tic;
 end
 
 time_cycle = initial_date:cycle_days:initial_date+no_days;
@@ -146,12 +147,15 @@ for cycle=1:length(time_cycle)-1
         end
     else
         %% Brute Force
+        ts = toc(start_timer);
         Propagated_primary = main_propagator (Primary,final_date,timestep,1);
         Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
         event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,config);
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
-        waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name]);
+        te = toc(start_timer);
+        time_remaining = ceil((length(time_cycle)-1-cycle)*(te-ts)/60); % Remaining computation time in minutes
+        waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
     end
 end
 if config.TPF == 0

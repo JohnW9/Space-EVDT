@@ -51,7 +51,7 @@
 %       * Completed the modular mode of the function, inputs and outputs are modified
 
 
-function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,total_budget] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,MC,event_list,cdm_list,decision_list,event_detection,total_cost,total_budget)
+function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,total_budget,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,MC,event_list,cdm_list,decision_list,event_detection,total_cost,total_budget)
 %% Input check
 if nargin<5
     error('Insufficient number of inputs.');
@@ -85,12 +85,6 @@ end
 
 %config = GetConfig; %% Configuring the properties of the program using a global variable
 
-
-space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
-for j=1:length(space_cat)
-    space_cat_ids(j)=space_cat(j).id;
-end
-
 %% Pre-process
 no_days=date2mjd2000(end_date)-date2mjd2000(epoch); % simulation time in days after epoch
 %% Propagation and event detection
@@ -104,11 +98,27 @@ close(WaitBar);
 disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
 try
+    clear cdm_list total_cost decision_list event_detection cdm_rep_list
+    space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
+    for j=1:length(space_cat)
+        space_cat_ids(j)=space_cat(j).id;
+    end
+
+catch
+    space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
+    for j=1:length(space_cat)
+        space_cat_ids(j)=space_cat(j).id;
+    end
+
+end
+
+try
     event_matrix = list2matrix (event_list);
 catch
     error('No conjunction events detected with the current inputs')
 end
 disp('Event list converted to conjunction event matrix (and sorted)');
+
 %% Saving 
 %save("Data\Intermediate_6March.mat");
 %% Loading
@@ -135,6 +145,7 @@ else
     MC_total_cost = cell(MC,1);
     MC_decision_list = cell(MC,1);
     MC_cdm_rep_list = cell(MC,1);
+    MC_operation_cost = cell(MC,1);
     WaitBar_Assess = waitbar(0,'Starting Monte Carlo simulation...');
     %parfor ind = 1:MC
     for ind = 1:MC
@@ -143,7 +154,8 @@ else
         event_detection=zeros(14,1);
         event_detection(1)=NaN;
         total_cost=0;
-        [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
+        %[cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
+        [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
         cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
 
         MC_cdm_list{ind} = cdm_list;
@@ -151,6 +163,7 @@ else
         MC_total_cost{ind} = total_cost;
         MC_decision_list{ind} = decision_list;
         MC_cdm_rep_list{ind} = cdm_rep_list;
+        MC_operation_cost{ind} = operational_cost;
 
         waitbar(ind/MC,WaitBar_Assess,['Simulation ' num2str(ind) ' out of ' num2str(MC) ' completed']);
     end
@@ -160,4 +173,7 @@ else
     %event_detection = MC_event_detection;
     total_cost = MC_total_cost;
     decision_list = MC_decision_list;
+    if nargout == 9
+        operation_cost = MC_operation_cost;
+    end
 end

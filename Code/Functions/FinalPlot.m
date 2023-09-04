@@ -5,8 +5,8 @@ else
     saver=0;
 end
 
-GetConfig;
-global config;
+config = GetConfig;
+
 
 % set(groot,'defaultTextInterpreter','latex'); 
 % set(groot,'defaultAxesTickLabelInterpreter','latex');  

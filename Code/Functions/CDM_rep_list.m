@@ -36,7 +36,10 @@
 %
 
 function cdm_rep_list = CDM_rep_list (event_detection,cdm_list)
-cdm_rep_list=cell(1,size(event_detection,2));
+config = GetConfig;
+MaxPosRows = ceil(7/config.commercial_SSA_updateInterval_lower);
+maximum_index = 0;
+cdm_rep_list=cell(MaxPosRows,size(event_detection,2));
 for i=1:size(event_detection,2)
     cdm_rep_list{1,i}=i;
     index=4;
@@ -49,10 +52,14 @@ for i=1:size(event_detection,2)
                 Pcmax=cdm_list(j).Pc;
                 index_of_max=index;
             end
+            if maximum_index<index
+                maximum_index = index;
+            end
         end
     end
     cdm_rep_list{2,i}=Pcmax;
     cdm_rep_list{3,i}=index_of_max;
     cdm_rep_list{4,i}=index-4;
 end
+cdm_rep_list(maximum_index+1:end,:) = [];
 

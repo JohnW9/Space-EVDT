@@ -67,8 +67,10 @@
 %
 %
 
-function [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget)
+function [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget)
 config = GetConfig;
+
+operational_cost = 0;
 
 
 ti=date2mjd2000(epoch);
@@ -148,8 +150,10 @@ while t<=tf %% Loops over Reality time
 
     end
 
-    [event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
+    %[event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
     %[event_detection,cdm_list,decision_list] = Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
+    [event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_gov (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
+    %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
 
     %% Next observation time
 
@@ -171,3 +175,5 @@ while t<=tf %% Loops over Reality time
     end
     t=t+dt;
 end
+
+%operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used
