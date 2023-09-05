@@ -39,7 +39,7 @@ config.TPF = 0;                                            % Whether time prefil
 
 %% Conjunction screening volume
 config.conjunction_box = [2,25,25];                        % Conjunction box dimensions in RSW directions [km,km,km]
-config.moid_distance = 200;                                % MOID threshold for finding relevant objects [km]
+config.moid_distance = 300;                                % MOID threshold for finding relevant objects [km]
 
 %% Propagation properties
 config.timestep = 20;                                      % Propagation timestep [sec]
@@ -57,7 +57,7 @@ config.maxIter = 10;                                       % Maximum number of i
 %% Conjunction screening
 config.fine_prop_timestep = 1;                             % Fine propagation timestep in enlarged screening volume [sec]
 config.superfine_prop_timestep = 0.1;                      % Super fine propagation timestep to find the exact time of TCA and the miss distance [sec]
-config.screening_volume_type = 1;                          % If the screening volume is a box (0) or an ellipsoid (1)
+config.screening_volume_type = 0;                          % If the screening volume is a box (0) or an ellipsoid (1)
 
 %% Conjunction Assessment and Risk Analysis process
 config.detection_time = 7;                                 % Number of days prior to an event's TCA when the event is detected by the SSA provider [days]
