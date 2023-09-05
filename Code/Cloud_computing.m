@@ -9,7 +9,7 @@ addpath("Data\");
 
 
 % Save workplace (1-y 0-n)
-saving = 0;
+saving = 1;
 
 % Setting up no_simulation_days
 no_days = 365;
@@ -88,5 +88,6 @@ for i = 1:length(space_cat_years)
 end
 
 %% Saving the workspace in the end
-
-save("Full_event_list.mat");
+if saving == 1
+    save("Full_event_list.mat");
+end
