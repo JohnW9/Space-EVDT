@@ -1,12 +1,13 @@
 %% Data extraction script
 clc;
 clear;
-addpath('Functions\');
-addpath('Functions\NASA\');
-addpath('Functions\');
-addpath('Time_conversion\');
-addpath("Data\");
+addpath('Functions/');
+addpath('Functions/NASA/');
+addpath('Functions/');
+addpath('Time_conversion/');
+addpath('Data/');
 
+tic
 
 % Save workplace (1-y 0-n)
 saving = 1;
@@ -15,7 +16,9 @@ saving = 1;
 no_days = 365;
 
 % Loading up the Space catalogs
-load("Space_cat_years.mat");
+load('Space_cat_years.mat');
+disp("Satellite Catalog Loaded")
+toc
 
 %% NASA EOS satellite event extraction
 
@@ -24,29 +27,37 @@ eos = Read_NASA_satellites;
 eos(2:3)=[];
 
 % Running the simulation 2005
+disp("Starting 2005 simulation")
 epoch_2005 = [2005 1 1 0 0 0];
 MOID_list_2005 = cell(length(eos),1);
 event_list_2005=Conjunction_event;
 for eos_sat=1:length(eos)
     [event_list_2005,MOID_list_2005{eos_sat}] = Event_detection (eos(eos_sat),space_cat_2005,epoch_2005,no_days,event_list_2005);
 end
+disp("Finished 2005 simulation")
+toc
 
 % Running the simulation 2015
+disp("Starting 2015 simulation")
 epoch_2015 = [2015 1 1 0 0 0];
 MOID_list_2015 = cell(length(eos),1);
 event_list_2015=Conjunction_event;
 for eos_sat=1:length(eos)
     [event_list_2015,MOID_list_2015{eos_sat}] = Event_detection (eos(eos_sat),space_cat_2015,epoch_2015,no_days,event_list_2015);
 end
+disp("Finished 2015 simulation")
+toc
 
 % Running the simulation 2023
+disp("Starting 2023 simulation")
 epoch_2023 = [2023 1 1 0 0 0];
 MOID_list_2023 = cell(length(eos),1);
 event_list_2023=Conjunction_event;
 for eos_sat=1:length(eos)
     [event_list_2023,MOID_list_2023{eos_sat}] = Event_detection (eos(eos_sat),space_cat_2023,epoch_2023,no_days,event_list_2023);
 end
-
+disp("Finished 2023 simulation")
+toc
 
 %% Arbitrary satellite data handiling
 
@@ -87,7 +98,10 @@ for i = 1:length(space_cat_years)
     event_list_arbsats{i} = temp_event_list;
 end
 
+disp("Script completed")
+toc
 %% Saving the workspace in the end
 if saving == 1
-    save("Full_event_list.mat");
+    save('Full_event_list.mat');
+    disp("Workspace saved")
 end
