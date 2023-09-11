@@ -37,8 +37,11 @@ if nargin == 0
     post={'identity',username,'password',password,'query',...
         'https://www.space-track.org/basicspacedata/query/class/gp/decay_date/null-val/epoch/%3Enow-30/orderby/norad_cat_id/format/csv'};
 else
+    %post={'identity',username,'password',password,'query',...
+    %    ['https://www.space-track.org/basicspacedata/query/class/gp_history/EPOCH/%3E' initial_epoch '%2C%3C' final_epoch '/orderby/NORAD_CAT_ID%20asc/format/csv/']};
     post={'identity',username,'password',password,'query',...
-        ['https://www.space-track.org/basicspacedata/query/class/gp_history/EPOCH/%3E' initial_epoch '%2C%3C' final_epoch '/orderby/NORAD_CAT_ID%20asc/format/csv/']};
+        ['https://www.space-track.org/basicspacedata/query/class/gp_history/EPOCH/>' initial_epoch ',<' final_epoch '/orderby/NORAD_CAT_ID asc/format/csv/']};
+    
 end
 
-urlwrite(URL,'Data\Space_catalogue_updated.csv','Post',post,'Timeout',30);
+urlwrite(URL,'Data\Space_catalogue_updated.csv','Post',post,'Timeout',60);
