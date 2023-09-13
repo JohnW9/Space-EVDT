@@ -6,4 +6,4 @@
 
 # Run the script
 cd /home/gridsan/jsmith/Repos/Space-EVDT/Code
-matlab -nodisplay -singleCompThread -r "Cloud_computing; exit"
+matlab -nodisplay -singleCompThread -r "Cloud_computing2; exit"
