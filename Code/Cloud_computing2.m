@@ -22,6 +22,7 @@ eos(2:3)=[];
 
 %% Monthly simulation
 temp_epoch = start_date;
+total_waitbar = waitbar(0,['Processing... 0/' num2str(no_sims) ' complete']);
 for i = 1:no_sims
     temp_end = temp_epoch + [0 1 0 0 0 0];
     if temp_end(2)>12
@@ -41,8 +42,9 @@ for i = 1:no_sims
     list_monthly_events{i}=temp_event_list;
 
     temp_epoch=temp_end;
+    waitbar(i/no_sims,total_waitbar,['Processing... ' num2str(i) '/' num2str(no_sims) ' complete']);
 end
-
+close(total_waitbar);
 %% Saving
-
-save("Monthly_conj_events_eos_2006_2010.mat","list_monthly_events");
+clear space_catalog_list
+save("Monthly_conj_events_eos_2006_2010.mat");

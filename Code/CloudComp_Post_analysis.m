@@ -90,7 +90,78 @@ for k = 1:length(eos_events)
     temp_conj(lengths_of_aqua(k)+1:end)=[];
     aqua_events{k}=temp_conj;
 end
+%% Manipulation of event_lists
+%MAIN_LIST_MONTHLY_EVENTS = list_monthly_events;
 
+landsat7_events_monthly = zeros(60,1);
+Terra_events_monthly = zeros(60,1);
+Aqua_events_monthly = zeros(60,1);
+no_aqua_event_list = cell(60,1);
+
+for il = 1:60
+    temp_conj_event_list = list_monthly_events{il};
+    s1 =0;
+    s2 =0;
+    s3 =0;
+    for kl = length(temp_conj_event_list):-1:1
+        primary_id = temp_conj_event_list(kl).primary_id;
+        if primary_id==25682
+            s1 = s1+1;
+        elseif primary_id==25994
+            s2 = s2+1;
+        elseif primary_id==27424
+            s3 = s3+1;
+            temp_conj_event_list(kl)=[];
+        end
+    end
+    no_aqua_event_list{il} = temp_conj_event_list;
+    landsat7_events_monthly(il)=s1;
+    Terra_events_monthly(il)=s2;
+    Aqua_events_monthly(il)=s3;
+end
+
+figure
+hold on
+plot(landsat7_events_monthly);
+plot(Terra_events_monthly);
+plot(Aqua_events_monthly);
+legend('Landsat7','TERRA','Aqua')
+
+%% 
+
+%list_monthly_events=MAIN_LIST_MONTHLY_EVENTS;
+list_monthly_events = no_aqua_event_list;
+
+%% No. Conjunctions throughout the years
+no_conjs = zeros(1,length(list_monthly_events));
+for k = 1:length(list_monthly_events)
+    no_conjs(k) = length(list_monthly_events{k});
+end
+
+fy1c = zeros(1,length(list_monthly_events));
+ir_cos = zeros(1,length(list_monthly_events));
+for k = 1:length(list_monthly_events)
+    temp_conj_event_list = list_monthly_events{k};
+    temp_space_cat = space_catalog_list{k};
+    space_cat_ids=zeros(1,length(temp_space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
+    for j=1:length(temp_space_cat)
+        space_cat_ids(j)=temp_space_cat(j).id;
+    end
+    temp_sum1 = 0;
+    temp_sum2 = 0;
+    for l = 1:length(temp_conj_event_list)
+        sec_ob_name = temp_space_cat(space_cat_ids==temp_conj_event_list(l).secondary_id).name;
+        if contains(sec_ob_name,'FENGYUN 1C DEB','IgnoreCase',true)
+            temp_sum1=temp_sum1+1;
+        elseif contains(sec_ob_name,'COSMOS 2251 DEB','IgnoreCase',true) || contains(sec_ob_name,'IRIDIUM 33 DEB','IgnoreCase',true)
+            temp_sum2=temp_sum2+1;
+        end
+    end
+    fy1c(k) = temp_sum1;
+    ir_cos(k) = temp_sum2;
+end
+
+total_catastrophe = fy1c+ir_cos;
 %% Plotting the space catalog variation between 2006 and 2010
 
 %load("Data\long_catalog.mat");
@@ -118,8 +189,38 @@ end
 
 figure()
 hold on;
-plot(no_objects_in_cat,'-o');
-xline(Fengyun_index,'Color','r','Label','Fengyun');
-xline(CosIrid33_index,'Color','r','Label','Cosmos-Iridium');
+yyaxis right;
+b_tot = bar(1:60,no_conjs);
+b_tot.FaceColor = [0 0.4470 0.7410];
+b_tot.FaceAlpha = 0.6;
+b_tot.EdgeColor = "none";
+%b_catas = bar(1:60,total_catastrophe);
+b_fy = bar(1:60,fy1c);
+b_fy.FaceColor = [0.8500 0.3250 0.0980];
+b_fy.FaceAlpha = 0.6;
+b_fy.EdgeColor = "none";
+b_ircos = bar(1:60,ir_cos);
+b_ircos.FaceColor = [0.4660 0.6740 0.1880];
+b_ircos.FaceAlpha = 0.6;
+b_ircos.EdgeColor = "none";
+ylabel('Number of conjunctions');
+
+yyaxis left;
+plot(no_objects_in_cat,'-','color','k','LineWidth',1.1);
+ax = gca; % axes handle
+ax.YAxis(1).Exponent = 0;
+ax.YAxis(2).Exponent = 0;
+ax.YAxis(1).Color = [0 0 0];
+ax.YAxis(2).Color = [0 0.4470 0.7410];
+ylabel('Number of tracked space objects');
+
+xline(Fengyun_index,'Color','r','Label','FY-1C destruction','FontWeight','bold');
+xline(CosIrid33_index,'Color','r','Label','Cos2251-Iri33 collision','FontWeight','bold');
 xticks(1:6:60);
 xticklabels(cat_date(1:6:end));
+xlabel('Date');
+
+legend([b_tot b_fy b_ircos],{'All conjunctions' 'FY-1C debris conjunctions' 'Cos2251-Iri33 debris conjunctions'});
+
+ylabel('Number of tracked space objects');
+set(gca,'fontname','Arial')
