@@ -126,7 +126,11 @@ while t<=tf %% Loops over Reality time
             end
         end
     end
-
+    if isnan(event_detection(1))
+        t = t+dt_default;
+        disp("No conjunction in the first day?");
+        continue;
+    end
     for j=1:size(event_detection,2) % loops through the already detected cunjunctions
         
         
@@ -152,8 +156,8 @@ while t<=tf %% Loops over Reality time
 
     %[event_detection,cdm_list,decision_list] = Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
     %[event_detection,cdm_list,decision_list] = Decision_model_cdmDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
-    %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_gov (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
-    [event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
+    [event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_gov (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
+    %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
 
     %% Next observation time
 
@@ -176,4 +180,4 @@ while t<=tf %% Loops over Reality time
     t=t+dt;
 end
 
-operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used
+%operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used

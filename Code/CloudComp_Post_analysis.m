@@ -9,7 +9,7 @@ addpath("Data\");
 %% Load data
 clc;
 clear;
-load("Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 2015 2023
+load("data\Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 2015 2023
 
 %% Details of the NASA EOS sats
 % 25682 Landsat 7  
@@ -37,7 +37,7 @@ load("Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 2015 20
 % screening_volume_type = ellipsoid;                  
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NASA EOS ANALYSIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Number of conjunctions throughout the years for each satellite
+%% Number of conjunctions throughout the years for each satellite (2005-2015-2023)
 eos_events = {event_list_2005 event_list_2015 event_list_2023};
 
 % Landsat 7
@@ -90,7 +90,7 @@ for k = 1:length(eos_events)
     temp_conj(lengths_of_aqua(k)+1:end)=[];
     aqua_events{k}=temp_conj;
 end
-%% Manipulation of event_lists
+%% Manipulation of event_lists to remove data from Aqua later (2006-2010) Monthly events
 %MAIN_LIST_MONTHLY_EVENTS = list_monthly_events;
 
 landsat7_events_monthly = zeros(60,1);
@@ -127,12 +127,12 @@ plot(Terra_events_monthly);
 plot(Aqua_events_monthly);
 legend('Landsat7','TERRA','Aqua')
 
-%% 
+%% Removing Aqua's data (2006-2010) Monthly events
 
 %list_monthly_events=MAIN_LIST_MONTHLY_EVENTS;
 list_monthly_events = no_aqua_event_list;
 
-%% No. Conjunctions throughout the years
+%% No. Conjunctions throughout the years with FY-1C and IRID-COS (2006-2010) Monthly events
 no_conjs = zeros(1,length(list_monthly_events));
 for k = 1:length(list_monthly_events)
     no_conjs(k) = length(list_monthly_events{k});
@@ -162,8 +162,7 @@ for k = 1:length(list_monthly_events)
 end
 
 total_catastrophe = fy1c+ir_cos;
-%% Plotting the space catalog variation between 2006 and 2010
-
+%% Plotting the space catalog variation between 2006 and 2010 (2006-2010) Monthly events
 %load("Data\long_catalog.mat");
 no_objects_in_cat = zeros(length(space_catalog_list),1);
 cat_date = cell(length(space_catalog_list),1);
@@ -224,3 +223,95 @@ legend([b_tot b_fy b_ircos],{'All conjunctions' 'FY-1C debris conjunctions' 'Cos
 
 ylabel('Number of tracked space objects');
 set(gca,'fontname','Arial')
+
+%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ArbitSat ANALYSIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% To plot the ArbitSat MOID 2005-2015-2023
+%load("data\Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 2015 2023
+
+
+colors = {"#77AC30","#0072BD","#D95319"};
+xlabels = cell(1,9);
+f=0;
+alts = [550 800 1000];
+incs = [0 45 90];
+for i=1:3
+    for j=1:3
+        f=f+1;
+        %xlabels{f}=['Alt=' num2str(alts(i)) ' , Inc=' num2str(incs(j))];
+        xlabels{f}=[num2str(incs(j))];
+    end
+end
+
+figure()
+hold on;
+for i=1:3
+    ar(i) = area([0.5 0.5 3.5 3.5]+3*(i-1)*[1 1 1 1],[-10 10000 10000 -10]);
+    %ar(i).EdgeColor="none";
+    ar(i).LineStyle="--";
+    ar(i).FaceAlpha=0.2;
+    ar(i).FaceColor=colors{i};
+end
+
+t1 = text(0.6,6500,'Altitude: 550 [km]');
+t1.FontWeight="bold";
+
+t2 = text(3.6,6500,'Altitude: 800 [km]');
+t2.FontWeight="bold";
+
+t3 = text(6.6,6500,'Altitude: 1000 [km]');
+t3.FontWeight="bold";
+
+
+f=0;
+for i = 3:-1:1 % From 2023 to 2005
+    for j = 1:9
+        f=f+1;
+        b(f)=bar(j,length(MOID_list_arbsats{j,i}));
+        b(f).EdgeColor="none";
+        b(f).FaceColor=colors{i};
+    end
+end
+grid on;
+legend([b(19) b(10) b(1)],{'2005' '2015' '2023'})
+xticks(1:9)
+xlim([0.5 9.5]);
+ylim([0 7000])
+ylabel('No. close relevant space objects')
+xlabel('Inclination [deg]')
+xticklabels(xlabels)
+set(gca,'fontname','Arial');
+
+%% MOID for ArbitSat but 3D (2005-2015-2023)
+%load("data\Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 2015 2023
+
+
+colors = {"#77AC30","#0072BD","#D95319"};
+
+for i = 1:3
+    for j=1:9
+        MOID_lengths(j,i) = length(MOID_list_arbsats{j,i});
+    end
+end
+
+for i = 1:3
+    for j = 1:3
+        MOID_lengths_incAv(j,i) = ceil(mean(MOID_lengths(3*j-2:3*j,i)));
+    end
+end
+
+figure()
+hold on;
+
+b = bar3(MOID_lengths_incAv);
+grid on;
+grid minor;
+box on;
+view(3);
+xticks([1 2 3]);
+xticklabels([2005 2015 2023]);
+yticks([1 2 3]);
+yticklabels([550 800 1000]);
+ylabel('Altitude [km]');
+xlabel('Space catalog');
+zlabel('No. of relevant space objects');
+set(gca,'fontname','Arial');

@@ -8,7 +8,8 @@ space_object = Space_object;
 nasa_sat.name=cell_array{1};
 nasa_sat.dimensions=cell_array{2};
 nasa_sat.mass=cell_array{3};   
-nasa_sat.cost=cell_array{4}; 
+nasa_sat.cost=cell_array{4};
+nasa_sat.value=cell_array{9};
 
 space_object.name = cell_array{1};
 space_object.epoch = cell_array{5};
