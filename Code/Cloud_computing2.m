@@ -7,8 +7,12 @@ addpath('Functions/');
 addpath('Time_conversion/');
 addpath('Data/');
 
+tic
+
 %% Load the monthly space catalog from 2006 to 2010
 load("Data\long_catalog.mat");
+disp("Satellite Catalog Loaded")
+toc
 
 %% Number of short term simulations and initialization
 no_sims =  length(space_catalog_list);
@@ -46,5 +50,10 @@ for i = 1:no_sims
 end
 close(total_waitbar);
 %% Saving
+
 clear space_catalog_list
 save("Monthly_conj_events_eos_2006_2010.mat");
+
+disp("Script completed")
+toc
+
