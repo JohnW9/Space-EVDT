@@ -124,9 +124,9 @@ config.budget_tres = 0.5;                                  % Fraction threshold 
 
 %% Cost of CDM
 
-operator_salary = 87000; % Annual salary
+operator_salary = 80000; % Annual salary
 operator_annual_hours = 40*52; % 2080 hrs of annual labor
-operator_hourly = ceil(operator_salary/operator_annual_hours);
+operator_hourly = round(operator_salary/operator_annual_hours);
 
 config.cdmCost_lowPc = 0*operator_hourly;
 config.cdmCost_medPc = 2*operator_hourly;

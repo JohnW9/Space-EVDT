@@ -45,9 +45,87 @@ for i = 1:length(Arbitsat_ids)
     Analysis_matrix(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
 end
 
+%% Graphing the yellow and red events in comparison with total number
+Analysis_matrix = Analysis_matrix_com;
+conj_details = zeros(3,9);
+for i = 1:9
+    conj_details(:,i) = [length(conjs{i}),Analysis_matrix(3,i),Analysis_matrix(2,i)]';
+end
+
+figure()
+hold on;
+
+alts = [550 800 1000];
+incs = [0 45 90];
+colors = {"#77AC30","#0072BD","#D95319"};
+xlabels = cell(1,9);
+f=0;
+for i=1:3
+    for j=1:3
+        f=f+1;
+        %xlabels{f}=['Alt=' num2str(alts(i)) ' , Inc=' num2str(incs(j))];
+        xlabels{f}=[num2str(incs(j))];
+    end
+end
+
+for i=1:3
+    ar(i) = area([0.5 0.5 3.5 3.5]+3*(i-1)*[1 1 1 1],[1e-2 1e5 1e5 1e-2]);
+    %ar(i).EdgeColor="none";
+    ar(i).LineStyle="--";
+    ar(i).FaceAlpha=0.2;
+    ar(i).FaceColor=colors{i};
+end
+
+t1 = text(0.6,1500,'Altitude: 550 [km]');
+t1.FontWeight="bold";
+
+t2 = text(3.6,1500,'Altitude: 800 [km]');
+t2.FontWeight="bold";
+
+t3 = text(6.6,1500,'Altitude: 1000 [km]');
+t3.FontWeight="bold";
+
+b1 = bar(1:9,conj_details(1,:),'g');
+b2 = bar(1:9,conj_details(2,:),'y');
+b3 = bar(1:9,conj_details(3,:),'r');
+
+%b1.FaceColor = [0.4660 0.6740 0.1880];
+%b2.FaceColor = [0.9290 0.6940 0.1250];
+%b3.FaceColor = [0.6350 0.0780 0.1840];
+
+xticks(1:9)
+xlim([0.5 9.5]);
+ylabel('No. conjunction events')
+xlabel('Inclination [deg]')
+xticklabels(xlabels)
+legend([b1 b2 b3],{"Green event", "Yellow event", "Red event"});
+set(gca,'fontname','Arial');
+set(gca, 'YScale', 'log');
+grid on;
+grid minor;
+ylim([1e-1 1e4]);
+
+%% Assessment process using two
+dec_func1 = @Decision_model_Simple_gov_noDrop;
+dec_func2 = @Decision_model_Simple_commercial_noDrop;
+
+mc = 10;
+
+Analysis_matrix_gov = zeros(5,length(Arbitsat_ids));
+for i = 1:length(Arbitsat_ids)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func1);
+    Analysis_matrix_gov(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
+end
+
+Analysis_matrix_com = zeros(5,length(Arbitsat_ids));
+for i = 1:length(Arbitsat_ids)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func2);
+    Analysis_matrix_com(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]'; % Remember to add 2500*12 USD to operational cost
+end
+
 
 %% Functions 
-function [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(event_list,MC,space_cat,sats,epoch,no_days)
+function [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(event_list,MC,space_cat,sats,epoch,no_days,func)
 end_date = mjd20002date(date2mjd2000(epoch)+no_days);
 config = GetConfig;
 
@@ -72,7 +150,11 @@ for ind = 1:MC
     event_detection(1)=NaN;
     total_cost=0;
     %[cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
-    [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,sats,0,cdm_list,decision_list,event_detection,total_cost,inf);
+    if nargin<7
+        [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,sats,0,cdm_list,decision_list,event_detection,total_cost,inf);
+    else
+        [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,sats,0,cdm_list,decision_list,event_detection,total_cost,inf,func);
+    end
     cdm_rep_list = CDM_rep_list (event_detection,cdm_list);
 
     MC_cdm_list{ind} = cdm_list;
@@ -147,6 +229,3 @@ dropped_event_average = dropped_event_average/length(MC_cdm_list);
 end
 
 
- 
-
-  
