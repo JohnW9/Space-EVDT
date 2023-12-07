@@ -35,6 +35,31 @@ for i=1:9
     list(m+1:end)=[];
     conjs{i}=list;
 end
+%% Checking number of conjunctions for starlink  with 550km 90deg arbitsat
+temp_catalog = space_cat_2023; % must be same catalog year as the conjs
+starlink=zeros(9,1);
+starlink_ids = zeros(length(temp_catalog),1);
+gl = 0;
+
+%finding starlink norad ids
+for m =1:length(temp_catalog)
+    if contains(temp_catalog(m).name,'starlink','IgnoreCase',true)
+        gl=gl+1;
+        starlink_ids(gl)=temp_catalog(m).id;
+    end
+end
+starlink_ids(gl+1:end)=[];
+
+for p=1:length(starlink)
+    for r = 1:length(conjs{p})
+        if ismember(conjs{p}(r).secondary_id,starlink_ids)
+            starlink(p)=starlink(p)+1;
+        end
+    end
+end
+
+% Calculating the percentage of conjunctions in 550 km with star link
+starlink_percent = sum(starlink(1:3))/sum([length(conjs{1}) length(conjs{2}) length(conjs{3})]);
 
 
 %% Assessment process
