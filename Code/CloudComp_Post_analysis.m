@@ -315,3 +315,76 @@ ylabel('Altitude [km]');
 xlabel('Space catalog');
 zlabel('No. of relevant space objects');
 set(gca,'fontname','Arial');
+%% Calculating number of MOID pieces with arbitsat related to FY-1, COSMOS, Iridium and starlink and oneweb 
+fy1_moid = zeros(9,3);
+cos_moid = zeros(9,3);
+iri_moid = zeros(9,3);
+slk_moid = zeros(9,3);
+onw_moid = zeros(9,3);
+for i = 1:3
+    for j = 1:9
+        for p = 1:length(MOID_list_arbsats{j,i})
+            temp_obj_name = MOID_list_arbsats{j,i}(p).name;
+            if contains(temp_obj_name,'FENGYUN 1C DEB','IgnoreCase',true)
+                fy1_moid(j,i) = fy1_moid(j,i)+1;
+            elseif contains(temp_obj_name,'COSMOS 2251 DEB','IgnoreCase',true)
+                cos_moid(j,i) = cos_moid(j,i)+1;
+            elseif contains(temp_obj_name,'IRIDIUM 33 DEB','IgnoreCase',true)
+                iri_moid(j,i)=iri_moid(j,i)+1;
+            elseif contains(temp_obj_name,'STARLINK','IgnoreCase',true)
+                slk_moid(j,i)=slk_moid(j,i)+1;
+            elseif contains(temp_obj_name,'ONEWEB','IgnoreCase',true)
+                onw_moid(j,i)=onw_moid(j,i)+1;
+            end
+        end
+    end
+end
+fy1_moid = moid_averager(fy1_moid);
+cos_moid = moid_averager(cos_moid);
+iri_moid = moid_averager(iri_moid);
+slk_moid = moid_averager(slk_moid);
+onw_moid = moid_averager(onw_moid);
+
+% 3D matrix creation
+
+mix_2007_9 = fy1_moid+cos_moid+iri_moid;
+mix_const = slk_moid+onw_moid;
+
+moid_wo_events = MOID_lengths_incAv - mix_2007_9 -mix_const;
+MIX_total = cat(3,moid_wo_events,mix_2007_9,mix_const);
+
+for i=1:3
+    for j=1:3
+        for k=1:3
+            if MIX_total(i,j,k)==0
+                MIX_total(i,j,k)=NaN;
+            end
+        end
+    end
+end
+
+
+%figure()
+hold on;
+
+bar3_stacked(MIX_total);
+grid on;
+grid minor;
+box on;
+view(3);
+yticks([1 2 3]);
+yticklabels([2005 2015 2023]);
+xticks([2 3 4]);
+xticklabels([1000 800 550]);
+xlabel('Altitude [km]');
+ylabel('Space catalog');
+zlabel('No. of relevant space objects');
+set(gca,'fontname','Arial');
+
+%% Stupid function
+function temp = moid_averager (A)
+temp = zeros(3,3);
+    for i=1:3
+        temp(i,:) = ceil(mean(A(3*i-2:3*i,:)));
+    end
+end

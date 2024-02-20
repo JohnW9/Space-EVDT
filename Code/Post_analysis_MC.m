@@ -61,6 +61,32 @@ end
 % Calculating the percentage of conjunctions in 550 km with star link
 starlink_percent = sum(starlink(1:3))/sum([length(conjs{1}) length(conjs{2}) length(conjs{3})]);
 
+%% Checking MOID of Starlink average with arbitsat at 550km
+starlink_moids = zeros(3,1);
+for p =1:length(starlink_moids)
+    for r = 1:length(MOID_list_arbsats{p,3})
+        if ismember(MOID_list_arbsats{p,3}(r).id,starlink_ids)
+            starlink_moids(p)=starlink_moids(p)+1;
+        end
+    end
+end
+
+% Finding how many starlink satellites actually have an altitude of 550+-2 km (Turnsout not many!!)
+starlink_550 = 0;
+alt_tol = 2;
+mean_alts = [0];
+for f = 1:length(space_cat_2023)
+    if ismember(space_cat_2023(f).id,starlink_ids)
+        sp_obj = space_cat_2023(f);
+        alt = sp_obj.a - 6378.14;
+        mean_alts(end+1)=alt;
+        if abs(alt*(1+sp_obj.e))>=(550-alt_tol) %abs(alt-550)<=alt_tol
+            starlink_550 = starlink_550+1;
+        end
+    end
+end
+mean_alts(1)=[];
+plot(mean_alts)
 
 %% Assessment process
 mc = 10;
