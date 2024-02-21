@@ -6,7 +6,7 @@
 %   2015, and 2023 for both NASA EOS satellites and Arbitsats) and data taken from Cloud_computing2.m (Monthly 
 %   conjunctions for landsat7, terra, aqua between 2006 and 2010). It should be noted that the input files are 
 %   large thus it is better to load them in each section only when needed. Many of the sections can run independantly
-%   but some require the data from the previous sections in the script.
+%   but some require the data from the previous sections in the script. 
 %
 % INPUT:
 %   "Full_event_list.mat" file = A meta data file containing:
@@ -155,6 +155,65 @@ xticks([1,2,3])
 grid on;
 grid minor;
 xticklabels(["2005","2015","2023"])
+
+%% Conjunctions for Iri-Cos and Fy1 with the eos sats in 2015
+temp_space_cat = space_cat_2015;
+space_cat_ids=zeros(1,length(temp_space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
+for j=1:length(temp_space_cat)
+    space_cat_ids(j)=temp_space_cat(j).id;
+end
+
+cos_iri_2015_categorized = {landsat_events{2}, terra_events{2}, aqua_events{2}};
+
+conjs_cos_iri_fy1_2015_categorized = cell(2,length(cos_iri_2015_categorized));
+
+for l = 1:length(cos_iri_2015_categorized)
+single_sat_events = cos_iri_2015_categorized{l};
+temp_cos_iri(length(single_sat_events)) = Conjunction_event;
+temp_cos_iri_ind = 0;
+temp_fy1(length(single_sat_events)) = Conjunction_event;
+temp_fy1_ind = 0;
+for i = 1:length(single_sat_events)
+    sec_ob_name = temp_space_cat(space_cat_ids==single_sat_events(i).secondary_id).name;
+    if contains(sec_ob_name,'FENGYUN 1C DEB','IgnoreCase',true)
+        temp_fy1_ind=temp_fy1_ind+1;
+        temp_fy1(temp_fy1_ind) = single_sat_events(i);
+    elseif contains(sec_ob_name,'COSMOS 2251 DEB','IgnoreCase',true) || contains(sec_ob_name,'IRIDIUM 33 DEB','IgnoreCase',true)
+        temp_cos_iri_ind=temp_cos_iri_ind+1;
+        temp_cos_iri(temp_cos_iri_ind) = single_sat_events(i);
+    end
+end
+temp_fy1(temp_fy1_ind+1:end) = [];
+temp_cos_iri(temp_cos_iri_ind+1:end) = [];
+conjs_cos_iri_fy1_2015_categorized{1,l}=temp_cos_iri;
+conjs_cos_iri_fy1_2015_categorized{2,l}=temp_fy1;
+end
+% conjs_cos_iri_fy1_2015_categorized, first row represents the conj events with iri-cos and second row represents events with FY1
+% each column is in order for landsat7, terra, aqua
+
+%% Conjunction event analysis on 2015 space catalog for NASA EOS
+% the previous section must be run
+%events2015_categorized = {landsat_events{2}, terra_events{2}, aqua_events{2}}; % ALL CONJUNCTIONS, not just cosmos-iri
+events2015_categorized = {conjs_cos_iri_fy1_2015_categorized{1,1},conjs_cos_iri_fy1_2015_categorized{1,2},conjs_cos_iri_fy1_2015_categorized{1,3}}; % analyzing conjunctions only with cos_iri
+
+MC = 1;
+dec_func = @Decision_model_Simple_commercial_noDrop; %% USING THE COMMERCIAL SSA DATA
+Analysis_matrix = zeros(5,length(eos));
+for i = 1:length(eos)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(events2015_categorized{i},MC,space_cat_2015,eos,[2015 1 1 0 0 0],365,dec_func);
+    Analysis_matrix(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
+end
+%% Plotting conjunction categories for eos sats in 2015
+average_no_green_events = [length(events2015_categorized{1})-(Analysis_matrix(2,1)+Analysis_matrix(3,1)) length(events2015_categorized{2})-(Analysis_matrix(2,2)+Analysis_matrix(3,2)) length(events2015_categorized{3})-(Analysis_matrix(2,3)+Analysis_matrix(3,3))];
+
+figure()
+hold on
+bar(1:3,average_no_green_events,'g');
+bar(1:3,Analysis_matrix(3,:),'y');
+bar(1:3,Analysis_matrix(2,:),'r');
+xticks([1,2,3]);
+xticklabels(["Landsat7 (25682)","Terra (25994)","Aqua (27424)"])
+grid on
 
 %% Manipulation of event_lists to remove data from Aqua later (2006-2010) Monthly events
 

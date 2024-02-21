@@ -239,6 +239,7 @@ ylim([1e-1 1e4]);
 save("data\Post_analysis_MC_output.mat")
 
 %% Function to do the entire assessment process in monte carlo way and by using a custom decision component and providing results in averaged way
+%{
 function [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(event_list,MC,space_cat,sats,epoch,no_days,func)
 end_date = mjd20002date(date2mjd2000(epoch)+no_days);
 config = GetConfig;
@@ -341,5 +342,5 @@ dropped_event_average = dropped_event_average/length(MC_cdm_list);
 
 
 end
-
+%}
 
