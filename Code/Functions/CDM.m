@@ -10,7 +10,7 @@ classdef CDM
         CC_value            % Value of the collision consequence
         HBR                 % Hard body radius [km]
         read_status         % Read status by the decision model [bool]
-        cost
+        cost                % Operational cost of analyzing the cdm [$]
         
         id1                 % NORAD id of object 1
         r1                  % Position vector of object 1

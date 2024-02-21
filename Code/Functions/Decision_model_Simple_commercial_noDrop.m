@@ -1,3 +1,49 @@
+% FUNCTION NAME:
+%   Decision_model_Simple_commercial_noDrop
+%
+% DESCRIPTION:
+%   This function takes into account newly generated CDMs and decides which action to take.
+%   This model relies on 100% availability of the commercial SSA (in GetConfig, commercial_SSA_availability = 1)
+%   It is assumed a conjunction is not dropped at all because of low Pc value, regardless of the time criticality
+%
+% INPUT:
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
+%                            chronological order. Containing important space object informations. 
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
+%   cdm_list = (H objects) A list of all the CDM's generated [CDM]
+%   decision_list = (L objects) The list containing all the actions taken by the decision model [Decision_action]
+%   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
+%   t = [1x1] Realistic observation time [mjd2000]
+%   total_budget = [1x1] Initial budget available to the COLA team dependant on the simulation time (constant)
+%   operation_cost = [1x1] Total operational cost calculated by now for analyzing the CDMs [$]
+%
+%
+% OUTPUT:
+%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
+%                            chronological order. Containing important space object informations. 
+%                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
+%   cdm_list = (H objects) A list of all the CDM's generated [CDM]
+%   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
+%   operation_cost = [1x1] Total operational cost calculated by now for analyzing the CDMs [$]
+%
+%
+%
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%   The decision tree is simple. the final decision is one out of 2: (Do nothing, Maneuvering)
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+%   01/2/2023 - Sina Es haghi
+%       * More complex decision tree implemented, next_update_interval and action_list are deleted and a decision_list is replaced
+%   15/2/2023 - Sina Es haghi
+%       * New Decision tree implemented, the available budget is now categorized only as either high or low (one threshold)
+%   20/2/2024 - Sina Es haghi
+%       * Description modified plus the output of the function
 function [event_detection,cdm_list,decision_list,operation_cost]=Decision_model_Simple_commercial_noDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operation_cost)
 
 config = GetConfig;
@@ -25,14 +71,10 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         if (Pc>=config.red_event_Pc && TimeToConjunction<=config.TimeToConj_low) 
             action_det = 1;
             event_detection(10,event_detection_index)=1;
-%         elseif (Pc>=config.yellow_event_Pc && Pc<=config.red_event_Pc && TimeToConjunction<=config.TimeToConj_high && value_of_collision<config.value_low)...
-%                 || (Pc<=config.yellow_event_Pc && TimeToConjunction<=config.TimeToConj_high)
-%             action_det = 2;
-%             event_detection(10,event_detection_index)=1;
         else
             action_det = 3;
             event_detection(10,event_detection_index)=0;
-            event_detection(8,event_detection_index)=1;
+            event_detection(8,event_detection_index)=1;  %% The only difference between commercial no drop and gov no drop
         end
 
         %% Adding to decision list

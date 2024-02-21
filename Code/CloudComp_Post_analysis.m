@@ -1,4 +1,56 @@
-%% Analyzing the Meta Data of the Cloud Computer
+% SCRIPT NAME:
+%   CloudComp_Post_analysis.m
+%
+% DESCRIPTION:
+%   This script is for post process analysis of the meta data taken from Cloud_computing.m (Conjunctions in 2005,
+%   2015, and 2023 for both NASA EOS satellites and Arbitsats) and data taken from Cloud_computing2.m (Monthly 
+%   conjunctions for landsat7, terra, aqua between 2006 and 2010). It should be noted that the input files are 
+%   large thus it is better to load them in each section only when needed. Many of the sections can run independantly
+%   but some require the data from the previous sections in the script.
+%
+% INPUT:
+%   "Full_event_list.mat" file = A meta data file containing:
+%       - space_cat_years = [1x3 cell space catalog] space catalogs of 2005, 2015, 2023 with added 9 arbitrary
+%                           satellites to the end of each space catalog
+%       - Arb_sats_list = [1x9 NASA_sat] list of all the arbitrary satellites
+%       - eos = [1x3 NASA_sat] list of nasa eos satellites considered wich are Landsat7 , Terra, Aqua in order.
+%       - event_list_20xx = [N Conjunction_event] list of conjunction events for all 3 nasa eos satellites in the year 20xx.
+%                           !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - event_list_arbsats = [3x1 cell] each cell contains all the conjucntions of all arbitsats 
+%                              in the years 2005,2015,2023 in order 
+%                              !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - MOID_list_20xx = [3x1 cell] list of relevant space objects for nasa eos satellites landsat 7, terra,
+%                          and Aqua, in order, in the year 20xx.
+%       - MOID_list_arbsats = [9x3 cell] list of relevant space objects for arbitrary satellites. Each row represents
+%                             a specific arbitsat and each column represents a year (2005,2015,2023) in order)
+%
+%   "long_catalog.mat" file = [60x1 space catalog] A list Contains the space catalogs downloaded from the 
+%                             first 5 days of each month from Jan 2006 to Dec 2010.  
+%
+%   "list_monthly_2006to2010.mat" file = A data file containing:
+%       - list_monthly_events = [60x1 cell Conjunction_event] list of total number of conjunction events per month 
+%                               for the combination of landsat 7, terra, and aqua
+%
+% OUTPUT:
+%   Data visualization including:
+%       - Number of conjunctions for each NASA EOS satellite in 2005, 2015, 2023
+%       - Number of monthly conjunctions for Landsat7 and Terra between 2006 and end of 2010, with displaying
+%         conjunctions related to FY-1, Iri_Cos debris
+%       - Number of relevant space objects for Arbitsats at different altitudes and in different years (2005,2015,2023)
+%         and also the contributions by specific space objects (FY-1 & Cos-Iri debris, and starlink)
+%
+%   Useful data:
+%       - Conjunction events in years 2005,2015,2023 for landsat7, terra, aqua (landsat_events, terra_events, aqua_events)
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   20/2/2024 - Sina Es haghi
+%       * added the description
+%
 
 addpath('Functions\');
 addpath('Functions\NASA\');
@@ -35,9 +87,10 @@ load("data\Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 20
 % conjunction_box = [2,25,25];                        % Conjunction box dimensions in RSW directions [km,km,km]
 % moid_distance = 200;                                % MOID threshold for geometricallyfinding relevant objects [km]
 % screening_volume_type = ellipsoid;                  
+% time prefiltration not used!
 
 %% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% NASA EOS ANALYSIS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Number of conjunctions throughout the years for each satellite (2005-2015-2023)
+%% Number of conjunctions throughout the years for each nasa eos satellite (2005-2015-2023)
 eos_events = {event_list_2005 event_list_2015 event_list_2023};
 
 % Landsat 7
@@ -90,8 +143,22 @@ for k = 1:length(eos_events)
     temp_conj(lengths_of_aqua(k)+1:end)=[];
     aqua_events{k}=temp_conj;
 end
+
+figure()
+hold on
+plot(lengths_of_landsat7);
+plot(lengths_of_terra);
+plot(lengths_of_aqua);
+legend('Landsat7','TERRA','Aqua')
+ylabel("Number of conjunctions in the year")
+xticks([1,2,3])
+grid on;
+grid minor;
+xticklabels(["2005","2015","2023"])
+
 %% Manipulation of event_lists to remove data from Aqua later (2006-2010) Monthly events
-%MAIN_LIST_MONTHLY_EVENTS = list_monthly_events;
+
+load("data\list_monthly_2006to2010.mat");
 
 landsat7_events_monthly = zeros(60,1);
 Terra_events_monthly = zeros(60,1);
@@ -125,14 +192,15 @@ hold on
 plot(landsat7_events_monthly);
 plot(Terra_events_monthly);
 plot(Aqua_events_monthly);
+ylabel('Number of monthly conjunctions')
 legend('Landsat7','TERRA','Aqua')
 
 %% Removing Aqua's data (2006-2010) Monthly events
-
-%list_monthly_events=MAIN_LIST_MONTHLY_EVENTS;
+% some irregularities observed
 list_monthly_events = no_aqua_event_list;
 
 %% No. Conjunctions throughout the years with FY-1C and IRID-COS (2006-2010) Monthly events
+load("data\long_catalog.mat")
 no_conjs = zeros(1,length(list_monthly_events));
 for k = 1:length(list_monthly_events)
     no_conjs(k) = length(list_monthly_events{k});
@@ -162,7 +230,7 @@ for k = 1:length(list_monthly_events)
 end
 
 total_catastrophe = fy1c+ir_cos;
-%% Plotting the space catalog variation between 2006 and 2010 (2006-2010) Monthly events
+%% Plotting the space catalog variation between 2006 and 2010 (2006-2010) & Monthly events
 %load("Data\long_catalog.mat");
 no_objects_in_cat = zeros(length(space_catalog_list),1);
 cat_date = cell(length(space_catalog_list),1);
@@ -343,7 +411,7 @@ fy1_moid = moid_averager(fy1_moid);
 cos_moid = moid_averager(cos_moid);
 iri_moid = moid_averager(iri_moid);
 slk_moid = moid_averager(slk_moid);
-onw_moid = moid_averager(onw_moid);
+onw_moid = moid_averager(onw_moid);  % Oneweb doesnt affect arbitsat much due to its orbit
 
 % 3D matrix creation
 
@@ -381,7 +449,7 @@ ylabel('Space catalog');
 zlabel('No. of relevant space objects');
 set(gca,'fontname','Arial');
 
-%% Stupid function
+%% Function that averages the MOID between different arbitsat inclinations
 function temp = moid_averager (A)
 temp = zeros(3,3);
     for i=1:3

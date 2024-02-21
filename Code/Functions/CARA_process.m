@@ -6,7 +6,7 @@
 %   the conjunction events in a timely matter and dependent on when a conjunction is assumed to be 
 %   noticed. This process containes the main components of V, D, and T model of the EVDT framework.
 %   This is function is like a discrete event simulation that loops over the timespan of the simulation
-%   dates and actions are taken at different discrete times.
+%   dates and actions are taken at different discrete times. The default Decision component should be uncommented.
 %
 % INPUT:
 %   event_matrix = [5xP] Matrix containing the conjunction event details in a timely order.
@@ -24,6 +24,9 @@
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
+%   total_budget = [1x1] Initial budget available to the COLA team dependant on the simulation time
+%   dec_func = [1x1] (Decision component function) In case an arbitrary decision function is wanted to be used
+%                    instead of the default decision component. (optional)
 %
 % OUTPUT:
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
@@ -32,6 +35,8 @@
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
+%   operation_cost = [1x1] Total operational cost calculated by now for analyzing the CDMs [$] Remember to add the 
+%                    cost of using the commercial SSA service (in case applicable) you can uncomment the last lines
 %
 %
 %     event_detection details:
@@ -64,7 +69,8 @@
 %   1/2/2023 - Sina Es haghi
 %       * Modified the function inputs, The detection time for each event is now a stochastic time ranging +-1 days 
 %         from the configured detection time, A new function "NextUpdate..." is added to give a better next update time.
-%
+%   20/2/2024 - Sina Es haghi
+%       * Description modified plus the output of the function
 %
 
 function [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget,dec_func)

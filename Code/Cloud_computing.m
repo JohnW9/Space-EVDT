@@ -1,4 +1,48 @@
-%% Data extraction script
+% SCRIPT NAME:
+%   Cloud_computing.m
+%
+% DESCRIPTION:
+%   The script loads a list of space catalogs from 3 different years. Then finds all of the conjunction events
+%   of 3 NASA EOS satellites in those 3 years (2005,2015, 2023). Afterwards, the script defines 9 arbitrary satellites
+%   with different orbital characteristics (altitude and inclination), adds them to the space catalogs, and then
+%   finds the conjunctions for each of those arbitrary satellites in different years. Simulations are ran for 365
+%   days. But note that the space catalogs used are static and only from the first 5 days of the year.
+%   it is a very time consuming simulation and is designed for cloud computing.
+%
+% INPUT:
+%   "Space_cat_years.mat" file = [3 space catalog] A list Contains the space catalogs downloaded from the 
+%                                first 5 days of the years 2005,2015, and 2023 from space-track. 
+%   
+%
+% OUTPUT:
+%   "Full_event_list.mat" file = A meta data file containing:
+%       - space_cat_years = [1x3 cell space catalog] space catalogs of 2005, 2015, 2023 with added 9 arbitrary
+%                           satellites to the end of each space catalog
+%       - Arb_sats_list = [1x9 NASA_sat] list of all the arbitrary satellites
+%       - eos = [1x3 NASA_sat] list of nasa eos satellites considered wich are Landsat7 , Terra, Aqua in order.
+%       - event_list_20xx = [N Conjunction_event] list of conjunction events for all 3 nasa eos satellites in the year 20xx.
+%                           !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - event_list_arbsats = [3x1 cell] each cell contains all the conjucntions of all arbitsats 
+%                              in the years 2005,2015,2023 in order 
+%                              !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - MOID_list_20xx = [3x1 cell] list of relevant space objects for nasa eos satellites landsat 7, terra,
+%                          and Aqua, in order, in the year 20xx.
+%       - MOID_list_arbsats = [9x3 cell] list of relevant space objects for arbitrary satellites. Each row represents
+%                             a specific arbitsat and each column represents a year (2005,2015,2023) in order)
+%
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   20/2/2024 - Sina Es haghi
+%       * added the description
+%
+
+
+
 clc;
 clear;
 addpath('Functions/');
@@ -7,11 +51,11 @@ addpath('Functions/');
 addpath('Time_conversion/');
 addpath('Data/');
 
-%%
+%% Loading the list of space catalogs
 tic
 
 % Save workplace (1-y 0-n)
-saving = 1;
+saving = 0;  %!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!change if you wanna save the workspace in the end!!!!!!!!!!!!!!
 
 % Setting up no_simulation_days
 no_days = 365;
@@ -60,7 +104,7 @@ end
 disp("Finished 2023 simulation")
 toc
 
-%% Arbitrary satellite data handiling
+%% Arbitrary satellite data handeling
 
 % Adding arbitrary satellite to spacecats Sat_inc_alt
 Sat{1} = {'Sat-00-550',[2,2],100,1000,date2mjd2000([2005 1 1 0 0 0]),[550+6378.14,0,deg2rad(0),deg2rad(0),deg2rad(0),0],'PAYLOAD','MEDIUM',10};

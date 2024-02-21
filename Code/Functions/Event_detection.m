@@ -19,6 +19,7 @@
 %   
 % OUTPUT:
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
+%   Relevant_object_list = [Vx1] a list of relevant space objects detected throughout the simulation time
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   It is suggested that the timestep not be higher than 15 seconds, otherwise conjunctions may be missed.
@@ -33,6 +34,8 @@
 %       * Adding header
 %   01/2/2023 - Sina Es haghi
 %       * Cleaned up the code a bit
+%   20/2/2024 - Sina Es haghi
+%       * Description modified plus the output of the function
 %
 
 function [event_list,Relevant_object_list] = Event_detection (Satellite,space_cat,epoch,no_days,event_list)

@@ -16,6 +16,7 @@
 %                       closest approach. the accelerator will decrease the miss distance with the relation of
 %                       10^-(accelerator). (0 by default)
 %%%%%%% OPTIONAL INPUTS (For modular use) %%%%%%%%%%%%%
+%   MC = [1x1] Number of monte carlo runs to be performed on the assessment loop
 %   event_list = (X objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
 %   cdm_list = (F objects) List of all CDMs generated in the chronological order [CDM]
 %   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
@@ -23,6 +24,7 @@
 %                            chronological order. Containing important space object informations. 
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
+%   total_budget = [1x1] Initial budget available to the COLA team dependant on the simulation time
 %   
 % OUTPUT:
 %   cdm_rep_list = [SxP] A cell matrix with each column representing a single conjunction event 
@@ -35,6 +37,12 @@
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   total_cost = [1x1] An index showing the accumulated cost due to requests from the commercial SSA provider
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
+%   MOID_list = [Vx1] a list of relevant space objects detected throughout the simulation time
+%   total_budget = [1x1] Initial budget available to the COLA team dependant on the simulation time (constant)
+%   operation_cost = [1x1] Total operational cost calculated by now for analyzing the CDMs [$]
+%%%%%%% OPTIONAL OUTPUTS (For monte carlo simulations) %%%%%%%%%%%%%
+% Data with MC_XXXX are list of the same outputs in different monte carlo runs. 
+% They are then equalled to the normal outputs as cell lists
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   The current program uses a simple analytic propagator, considering only secular J2 effects.
@@ -49,6 +57,8 @@
 %       * Adding header
 %   1/2/2023 - Sina Es haghi
 %       * Completed the modular mode of the function, inputs and outputs are modified
+%   20/2/2024 - Sina Es haghi
+%       * Description modified plus the output of the function
 
 
 function [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,total_budget,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,MC,event_list,cdm_list,decision_list,event_detection,total_cost,total_budget)

@@ -1,3 +1,53 @@
+% SCRIPT NAME:
+%   Post_analysis_MC.m
+%
+% DESCRIPTION:
+%   This script is for post process analysis of the meta data taken from Cloud_computing.m (Conjunctions in 2005,
+%   2015, and 2023 for both NASA EOS satellites and Arbitsats). It analyzes the conjunction data for the arbitrary 
+%   satellites. Conjunctions for each arbitsat in a specific space catalog year are obtained.
+%   Multiple assessment process loops can be carried out using custom decision component functions.
+%   The operational cost is also evaluated in these monte carlo simulations and can be used to compare the 
+%   different decision components and different SSA sources. The long term monte carlo simulations are very
+%   time consuming
+%
+% INPUT:
+%   "Full_event_list.mat" file = A meta data file containing:
+%       - space_cat_years = [1x3 cell space catalog] space catalogs of 2005, 2015, 2023 with added 9 arbitrary
+%                           satellites to the end of each space catalog
+%       - Arb_sats_list = [1x9 NASA_sat] list of all the arbitrary satellites
+%       - eos = [1x3 NASA_sat] list of nasa eos satellites considered wich are Landsat7 , Terra, Aqua in order.
+%       - event_list_20xx = [N Conjunction_event] list of conjunction events for all 3 nasa eos satellites in the year 20xx.
+%                           !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - event_list_arbsats = [3x1 cell] each cell contains all the conjucntions of all arbitsats 
+%                              in the years 2005,2015,2023 in order 
+%                              !!(Note that the space catalog used is only from the first 5 days of 20xx)!!
+%       - MOID_list_20xx = [3x1 cell] list of relevant space objects for nasa eos satellites landsat 7, terra,
+%                          and Aqua, in order, in the year 20xx.
+%       - MOID_list_arbsats = [9x3 cell] list of relevant space objects for arbitrary satellites. Each row represents
+%                             a specific arbitsat and each column represents a year (2005,2015,2023) in order)
+%
+%
+% OUTPUT:
+%   "Post_analysis_MC_output.mat" file = containing the workspace after a single run. It can be used instead of
+%                                        running the simulations
+%   Data visualization including:
+%       - Conjunction event types for ArbitSats in different orbits using different SSAs 
+%
+%   Useful data:
+%       - Conjunction events in 2023 for Arbitsats in different altitudes
+%       - Comparison of operational cost when using gov or com ssa.
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   20/2/2024 - Sina Es haghi
+%       * added the description
+%   21/2/2024 - Sina Es haghi
+%       * Fixed the issue in plotting different category events for arbitsat (yellow events now contain red events)
+
 %% Assessment Process Post Analysis on Full data
 
 clc;
@@ -15,7 +65,7 @@ load("data\Full_event_list.mat"); % Simulation time of 365 days epoch of 2005 20
 % Remember that the values of the satellites needs to be changed in the next section
 
 %% ArbitSat Norad IDs and conjunctions for a single space catalog
-temp_cat = space_cat_years{3};
+temp_cat = space_cat_years{3}; % this will be the 2023 space catalog
 temp_event = event_list_arbsats{3};
 Arbitsat_ids = zeros(9,1);
 for i=1:9
@@ -35,7 +85,10 @@ for i=1:9
     list(m+1:end)=[];
     conjs{i}=list;
 end
-%% Checking number of conjunctions for starlink  with 550km 90deg arbitsat
+% conjs will be a 9x1 cell where each cell is the total number of conjunctions for that specific arbit sat at the already defined space catalog year (here it is 2023)
+
+%% Checking number of conjunctions with starlink for all arbitrary satellites in the conjunctions with 2023 space catalog
+%{
 temp_catalog = space_cat_2023; % must be same catalog year as the conjs
 starlink=zeros(9,1);
 starlink_ids = zeros(length(temp_catalog),1);
@@ -60,8 +113,9 @@ end
 
 % Calculating the percentage of conjunctions in 550 km with star link
 starlink_percent = sum(starlink(1:3))/sum([length(conjs{1}) length(conjs{2}) length(conjs{3})]);
-
-%% Checking MOID of Starlink average with arbitsat at 550km
+%}
+%% Checking number of Starlink relevant space objects with arbitsat at 550km + plotting the altitude ranges of the starlink sats
+%{
 starlink_moids = zeros(3,1);
 for p =1:length(starlink_moids)
     for r = 1:length(MOID_list_arbsats{p,3})
@@ -86,21 +140,45 @@ for f = 1:length(space_cat_2023)
     end
 end
 mean_alts(1)=[];
-plot(mean_alts)
-
-%% Assessment process
+figure()
+scatter(1:length(mean_alts),mean_alts)
+%}
+%% Assessment process looped over default decision component
+%{
 mc = 10;
 Analysis_matrix = zeros(5,length(Arbitsat_ids));
 for i = 1:length(Arbitsat_ids)
     [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365);
     Analysis_matrix(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
 end
+%}
 
-%% Graphing the yellow and red events in comparison with total number
+%% Monte carlo Assessment process loops run using different decision models
+dec_func1 = @Decision_model_Simple_gov_noDrop;
+dec_func2 = @Decision_model_Simple_commercial_noDrop;
+
+mc = 10;
+
+Analysis_matrix_gov = zeros(5,length(Arbitsat_ids));
+for i = 1:length(Arbitsat_ids)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func1);
+    Analysis_matrix_gov(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
+end
+
+Analysis_matrix_com = zeros(5,length(Arbitsat_ids));
+for i = 1:length(Arbitsat_ids)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func2);
+    Analysis_matrix_com(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]'; % Remember to add 2500*12 USD to operational cost
+end
+
+%% Graphing the different category conjunctions in different altitudes and inclinations arbitsats using either the government or commercial averaged assessment loops
+% Uncomment which data to use
 Analysis_matrix = Analysis_matrix_com;
+%Analysis_matrix = Analysis_matrix_gov;
 conj_details = zeros(3,9);
 for i = 1:9
-    conj_details(:,i) = [length(conjs{i}),Analysis_matrix(3,i),Analysis_matrix(2,i)]';
+    conj_details(:,i) = [length(conjs{i}),Analysis_matrix(3,i)+Analysis_matrix(2,i),Analysis_matrix(2,i)]'; %% Very important
+    % The green events contain the red and yellow events and the yellow event also contains the red events, just like nasa cara handbook
 end
 
 figure()
@@ -108,7 +186,7 @@ hold on;
 
 alts = [550 800 1000];
 incs = [0 45 90];
-colors = {"#77AC30","#0072BD","#D95319"};
+colors = ["#77AC30","#0072BD","#D95319"];
 xlabels = cell(1,9);
 f=0;
 for i=1:3
@@ -149,33 +227,18 @@ xlim([0.5 9.5]);
 ylabel('No. conjunction events')
 xlabel('Inclination [deg]')
 xticklabels(xlabels)
-legend([b1 b2 b3],{"Green event", "Yellow event", "Red event"});
+legend([b1 b2 b3],["Green event", "Yellow event", "Red event"]);
 set(gca,'fontname','Arial');
 set(gca, 'YScale', 'log');
 grid on;
 grid minor;
 ylim([1e-1 1e4]);
 
-%% Assessment process using two
-dec_func1 = @Decision_model_Simple_gov_noDrop;
-dec_func2 = @Decision_model_Simple_commercial_noDrop;
 
-mc = 10;
+%% Saving the workspace
+save("data\Post_analysis_MC_output.mat")
 
-Analysis_matrix_gov = zeros(5,length(Arbitsat_ids));
-for i = 1:length(Arbitsat_ids)
-    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func1);
-    Analysis_matrix_gov(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
-end
-
-Analysis_matrix_com = zeros(5,length(Arbitsat_ids));
-for i = 1:length(Arbitsat_ids)
-    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average] = multi_assessment(conjs{i},mc,temp_cat,Arb_sats_list,[2023 1 1 0 0 0],365,dec_func2);
-    Analysis_matrix_com(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]'; % Remember to add 2500*12 USD to operational cost
-end
-
-
-%% Functions 
+%% Function to do the entire assessment process in monte carlo way and by using a custom decision component and providing results in averaged way
 function [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(event_list,MC,space_cat,sats,epoch,no_days,func)
 end_date = mjd20002date(date2mjd2000(epoch)+no_days);
 config = GetConfig;

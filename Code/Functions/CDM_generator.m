@@ -70,6 +70,7 @@
 %   value2 = [1x1] Socio-economic value of object 2
 %   value_CC = [1x1] Collision consequence value
 %   read_status = [1x1] Read status of the CDM (0-the CDM is not read by the decision model, 1-the CDM is read by the decision model)
+%   cost = [1x1] Is the operational cost of analyzing the CDM by the operator dependant on the Pc value [$]
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
@@ -84,7 +85,9 @@
 %   13/1/2023 - Sina Es haghi
 %       * Modified the hard body radius calculation
 %   06/3/2023 - Sina Es haghi
-%       * Covariance matrices in CDM are now in RSW frame along with function header
+%       * Covariance matrices in CDM are now in RSW frame. function header modified.
+%   20/2/2024 - Sina Es haghi
+%       * description modified to include cost of CDM
 %
 %
 

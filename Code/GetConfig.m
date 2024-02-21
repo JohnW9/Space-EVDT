@@ -122,7 +122,7 @@ config.budget_per_day = 5;                                 % Budget available fo
 
 config.budget_tres = 0.5;                                  % Fraction threshold of the total budget so the available budget is considered high or low
 
-%% Cost of CDM
+%% Operational Cost of analyzing a CDM
 
 operator_salary = 80000; % Annual salary
 operator_annual_hours = 40*52; % 2080 hrs of annual labor
