@@ -8,7 +8,7 @@ addpath('..\Data\');
 addpath('..\Time_conversion\');
 
 
-obj_num=4; % CHANGE THIS NUMBER FOR THE OBJECTS LISTED IN THE BOOK CHAPTER 2
+obj_num=1; % CHANGE THIS NUMBER FOR THE OBJECTS LISTED IN THE BOOK CHAPTER 2
 
 
 switch obj_num
@@ -21,7 +21,7 @@ switch obj_num
         object.raan=deg2rad(77.249);
         object.om=deg2rad(76.679);
         object.M=deg2rad(177.919);
-        n=200;
+        n=200; % in minutes
     case 2
         object=Space_object;
         object.epoch=date2mjd2000([2012 1 1 0 0 0]);

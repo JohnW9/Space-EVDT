@@ -191,28 +191,51 @@ end
 % conjs_cos_iri_fy1_2015_categorized, first row represents the conj events with iri-cos and second row represents events with FY1
 % each column is in order for landsat7, terra, aqua
 
-%% Conjunction event analysis on 2015 space catalog for NASA EOS
+%% Cos-Iri Conjunction event analysis on 2015 space catalog for NASA EOS
 % the previous section must be run
 %events2015_categorized = {landsat_events{2}, terra_events{2}, aqua_events{2}}; % ALL CONJUNCTIONS, not just cosmos-iri
 events2015_categorized = {conjs_cos_iri_fy1_2015_categorized{1,1},conjs_cos_iri_fy1_2015_categorized{1,2},conjs_cos_iri_fy1_2015_categorized{1,3}}; % analyzing conjunctions only with cos_iri
 
-MC = 1;
+MC = 10;
 dec_func = @Decision_model_Simple_commercial_noDrop; %% USING THE COMMERCIAL SSA DATA
 Analysis_matrix = zeros(5,length(eos));
 for i = 1:length(eos)
     [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(events2015_categorized{i},MC,space_cat_2015,eos,[2015 1 1 0 0 0],365,dec_func);
     Analysis_matrix(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
 end
+
+%% FY-1 Conjunction event analysis on 2015 space catalog for NASA EOS
+% the previous section must be run
+%events2015_categorized = {landsat_events{2}, terra_events{2}, aqua_events{2}}; % ALL CONJUNCTIONS, not just cosmos-iri
+events2015_categorized2 = {conjs_cos_iri_fy1_2015_categorized{2,1},conjs_cos_iri_fy1_2015_categorized{2,2},conjs_cos_iri_fy1_2015_categorized{2,3}}; % analyzing conjunctions only with cos_iri
+
+MC = 10;
+dec_func = @Decision_model_Simple_commercial_noDrop; %% USING THE COMMERCIAL SSA DATA
+Analysis_matrix2 = zeros(5,length(eos));
+for i = 1:length(eos)
+    [no_cdms_average,events_red_average,events_yellow_average,dropped_event_average,operation_cost_average, cdm_list,cdm_rep_list,operation_cost] = multi_assessment(events2015_categorized2{i},MC,space_cat_2015,eos,[2015 1 1 0 0 0],365,dec_func);
+    Analysis_matrix2(:,i)=[no_cdms_average events_red_average events_yellow_average dropped_event_average operation_cost_average]';
+end
+
 %% Plotting conjunction categories for eos sats in 2015
 average_no_green_events = [length(events2015_categorized{1})-(Analysis_matrix(2,1)+Analysis_matrix(3,1)) length(events2015_categorized{2})-(Analysis_matrix(2,2)+Analysis_matrix(3,2)) length(events2015_categorized{3})-(Analysis_matrix(2,3)+Analysis_matrix(3,3))];
-
+average_no_green_events2 = [length(events2015_categorized2{1})-(Analysis_matrix2(2,1)+Analysis_matrix2(3,1)) length(events2015_categorized2{2})-(Analysis_matrix2(2,2)+Analysis_matrix2(3,2)) length(events2015_categorized2{3})-(Analysis_matrix2(2,3)+Analysis_matrix2(3,3))];
 figure()
 hold on
-bar(1:3,average_no_green_events,'g');
-bar(1:3,Analysis_matrix(3,:),'y');
+% bar(1:3,average_no_green_events,'g');
+% bar(1:3,Analysis_matrix(3,:),'y');
+% bar(1:3,Analysis_matrix(2,:),'r');
+bar(1:3,average_no_green_events+Analysis_matrix(3,:)+Analysis_matrix(2,:),'g');
+bar(1:3,Analysis_matrix(3,:)+Analysis_matrix(2,:),'y');
 bar(1:3,Analysis_matrix(2,:),'r');
-xticks([1,2,3]);
-xticklabels(["Landsat7 (25682)","Terra (25994)","Aqua (27424)"])
+bar(4:6,average_no_green_events2+Analysis_matrix2(3,:)+Analysis_matrix2(2,:),'g');
+bar(4:6,Analysis_matrix2(3,:)+Analysis_matrix2(2,:),'y');
+bar(4:6,Analysis_matrix2(2,:),'r');
+xline(3.5,'--');
+%xticks([1,2,3]);
+%xticklabels(["Landsat7 (25682)","Terra (25994)","Aqua (27424)"])
+xticks(1:6);
+xticklabels(["Landsat7 (25682)","Terra (25994)","Aqua (27424)","Landsat7 (25682)","Terra (25994)","Aqua (27424)"])
 grid on
 
 %% Manipulation of event_lists to remove data from Aqua later (2006-2010) Monthly events
