@@ -43,7 +43,7 @@
 
 
 
-clc;
+clc; %test
 clear;
 addpath('Functions/');
 addpath('Functions/NASA/');
