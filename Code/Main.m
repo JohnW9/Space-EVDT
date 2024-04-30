@@ -2,7 +2,7 @@
 % New header will be added here
 clc;
 clear;
-close all; 
+close all; %test
 
 addpath('Functions/');
 addpath('Functions/NASA/');
