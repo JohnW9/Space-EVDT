@@ -50,7 +50,7 @@ if config.TPF == 1
         disp("Parallel pool already running")
     end
 elseif config.TPF == 0
-    delete(gcp('nocreate'));
+    %delete(gcp('nocreate'));
 end
 %% Main program run
 %[cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);

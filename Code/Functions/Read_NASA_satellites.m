@@ -57,7 +57,7 @@ eos(3).science=["Carbon Cycle, Ecosystems, and Biogeochemistry" "Earth Surface a
 eos(3).applications=["Agricultural Efficiency" "Carbon Management" "Coastal Management" "Disaster Management" "Ecological Forecasting" "Energy Management" "Homeland Security" "Invasive Species" "Public Health" "Water Management"]; %%  data copied from LANDSAT 8
 eos(3).no_instruments=2;% NASA EOS website
 eos(3).instruments=["OLI-2" "TIRS-2"];% NASA EOS website
-eos(3).cost=750; % Based on https://www.space.com/nasa-landsat-9-earth-observation-satellite-launch-success
+eos(3).cost=1100; % development & launch cost
 %% TERRA
 eos(4).id=25994;
 eos(4).name='TERRA';

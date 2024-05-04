@@ -1,10 +1,10 @@
 % FUNCTION NAME:
-%   Decision_model
+%   Decision_model_V2_TLE
 %
 % DESCRIPTION:
-%   This function takes into account any failed tasking requests and newly generated CDMs
-%   and decides on an observation or mitigation action. This model basically tries to replicate
-%   how CARA deals with detected events and generated CDMs.
+%   This function implements the Decision model V2 for the use of TLEs. The
+%   Deicision model is simplified compared to Decision_model_V2_CDMs, due
+%   to lack of input data. The code implements Pc vs HBR, MTS, SWTS
 %
 % INPUT:
 %   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
@@ -29,23 +29,20 @@
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
-%   The decision tree is simple, yet complex (multiple end-notes). However the final
-%   decision is one out of 4: (Do nothing, Tasking for commercial SSA provider, Maneuvering, Contacting)
+% 
 %
 % REVISION HISTORY:
 %   Dates in DD/MM/YYYY
 %
-%   13/1/2023 - Sina Es haghi
+%   04/5/2023 - Jonathan Wei
 %       * Header added
-%   01/2/2023 - Sina Es haghi
-%       * More complex decision tree implemented, next_update_interval and action_list are deleted and a decision_list is replaced
-%   15/2/2023 - Sina Es haghi
-%       * New Decision tree implemented, the available budget is now categorized only as either high or low (one threshold)
 %
 %
-function [event_detection,cdm_list,decision_list]=Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
-config = GetConfig;
 
+function [event_detection,cdm_list,decision_list]=Decision_model (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
+
+config = GetConfig;
+%dealing with a failed tasking request (to the commercial SSA)
 for i=1:size(event_detection,2) %First detecting if there were any failed tasking requests (No CDM generated for the event at expected time)
     if event_detection(9,i)>t && event_detection(11,i)==-1 % The case where the commercial SSA provider was unavialable
         %event_detection(7,i)=t+config.commercial_SSA_updateInterval;
@@ -151,4 +148,3 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
 
     end
 end
-

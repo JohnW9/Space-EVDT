@@ -119,6 +119,7 @@ while t<=tf %% Loops over Reality time
         % This is how the detected events are fed to the system one by one
         if det_matrix(2,i)<=t
             if isnan(event_detection(1)) || isempty(find(event_detection(1,:)==det_matrix(1,i)))
+                %filling in the event_detection with new element based on det_matrix
                 ind_det=ind_det+1;
                 event_detection(1:5,ind_det)=det_matrix(1:5,i);
                 event_detection(6,ind_det)=0;
