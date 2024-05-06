@@ -3,18 +3,18 @@
 clc;
 clear;
 
-addpath('Functions\');
-addpath('Functions\NASA\');
-addpath('Functions\');
-addpath('Time_conversion\');
-addpath("Data\");
+addpath('Functions/');
+addpath('Functions/NASA/');
+%addpath('Functions\');
+addpath('Time_conversion/');
+addpath("Data/");
 
 
 
 %% User inputs
 tic
 epoch = [2023 1 1 0 0 0];
-end_date= [2023 7 1 0 0 0];           % Simulation end date and time in gregorian calender
+end_date= [2023 1 5 0 0 0];           % Simulation end date and time in gregorian calender
 %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
 %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
 accelerator=0;                          % details to be added
