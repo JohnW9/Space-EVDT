@@ -28,6 +28,8 @@ for j = 0:0.1:1
     cdf_inv(end+1) = point2;
 end
 
+
+
 %cdf_inv = 40./gsqrt(16000-r);
 %t=18000*exp(-r);
 %f = fit(x, y, 'exp1');

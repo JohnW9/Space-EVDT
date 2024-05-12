@@ -10,7 +10,7 @@ classdef Space_object
         om     % Argument of perigee [rad]
         M      % Mean anomaly [rad]
         f      % True anomaly [rad]
-        type   % Space object tupe (PAYLOAD/ROCKET BODY/DEBRIS)
+        type   % Space object type (PAYLOAD/ROCKET BODY/DEBRIS)
         RCS    % Radar Cross Section category (LARGE/MEDIUM/SMALL)
         value  % Monetized value of the space object
         %line1  % TLE line 1

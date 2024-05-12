@@ -129,6 +129,8 @@ if volume_type == 0 % If the screening volume is a box
                     event.tca=tca;
                     event.primary_id=primary.id;
                     event.secondary_id=objects_list(k).id;
+                    %event.secondary_RCS=objects_list(k).RCS; %get the RCS
+                    %event.secondary_type=objects_list(k).type; %get the HBR
                     event.mis_dist=miss_dist;
 
 

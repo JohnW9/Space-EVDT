@@ -21,10 +21,10 @@
 %   06/05/2024 - Jonathan Wei
 %       * Header added
 
-
+function []=Manual_process (event_detection,cdm_list,i)
 if TLE_input_mode
     %Pc vs HBR simplified
-    
+    if cdm_list(i).
         
 
 end
