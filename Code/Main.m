@@ -23,7 +23,7 @@ total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_da
 %% NASA satellites
 eos = Read_NASA_satellites;
 eos(2:3)=[];
-eos = eos(1);
+%eos = eos(1);
 disp('NASA satellites loaded')
 %% Space catalogue
 fileID=fopen("Credentials.txt");
@@ -38,7 +38,7 @@ SinaSat1 = {'SinaSat1',[2,2],100,1000,date2mjd2000([2023 1 1 0 0 0]),[550+6378.1
 %SinaSat1 = {'SinaSat1',[2,2],100,1000,date2mjd2000([2015 1 1 0 0 0]),[550+6378.14,0,deg2rad(45),deg2rad(100),deg2rad(200),0],'PAYLOAD','MEDIUM',10};
 %SinaSat1 = {'SinaSat1',[2,2],100,1000,date2mjd2000([2005 1 1 0 0 0]),[550+6378.14,0,deg2rad(45),deg2rad(100),deg2rad(200),0],'PAYLOAD','MEDIUM',10};
 [sina1_nasa_sat,sina1_space_object]=create_sat(SinaSat1);
-[eos,space_cat] = addSat (sina1_nasa_sat,sina1_space_object,space_cat); % Delete the ",eos)" in input if only arbitrary satellites are to be analyzed
+%[eos,space_cat] = addSat (sina1_nasa_sat,sina1_space_object,space_cat); % Delete the ",eos)" in input if only arbitrary satellites are to be analyzed
 
 
 %% Additional info
@@ -60,6 +60,7 @@ runtime=toc;
 %save("Data\Final_6March.mat");
 %% Load instead of the full run
 %load("Data\Final_6March.mat");
+
 %% Plotting
 %disp('Plotting...');
 FinalPlot (epoch, end_date,cdm_rep_list{1},20,12)
