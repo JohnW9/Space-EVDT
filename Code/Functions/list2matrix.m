@@ -33,10 +33,11 @@
 %
 function event_matrix = list2matrix (event_list)
 
-event_matrix=zeros(5,size(event_list,2));
+event_matrix=zeros(7,size(event_list,2));
 for l=1:size(event_list,2)
-    % Takes 5 first rows
-    event_matrix(1:5,l)=[event_list(l).id event_list(l).tca event_list(l).primary_id event_list(l).secondary_id event_list(l).mis_dist]';
+    % Takes 7 first rows
+    event_matrix(1:7,l)=[event_list(l).id event_list(l).tca event_list(l).primary_id event_list(l).secondary_id event_list(l).mis_dist event_list(l).secondary_RCS event_list(l).secondary_type];
+    %event_matrix(1:5,l)=[event_list(l).id event_list(l).tca event_list(l).primary_id event_list(l).secondary_id event_list(l).mis_dist];
 end
 % Sort events by occurance times
 [~,tca_index_sort]=sort(event_matrix(2,:));

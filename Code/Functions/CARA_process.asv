@@ -54,8 +54,7 @@
 %     row12: Last successful observation time [MJD2000]
 %     row13: Real miss distance (either manipulated or not) [km]
 %     row14: Real Time of Closes Approach
-%     row15: secondary RCS
-%     row16: secondary type
+%
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %
@@ -89,8 +88,8 @@ det_matrix=event_matrix(1:5,:);
 det_matrix(6,:)=event_matrix(2,:); % actual TCA
 det_matrix(2,:)=det_matrix(2,:)-detection_time; % Basically det_matrix is the same as event_matrix, with detection time included instead of TCA
 
-det_matrix(7,:)=event_matrix(6,:); %secondary_RCS
-det_matrix(8,:)=event_matrix(7,:); %secondary_type
+det_matrix(7,:)=event_matrix(6,:);
+det_matrix(8,:)=event_matrix(7,:);
 
 [~,tca_index_sort]=sort(det_matrix(2,:));
 sorted_det_matrix=det_matrix(:,tca_index_sort);
@@ -135,9 +134,6 @@ while t<=tf %% Loops over Reality time
                 event_detection(13,ind_det)=NaN;
                 event_detection(14,ind_det)=det_matrix(6,i);
 
-                event_detection(15,ind_det)=det_matrix(7,i); %secondary RCS
-                event_detection(16,ind_det)=det_matrix(8,i); %secondary type
-
             end
         end
     end
@@ -177,7 +173,7 @@ while t<=tf %% Loops over Reality time
     %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
 
         %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial_noDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
-        [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
+        [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
     else
         [event_detection,cdm_list,decision_list,operational_cost] = dec_func (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
     end

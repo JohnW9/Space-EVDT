@@ -129,8 +129,8 @@ if volume_type == 0 % If the screening volume is a box
                     event.tca=tca;
                     event.primary_id=primary.id;
                     event.secondary_id=objects_list(k).id;
-                    %event.secondary_RCS=objects_list(k).RCS; %get the RCS
-                    %event.secondary_type=objects_list(k).type; %get the HBR
+                    [event.secondary_RCS, event.secondary_type] = RCS_type2int(objects_list(k).RCS,objects_list(k).type);
+                    %get RCS and object type
                     event.mis_dist=miss_dist;
 
 
@@ -227,6 +227,9 @@ elseif volume_type == 1 % If the screening volume is an ellipsoid
                     event.primary_id=primary.id;
                     event.secondary_id=objects_list(k).id;
                     event.mis_dist=miss_dist;
+                   [event.secondary_RCS, event.secondary_type] = RCS_type2int(objects_list(k).RCS,objects_list(k).type);
+                    %get RCS and object type
+                    
 
 
                     if ~isempty(event_list(1).tca)

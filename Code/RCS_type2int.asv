@@ -1,0 +1,41 @@
+% FUNCTION NAME:
+%   HBR_type2int
+%
+% DESCRIPTION:
+%   This function converts HBR (SMALL, MEDIUM, LARGE) & secondary object
+%   type to an integer value. This is necessary during the list2matrix
+%   conversion.
+%   
+%
+% INPUT:
+%   HBR = (string) Hard body radius category of the secondary object (SMALL, MEDIUM, LARGE)
+%   type = (string) Secondary object type (PAYLOAD/ROCKET BODY/DEBRIS)
+%
+% OUTPUT:
+%   HBR_int = (int) Integer indicating HBR category
+%   type_int = (int) Integer indicating secondary object type
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   15/05/2024 - Jonathan Wei
+%
+
+function [HBR_int, type_int] = HBR_type2int(HBR,type)
+
+if HBR == "SMALL"
+    HBR_int = 0;
+elseif HBR == "MEDIUM"
+    HBR_int = 1;
+elseif HBR == "LARGE"
+    HBR_int = 2;
+else
+    HBR_int = 3;
+end
+
+if type == "PAYLOAD"
+    type_int = 0;
+elseif type == "ROCKET BO"

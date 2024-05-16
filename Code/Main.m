@@ -14,7 +14,7 @@ addpath("Data/");
 %% User inputs
 tic
 epoch = [2023 3 15 0 0 0];
-end_date= [2023 3 25 0 0 0];           % Simulation end date and time in gregorian calender
+end_date= [2023 3 18 0 0 0];           % Simulation end date and time in gregorian calender
 %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
 %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
 accelerator=0;                          % details to be added
