@@ -21,15 +21,33 @@
 %   06/05/2024 - Jonathan Wei
 %       * Header added
 
-function []=Manual_process (event_detection,cdm_list,i, event_detection_index)
+function [cdm_list,action_det]=Manual_process (event_detection,cdm_list,i, event_detection_index)
+config = GetConfig;
+
+TLE_input_mode=1;
 if TLE_input_mode
     %Pc vs HBR simplified
-    if event_detection(15,event_detection_index) == 2 %secondary RCS large
-        if event_detection(16,event_detection_index) == 2 %secondary is a debris
+    %if event_detection(15,event_detection_index) == 2 %secondary RCS large
+        %if event_detection(16,event_detection_index) == 2 %secondary is a debris
             %use median value
-            [Pc,~,~,~] = Pc2D_Foster(cdm_list(i).r1,cdm_list(i).v1,cdm_list(i).cov1,cdm_list(i).r2,cdm_list(i).v2,cdm_list(i).cov2,cdm_list(i).HBR,1e-8,'circle');
-            %if not then it's either rocket body or payload. Keep using upper bound for them  
-        end
+            dim1 = 0.217; %average value following the distribution from debris_size distribution
+            median_value = 3.91; %% TO CHANGE
+            new_HBR = cdm_list(i).HBR-config.large_dim+median_value; % replace upper bound by median value
+            [Pc,~,~,~] = Pc2D_Foster(cdm_list(i).r1',cdm_list(i).v1',cdm_list(i).cov1,cdm_list(i).r2',cdm_list(i).v2',cdm_list(i).cov2',new_HBR,1e-8,'circle');
+            %if not then it's either rocket body or payload. Keep using upper bound for them 
+            %cdm_list(i).Pc = Pc;
+            if Pc < config.red_event_Pc
+                action_det = "yellow Pc from MP";
+            %end
+        %end
+    end
+action_det = "placeholder" %for debugging
+    %MTS
+
+    %Space Weather Trade Space
+    if cdm_list(i).Pc < config.red_event_Pc && cdm_list(i).Pc > config.red_event_Pc/10 %close to limit
+        %B_star
+
     end
 end
 

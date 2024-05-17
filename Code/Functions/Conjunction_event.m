@@ -6,6 +6,7 @@ classdef Conjunction_event
         secondary_id        % Secondary space object NORAD id
         secondary_RCS       % Secondary RCS cateegory (SMALL, MEDIUM, LARGE)
         secondary_type      % object type (PAYLOAD/ROCKET BODY/DEBRIS)
+        primary_B_star      % B_star of primary object
         mis_dist            % Miss distance [km]
         status              % Mitigation status [bool] (1-mitigated, 0-not)
     end

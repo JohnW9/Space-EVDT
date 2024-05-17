@@ -70,7 +70,7 @@ elseif nargin == 5
     event_list=Conjunction_event;
     cdm_list=CDM;
     decision_list=Decision_action;
-    event_detection=zeros(14,1);
+    event_detection=zeros(17,1);
     event_detection(1)=NaN;
     total_cost=0;
     config = GetConfig; %% Configuring the properties of the program using a global variable
@@ -79,7 +79,7 @@ elseif nargin == 6
     event_list=Conjunction_event;
     cdm_list=CDM;
     decision_list=Decision_action;
-    event_detection=zeros(14,1);
+    event_detection=zeros(17,1);
     event_detection(1)=NaN;
     total_cost=0;
     config = GetConfig; %% Configuring the properties of the program using a global variable

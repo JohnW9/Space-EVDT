@@ -90,6 +90,7 @@ for k = 1:objects_length
     propagated_object_list(k).timestep=timestep;
     propagated_object_list(k).RCS=objects_list(k).RCS; %RCS
     propagated_object_list(k).type=objects_list(k).type; %type
+    propagated_object_list(k).B_star=objects_list(k).B_star; %Bstar
     propagated_object_list(k).t=t;
     propagated_object_list(k).ma=a(k);
     propagated_object_list(k).me=e(k);

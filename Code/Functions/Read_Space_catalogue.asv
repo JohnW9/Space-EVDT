@@ -107,7 +107,7 @@ for i=1:no_obj
     space_obj(j).M=deg2rad(MEANANOMALIES(i));
     space_obj(j).type = char(TYPE_OBJECTS(i));
     space_obj(j).RCS = char(RCSs(i));
-    space_obj(j).B_star = BSTAR(i); %add BSTAR to space_obj
+    space_obj(j).BSTAR = 
     %space_obj(i).line1= char(TLELINE1s(i));
     %space_obj(i).line2= char(TLELINE2s(i));
 end

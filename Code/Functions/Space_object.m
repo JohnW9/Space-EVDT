@@ -13,6 +13,7 @@ classdef Space_object
         type   % Space object type (PAYLOAD/ROCKET BODY/DEBRIS)
         RCS    % Radar Cross Section category (LARGE/MEDIUM/SMALL)
         value  % Monetized value of the space object
+        B_star % B* value used for SWTS
         %line1  % TLE line 1
         %line2  % TLE line 2
     end

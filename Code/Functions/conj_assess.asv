@@ -131,7 +131,7 @@ if volume_type == 0 % If the screening volume is a box
                     event.secondary_id=objects_list(k).id;
                     [event.secondary_RCS, event.secondary_type] = RCS_type2int(objects_list(k).RCS,objects_list(k).type);
                     %get RCS and object type
-                    event.primary_B_star = object_list(k).B_star; %get Bstar
+                    event.primary_B_star = object_list(k).B_star;
                     event.mis_dist=miss_dist;
 
 
@@ -230,8 +230,8 @@ elseif volume_type == 1 % If the screening volume is an ellipsoid
                     event.mis_dist=miss_dist;
                    [event.secondary_RCS, event.secondary_type] = RCS_type2int(objects_list(k).RCS,objects_list(k).type);
                     %get RCS and object type
-                    event.primary_B_star = objects_list(k).B_star; %get Bstar
                     
+
 
                     if ~isempty(event_list(1).tca)
                         new_event=1;

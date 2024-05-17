@@ -56,6 +56,7 @@
 %     row14: Real Time of Closes Approach
 %     row15: secondary RCS
 %     row16: secondary type
+%     row17: primary Bstar
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %
@@ -91,6 +92,7 @@ det_matrix(2,:)=det_matrix(2,:)-detection_time; % Basically det_matrix is the sa
 
 det_matrix(7,:)=event_matrix(6,:); %secondary_RCS
 det_matrix(8,:)=event_matrix(7,:); %secondary_type
+det_matrix(9,:)=event_matrix(8,:); %primary Bstar
 
 [~,tca_index_sort]=sort(det_matrix(2,:));
 sorted_det_matrix=det_matrix(:,tca_index_sort);
@@ -137,6 +139,7 @@ while t<=tf %% Loops over Reality time
 
                 event_detection(15,ind_det)=det_matrix(7,i); %secondary RCS
                 event_detection(16,ind_det)=det_matrix(8,i); %secondary type
+                event_detection(17,ind_det)=det_matrix(9,i); %primary Bstar
 
             end
         end

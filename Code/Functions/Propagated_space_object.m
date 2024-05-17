@@ -7,6 +7,7 @@ classdef Propagated_space_object
         timestep    % time step [s]
         type        % Space object tupe (PAYLOAD/ROCKET BODY/DEBRIS)
         RCS         % Radar Cross Section category (LARGE/MEDIUM/SMALL)
+        B_star      % B* value for SWTS
         %%Time ticks
         t           % Time tick N*[mjd2000]
         %%ECI
