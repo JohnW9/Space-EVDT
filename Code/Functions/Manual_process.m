@@ -42,12 +42,29 @@ if TLE_input_mode
         %end
     end
 action_det = "placeholder" %for debugging
-    %MTS
 
     %Space Weather Trade Space
     if cdm_list(i).Pc < config.red_event_Pc && cdm_list(i).Pc > config.red_event_Pc/10 %close to limit
+           % if cdm_list(i).B_star > threshold
+            %    action_det = "high"
+           % end
+        end
+ 
         %B_star
 
+ %MTS
+
+% Visualize the orbit and positions
+
+
+ %if action_det == "red PC" % to change
+     %compute the orbital parameters of the new orbit based on a maneuver at TCA-x
+     r1_TCA = cdm_list(i).r1;
+     v1_TCA = cdm_list(i).v1;
+     [ropp,vopp] = opposite_pos_v(r1_TCA, v1_TCA);
+     %propagate it forward to TCA and screen for conjunctions meanwhile
+     [event_list,Relevant_object_list] = Event_detection (eos(eos_sat),space_cat,epoch,no_days,event_list);
+ %end
     end
 end
 
