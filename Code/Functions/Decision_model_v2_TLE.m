@@ -108,7 +108,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         if (Pc>config.red_event_Pc)
             %red event
             %Manual process
-            [cdm_list,action_det]=Manual_process(event_detection,cdm_list,i, event_detection_index);
+            [cdm_list,action_det]=Manual_process(event_detection,cdm_list,i, event_detection_index, space_cat);
             action_det = "red Pc";
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
             %yellow event

@@ -61,10 +61,12 @@ action_det = "placeholder" %for debugging
      %compute the orbital parameters of the new orbit based on a maneuver at TCA-x
      r1_TCA = cdm_list(i).r1;
      v1_TCA = cdm_list(i).v1;
+     [ropp,vopp] = opposite_pos_v(r1_TCA, v1_TCA);
+
      %propagate it forward to TCA and screen for conjunctions meanwhile
      epoch=event_detection(14,event_detection_index); %TCA in [mjd2000]
-     
-     [event_list,Relevant_object_list] = Event_detection_MTS(orbital_elements,cdm_list,cdm_index,space_cat,epoch,no_days,event_list);
+     prograde_maneuver(ropp,vopp,delta_v)
+     [event_list,Relevant_object_list] = Event_detection_MTS(cdm_list,cdm_index,space_cat,epoch,no_days,event_list);
  %end
     end
 end

@@ -32,7 +32,7 @@
 %           * Header added
 %
 
-function [event_list,Relevant_object_list] = Event_detection (cdm_list,cdm_index,space_cat,epoch,no_days,event_list)
+function [event_list,Relevant_object_list] = Event_detection_MTS (orbital_elements,cdm_list,cdm_index,space_cat,epoch,no_days,event_list)
 
 %global config;
 config = GetConfig;
