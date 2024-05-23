@@ -20,7 +20,7 @@ y=[y1,y2,y3,y4,y5,y6];
 z=[0:0.1:1];
 r= [0.1,0.5,0.8,1,2,3,4,5,6,7,8,9,10];
 s= 1600*1./r;
-
+%{
 for i = 1:length(r)
    point=1600*log(r(i))+3680;
    cdf(end+1) = point;
@@ -30,7 +30,7 @@ for j = 0:0.1:1
     point2=exp((j-3680)/1600);
     cdf_inv(end+1) = point2;
 end
-
+%}
 
 
 %cdf_inv = 40./gsqrt(16000-r);

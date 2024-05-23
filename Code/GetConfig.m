@@ -124,6 +124,8 @@ config.budget_per_day = 5;                                 % Budget available fo
 
 config.budget_tres = 0.5;                                  % Fraction threshold of the total budget so the available budget is considered high or low
 
+config.B_star_threshold = 0.05;                             %B_star threshold to trigger yellow event to red event (B_Star OD flag)
+
 %% Operational Cost of analyzing a CDM
 
 operator_salary = 80000; % Annual salary

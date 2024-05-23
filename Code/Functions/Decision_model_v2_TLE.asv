@@ -119,8 +119,6 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                     else
                         action_det = "yellow Pc";
                     end
-            else
-                action_det = "yellow Pc";
             end
                 %do OD
         else
