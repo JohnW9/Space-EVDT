@@ -8,17 +8,19 @@ addpath('Functions/NASA/');
 addpath('Time_conversion/');
 addpath("Data/");
 
-CDM_mode =0;
+CDM_mode =1;
 if CDM_mode == 1
     data_2015 = load("OCMDB_20150101_to_20151231.mat");
     data_2023 = load("OCMDB_20230101_to_20230630.mat");
-    read_real_CDM(data_2015.DB,data_2023.DB);
+    list1 = read_real_CDM(data_2015.DB);
+    list2 = read_real_CDM(data_2023.DB);
+    real_CDM_list_full = [list1, list2]
 else
 
     %% User inputs
     tic
     epoch = [2023 3 15 0 0 0];
-    end_date= [2023 3 25 0 0 0];           % Simulation end date and time in gregorian calender
+    end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added

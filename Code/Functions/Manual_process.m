@@ -25,7 +25,7 @@ config = GetConfig;
 
     %Pc vs HBR simplified
     if event_detection(15,event_detection_index) == 2 %secondary RCS large
-        %if event_detection(16,event_detection_index) == 2 %secondary is a debris
+        if event_detection(16,event_detection_index) == 2 %secondary is a debris
 
             average_value = 1.5349;
             new_HBR = (cdm_list(i).HBR-config.large_dim+average_value)*1e-3; % replace upper bound by median value
@@ -48,13 +48,13 @@ config = GetConfig;
             
             %cdm_list(i).Pc = Pc;
             if new_Pc < config.red_event_Pc
-                action_det = "yellow Pc from Manual Process";
+                action_det = "yellow Pc from Pc vs HBR";
             else
                 action_det = "red Pc";
             end
-        %else
-          %  action_det = "red Pc"; %if rocket body or payload. Keep using upper bound
-        %end
+        else
+            action_det = "red Pc"; %if rocket body or payload. Keep using upper bound
+        end
     else
         action_det = "red Pc";
     end
