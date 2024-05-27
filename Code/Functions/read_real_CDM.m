@@ -42,7 +42,7 @@ function real_CDM_list = read_real_CDM(database)
 
        real_CDM_list(current_line).Creation_time = creation_date;
        real_CDM_list(current_line).TCA = TCA_date;
-       disp(real_CDM_list(current_line));
+       %disp(real_CDM_list(current_line));
     end
 end
 

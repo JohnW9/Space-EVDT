@@ -37,11 +37,32 @@
 %
 %
 
-function Decision_model_v2_CDM (real_CDM_list_full)
+function Decision_model_v2_CDM (real_CDM_list)
 
 config = GetConfig;
-cdm_length = size(real_CDM_list_full,1)
-for i=1:length(real_CDM_list_full) % loops through all the generated CDMs
+cdm_length = size(real_CDM_list,1);
+conjunction = real_CDM.empty; % temporary list of 1 single conjunction (can contain several CDMs)
+conjunction_list = {}; %cell array of conjunctions
+current_index = 1;
+for i=1:length(real_CDM_list) % loops through all the generated CDMs
+
+        %% Regroup the CDMs by conjunction
+        if real_CDM_list(i).Event_number == current_index;
+            conjunction(end+1) = real_CDM_list(i);
+        else
+            conjunction_list{end+1} = conjunction;
+            conjunction = real_CDM.empty;
+            conjunction(end+1) = real_CDM_list(i); %don't forget to add the current element
+            current_index = current_index+1;
+
+            if i == length(real_CDM_list) %handling the last element of the list
+                conjunction_list{end+1} = conjunction;
+            end
+        end
+end
+
+for i=1:length(conjunction_list)
+
         %% Decision tree
         if value_of_collision > config.CC_threshold
             %increase threshold if high value of collision
@@ -74,6 +95,6 @@ for i=1:length(real_CDM_list_full) % loops through all the generated CDMs
         if TimeToConjunction<config.TimeToConj_low
             %Excecute_maneuver
         end
+end
 
-    end
 end
