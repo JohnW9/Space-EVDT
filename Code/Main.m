@@ -14,6 +14,7 @@ if CDM_mode == 1
     data_2023 = load("OCMDB_20230101_to_20230630.mat");
     list1 = read_real_CDM(data_2015.DB);
     list2 = read_real_CDM(data_2023.DB);
+
     Decision_model_v2_CDM(list1);
 else
 

@@ -4,7 +4,9 @@ classdef real_CDM
         Primary_ID
         Secondary_ID
         Creation_time
-        TCA
+        Creation_time_sec                   % CDM creation time in seconds (without counting the year)
+        TCA                                 
+        TCA_sec                             % TCA time in seconds (without counting the year)
         Drag_primary
         Drag_secondary
         Pc
