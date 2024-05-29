@@ -9,7 +9,7 @@ addpath('Time_conversion/');
 addpath("Data/");
 
 CDM_mode = 1;
-data_reading_mode = 1;
+data_reading_mode = 0;
 if CDM_mode == 1
     data_2015 = load("OCMDB_20150101_to_20151231.mat");
     data_2023 = load("OCMDB_20230101_to_20230630.mat");
@@ -26,7 +26,7 @@ if CDM_mode == 1
 if data_reading_mode == 1
     for red_Pc = red_Pc_list
         for time_of_maneuver = tom_list
-            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list2,red_Pc,time_of_maneuver,sat_maneuver_dict);
+            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list1,red_Pc,time_of_maneuver,sat_maneuver_dict);
             disp("for threshold Pc " + string(red_Pc) + " and t of maneuver (before TCA) of " + string(time_of_maneuver/3600) +" h, we have " + string(nb_of_maneuver) + " maneuvers");
             disp(sat_maneuver_dict);
             sat_maneuver_dict(sat_ids) = 0;

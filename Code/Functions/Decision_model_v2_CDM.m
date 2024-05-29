@@ -33,58 +33,17 @@
 %
 %
 
-function real_CDM_list = Decision_model_v2_CDM (real_CDM_list)
+function [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM (real_CDM_list,red_Pc,time_of_maneuver,sat_maneuver_dict)
 
 config = GetConfig;
-conjunction = real_CDM.empty; % temporary list of 1 single conjunction (can contain several CDMs)
-conjunction_list = {}; %cell array of conjunctions
-current_index = 1;
+nb_of_maneuver = 0;
 
-for i=1:length(real_CDM_list) % loops through all the generated CDMs
-
-        %% Regroup the CDMs by conjunction
-        if real_CDM_list(i).Event_number == current_index
-            conjunction(end+1) = real_CDM_list(i); %#ok<AGROW>
-        else
-            conjunction_list{end+1} = conjunction; %#ok<AGROW>
-            conjunction = real_CDM.empty;
-            conjunction(end+1) = real_CDM_list(i); %#ok<AGROW> %don't forget to add the current element
-            current_index = current_index+1;
-
-            if i == length(real_CDM_list) %handling the last element of the list
-                conjunction_list{end+1} = conjunction; %#ok<AGROW>
-            end
-        end
-end
-
-sorted_conj_list = cell(1,length(conjunction_list)); %empty cell array for sorted conjunctions
-action_list = cell(1,length(conjunction_list));
-
-time_of_maneuver = 24*3600; %temp, time of maneuver before TCA
-
-for j=1:length(conjunction_list)
-
-        for current_cdm_index = 1:length(conjunction_list{j})
-            conjunction_list{j}(current_cdm_index).Creation_time_sec = date2sec(conjunction_list{j}(current_cdm_index).Creation_time); %#ok<AGROW>
-
-            conjunction_list{j}(current_cdm_index).TCA_sec = date2sec(conjunction_list{j}(current_cdm_index).TCA); %#ok<AGROW>
-            %save the second format in the real_cdm themselves
-        end
-end
-
-for h=1:length(conjunction_list)
-    current_conjunction_list = conjunction_list{h};
-    TCA_list = [current_conjunction_list.TCA_sec];
-    [~, ind] = sort([TCA_list]); %#ok<NBRAK2>
-    sorted_current_conj_list = current_conjunction_list(ind);
-    sorted_conj_list{h} = sorted_current_conj_list;
-end
-
-
+sorted_conj_list = conjunction_sort(real_CDM_list);
+action_list = cell(1,length(sorted_conj_list));
 
     %% choose last CDM before TCA
-for l=1:length(conjunction_list)
-    current_conjunction_list = conjunction_list{l};
+for l=1:length(sorted_conj_list)
+    current_conjunction_list = sorted_conj_list{l};
     for current_cdm_index = 1:length(current_conjunction_list)
             if current_conjunction_list(current_cdm_index).Creation_time_sec > current_conjunction_list(current_cdm_index).TCA_sec-time_of_maneuver
                 chosen_cdm_index = current_cdm_index;
@@ -100,11 +59,14 @@ for l=1:length(conjunction_list)
            % Pc = Pc * 10;
         %end
         Pc = current_conjunction_list(chosen_cdm_index).Pc;
-        if (Pc>config.red_event_Pc)
+        if (Pc>red_Pc) %red_Pc is selected in Main.m
             %red event
             %Manual process
             %[cdm_list,action_det]=Manual_process(event_detection,cdm_list,i, event_detection_index);
             action_det = "red Pc"; %temp
+            nb_of_maneuver = nb_of_maneuver + 1;
+            sat_maneuver_dict(current_conjunction_list(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction_list(chosen_cdm_index).Primary_ID) + 1;
+            
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
             %yellow event
             %high B* OD flag
