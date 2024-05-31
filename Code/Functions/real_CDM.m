@@ -7,6 +7,7 @@ classdef real_CDM
         Creation_time_sec                   % CDM creation time in seconds (without counting the year)
         TCA                                 
         TCA_sec                             % TCA time in seconds (without counting the year)
+        Creat_t_to_TCA                      % Difference between TCA and creation time (given in days)
         Drag_primary
         Drag_secondary
         Pc

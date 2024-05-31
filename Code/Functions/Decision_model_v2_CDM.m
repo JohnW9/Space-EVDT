@@ -41,37 +41,31 @@ nb_of_maneuver = 0;
 sorted_conj_list = conjunction_sort(real_CDM_list);
 action_list = cell(1,length(sorted_conj_list));
 
-    %% choose last CDM before TCA
+   
 for l=1:length(sorted_conj_list)
-    current_conjunction_list = sorted_conj_list{l};
-    for current_cdm_index = 1:length(current_conjunction_list)
-            if current_conjunction_list(current_cdm_index).Creation_time_sec > current_conjunction_list(current_cdm_index).TCA_sec-time_of_maneuver
-                chosen_cdm_index = current_cdm_index;
-                break;
-            elseif current_cdm_index == length(current_conjunction_list) % if no cdm is within chosen time range
-                chosen_cdm_index = current_cdm_index; % choose last cdm available
-            end
-    end
+     %% choose last CDM before TCA
+    current_conjunction = sorted_conj_list{l};
+  chosen_cdm_index = choose_maneuver_cdm(current_conjunction,time_of_maneuver);
         
     %% Decision tree
         %if value_of_collision > config.CC_threshold
             %increase threshold if high value of collision
            % Pc = Pc * 10;
         %end
-        Pc = current_conjunction_list(chosen_cdm_index).Pc;
+        Pc = current_conjunction(chosen_cdm_index).Pc;
         if (Pc>red_Pc) %red_Pc is selected in Main.m
             %red event
             %Manual process
             %[cdm_list,action_det]=Manual_process(event_detection,cdm_list,i, event_detection_index);
             action_det = "red Pc"; %temp
             nb_of_maneuver = nb_of_maneuver + 1;
-            sat_maneuver_dict(current_conjunction_list(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction_list(chosen_cdm_index).Primary_ID) + 1;
+            sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) + 1;
             
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
             %yellow event
             %high B* OD flag
             if Pc < config.red_event_Pc && Pc > config.red_event_Pc/10 %close to limit
-                    if current_conjunction_list(chosen_cdm_index).Drag_primary > config.B_star_threshold % TO CHANGE
+                    if current_conjunction(chosen_cdm_index).Drag_primary > config.B_star_threshold % TO CHANGE
                         action_det = "high B* star OD flag, red Pc";
                     else
                         action_det = "yellow Pc";

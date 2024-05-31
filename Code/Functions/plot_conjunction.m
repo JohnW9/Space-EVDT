@@ -25,22 +25,21 @@ function plot_conjunction(conjunction)
 
 time_before_tca = zeros(1,length(conjunction));
 Pc_list = zeros(1,length(conjunction));
-max_Pc = 0;
 for i=1:length(conjunction)
-    time_before_tca(i) = (conjunction(i).TCA_sec-conjunction(i).Creation_time_sec)/3600; 
+    time_before_tca(i) = conjunction(i).Creat_t_to_TCA*24; 
     Pc_list(i) = conjunction(i).Pc;
-    if conjunction(i).Pc > max_Pc
-        max_Pc = conjunction(i).Pc;
-    end
 end
 
-if max_Pc > 1e-4
     figure;
     plot(time_before_tca,Pc_list, '-o', 'LineWidth',2,'MarkerSize',8);
         xlabel('time before TCA [h]');
         ylabel('Pc');
         grid on;
         set(gca, 'XDir', 'reverse');
-end
+        legend(string(conjunction(1).Primary_ID));
+        disp("TCA: " + string(conjunction(1).TCA));
+        disp("Event nb: " + string(conjunction(1).Event_number));
+        %disp("time before tca" + string(time_before_tca));
+        %disp("Pc_list" + string(Pc_list));
 
 end

@@ -29,6 +29,7 @@ function real_CDM_list = read_real_CDM(database)
        real_CDM_list(current_line).Pc = database(current_line,156);
        real_CDM_list(current_line).HBR = database(current_line,157);
        real_CDM_list(current_line).Event_number = database(current_line,217);
+       real_CDM_list(current_line).Creat_t_to_TCA = database(current_line,169);
 
        creation_date = [];
        TCA_date = [];

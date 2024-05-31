@@ -63,8 +63,8 @@ end
 %sort the CDMs within each conjunction
 for h=1:length(conjunction_list)
     current_conjunction_list = conjunction_list{h};
-    Creation_t_list = [current_conjunction_list.Creation_time_sec];
-    [~, ind] = sort([Creation_t_list]); %#ok<NBRAK2>
+    Creation_t_list = [current_conjunction_list.Creat_t_to_TCA];
+    [~, ind] = sort([Creation_t_list],'descend'); %#ok<NBRAK2>
     sorted_current_conj_list = current_conjunction_list(ind);
     sorted_conj_list{h} = sorted_current_conj_list;
 end

@@ -17,25 +17,29 @@ if CDM_mode == 1
     list2 = read_real_CDM(data_2023.DB);
 
     red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
-    tom_list = [12*3600,24*3600,36*3600,48*3600];
-
-    sat_ids = [25682,25994,27424,43613]; %in order LANDSAT 7, TERRA, AQUA, ICESAT-2
+    tom_list = [0,12*3600,24*3600,36*3600,48*3600,60*3600];
+    nb_of_maneuver_list = [];
+    sat_ids = [25682,25994,27424,43613]; % in order LANDSAT 7, TERRA, AQUA, ICESAT-2
     sat_maneuvers = zeros(1,4);
     sat_maneuver_dict = dictionary(sat_ids,sat_maneuvers);
     
-if data_reading_mode == 1
+if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for different Pc thresholds
     for red_Pc = red_Pc_list
         for time_of_maneuver = tom_list
             [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list2,red_Pc,time_of_maneuver,sat_maneuver_dict);
             disp("for threshold Pc " + string(red_Pc) + " and t of maneuver (before TCA) of " + string(time_of_maneuver/3600) +" h, we have " + string(nb_of_maneuver) + " maneuvers");
             disp(sat_maneuver_dict);
             sat_maneuver_dict(sat_ids) = 0;
+            nb_of_maneuver_list(end+1) = nb_of_maneuver;
         end
+        plot_tom_Pc_tradespace(nb_of_maneuver_list,tom_list,red_Pc);
+        nb_of_maneuver_list = [];
     end
+    %hold off;
+  
 
-
-else
-    plot_conjunction_list(list1);
+else % plotting each relevant conjunction
+    plot_conjunction_list(list2);
 end
 
 else
@@ -49,11 +53,13 @@ else
     accelerator=0;                          % details to be added
     config = GetConfig;
     total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
+
     %% NASA satellites
     eos = Read_NASA_satellites;
     eos(2:3)=[];
     %eos = eos(1);
     disp('NASA satellites loaded')
+
     %% Space catalogue
     fileID=fopen("Credentials.txt");
     if fileID == -1; error('Credentials.txt file, containing the space-track username and password, is missing');end
