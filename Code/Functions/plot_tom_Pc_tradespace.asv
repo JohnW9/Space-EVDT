@@ -29,8 +29,8 @@ figure;
             ylabel('number of maneuvers');
             grid on;
             set(gca, 'XDir', 'reverse');
-            legend_list{i} = 'Pc ' + string(red_Pc_list(i)); 
-            %legend('Pc ' + string(red_Pc_list(i)));
+            legend_list{i} = 'Pc ' + string(red_Pc); 
+            legend(red_Pc_list)
     end
     legend(legend_list);
 

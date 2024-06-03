@@ -17,8 +17,9 @@ if CDM_mode == 1
     list2 = read_real_CDM(data_2023.DB);
 
     red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
-    tom_list = [0,12*3600,24*3600,36*3600,48*3600,60*3600];
-    nb_of_maneuver_list = [];
+    tom_list = [12*3600,24*3600,36*3600,48*3600,60*3600];
+    nb_of_maneuver_list = []; % list of nb of maneuvers for different time of maneuver
+    nb_of_maneuver_list_total = {}; % list of lists of nb of maneuvers for different threshold Pc
     sat_ids = [25682,25994,27424,43613]; % in order LANDSAT 7, TERRA, AQUA, ICESAT-2
     sat_maneuvers = zeros(1,4);
     sat_maneuver_dict = dictionary(sat_ids,sat_maneuvers);
@@ -32,11 +33,11 @@ if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for dif
             sat_maneuver_dict(sat_ids) = 0;
             nb_of_maneuver_list(end+1) = nb_of_maneuver;
         end
-        plot_tom_Pc_tradespace(nb_of_maneuver_list,tom_list,red_Pc);
+        nb_of_maneuver_list_total{end+1} = nb_of_maneuver_list;
         nb_of_maneuver_list = [];
     end
-    %hold off;
-  
+
+    plot_tom_Pc_tradespace(nb_of_maneuver_list_total,tom_list,red_Pc_list);
 
 else % plotting each relevant conjunction
     plot_conjunction_list(list2);
