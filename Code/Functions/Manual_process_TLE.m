@@ -1,5 +1,5 @@
 % FUNCTION NAME:
-%   Manual_process
+%   Manual_process_TLE
 %
 % DESCRIPTION:
 %   This function simulates the manual process of NASA CARA. It includes Pc vs HBR, MTS and SWTS
@@ -19,7 +19,7 @@
 %   06/05/2024 - Jonathan Wei
 %       * Header added
 
-function [cdm_list,action_det]=Manual_process (event_detection,cdm_list,i,event_detection_index)
+function [cdm_list,action_det]=Manual_process_TLE (event_detection,cdm_list,i,event_detection_index)
 config = GetConfig;
 
 

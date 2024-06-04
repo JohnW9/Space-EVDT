@@ -56,7 +56,7 @@ for l=1:length(sorted_conj_list)
         if (Pc>red_Pc) %red_Pc is selected in Main.m
             %red event
             %Manual process
-            %[cdm_list,action_det]=Manual_process(event_detection,cdm_list,i, event_detection_index);
+            Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det)
             action_det = "red Pc"; %temp
             nb_of_maneuver = nb_of_maneuver + 1;
             sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) + 1;

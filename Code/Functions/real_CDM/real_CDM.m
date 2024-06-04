@@ -13,5 +13,22 @@ classdef real_CDM
         Pc
         HBR
         Event_number
+        WRMS_primary                        % weighted RMS value
+        WRMS_secondary
+        r_vel                               % relative velocity value
+        EDR_primary                         % Energy Dissipation Rate
+        EDR_secondary
+        SRP_primary                         % Solar Radiation Pressure
+        SRP_secondary
+        Lun_Sol_primary                     % Lunar/Solar effects
+        Lun_Sol_secondary
+        Earth_Tides_primary
+        Earth_Tides_secondary
+        LUPI_primary
+        LUPI_secondary
+        DC_span_primary                     % Differential Correction span
+        DC_span_secondary
+        DC_residuals_primary
+        DC_residuals_secondary
     end
 end

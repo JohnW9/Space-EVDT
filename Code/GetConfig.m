@@ -126,8 +126,10 @@ config.budget_tres = 0.5;                                  % Fraction threshold 
 
 config.B_star_threshold = 0.05;                            % B_star threshold to trigger yellow event to red event (B_Star OD flag) 
 
-config.time_of_maneuver = 172800;                           % time of maneuver before TCA  in [s] (here 48h, as NASA does)
+config.time_of_maneuver = 172800;                          % time of maneuver before TCA  in [s] (here 48h, as NASA does)
 
+config.WRMS_low = 0.5;                                     % low threshold value for WRMS OD flag
+config.WRMS_high = 2;                                      % high threshold value for WRMS OD flag
 %% Operational Cost of analyzing a CDM
 
 operator_salary = 80000; % Annual salary

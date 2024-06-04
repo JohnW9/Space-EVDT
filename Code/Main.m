@@ -7,10 +7,10 @@ addpath('Functions/');
 addpath('Functions/NASA/');
 addpath('Time_conversion/');
 addpath("Data/");
-addpath('Functions/CDM/');
+addpath('Functions/real_CDM/');
 
-CDM_mode = 1;
-data_reading_mode = 1;
+CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
+data_reading_mode = 1; 
 if CDM_mode == 1
     data_2015 = load("OCMDB_20150101_to_20151231.mat");
     data_2023 = load("OCMDB_20230101_to_20230630.mat");
