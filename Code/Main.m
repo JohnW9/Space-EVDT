@@ -41,7 +41,7 @@ if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for dif
     plot_tom_Pc_tradespace(nb_of_maneuver_list_total,tom_list,red_Pc_list);
 
 else % plotting each relevant conjunction
-    plot_conjunction_list(list2);
+    plot_conjunction_list(list1);
 end
 
 else

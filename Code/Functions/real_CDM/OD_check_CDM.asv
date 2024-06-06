@@ -326,7 +326,7 @@ function [CollectedScores,CompositeScore,CurrentEval]=OD_check_CDM(CDM,Input_Obj
         end
     else
         if abs(CDM.(['SRP_' Input_Object_Designator]))>=ODQualityThresholds.SRPReasonabilityEDRGT1(ObjectType,1) && ...
-            abs(CDM.(['SRP_' Input_Object_Designator]))<=ODQualityThresholds.SRPReasonabilityEDRGT1(ObjectType,2)
+            abs(CDM.CDM.(['SRP_' Input_Object_Designator]))<=ODQualityThresholds.SRPReasonabilityEDRGT1(ObjectType,2)
             CurrentEval.ModelSettings.SRPReasonability=1;
         else
             CurrentEval.ModelSettings.SRPReasonability=0; 
@@ -405,7 +405,7 @@ function [CollectedScores,CompositeScore,CurrentEval]=OD_check_CDM(CDM,Input_Obj
     % results written to CollectedScores array.  1=pass, 0=fail
     % Part I results
     %CollectedScores(1,1)=CurrentEval.ModelSettings.Geopotential;
-    %no data in CDM
+    CollectedScores(1,1)=1; %no data in CDM
     CollectedScores(2,1)=CurrentEval.ModelSettings.DragState;
     CollectedScores(3,1)=CurrentEval.ModelSettings.SRPState;
     CollectedScores(4,1)=CurrentEval.ModelSettings.LunarSolar;
@@ -422,7 +422,7 @@ function [CollectedScores,CompositeScore,CurrentEval]=OD_check_CDM(CDM,Input_Obj
     CollectedScores(3,3)=CurrentEval.Covariance.InTrackComponentSize;
     % Part IV results
     %CollectedScores(1,4)=CurrentEval.EpochAge;
-    %no data in CDM
+    CollectedScores(1,4)=1; %no data in CDM
     % composite score calculation.  The sum of results for each part (1's and 0's) is computed and
     % then divided by the number of tests in each part (e.g., for part 1, sum is computed and then
     % divided by 7) and then multiplied by a weighting factor that gives relative weighting among
@@ -430,8 +430,9 @@ function [CollectedScores,CompositeScore,CurrentEval]=OD_check_CDM(CDM,Input_Obj
     % factors in order to keep the factor within the range [0 1]
 
     %score computation modified to reflect the parts not computed
-    CompositeScore=(sum(CollectedScores(~isnan(CollectedScores(:,1)),1))/6*ODQualityThresholds.CompositeScoreWeightingVector(1) + ...
+    CompositeScore=(sum(CollectedScores(~isnan(CollectedScores(:,1)),1))/7*ODQualityThresholds.CompositeScoreWeightingVector(1) + ...
         sum(CollectedScores(~isnan(CollectedScores(:,2)),2))/3*ODQualityThresholds.CompositeScoreWeightingVector(2) + ...
+        CollectedScores(1,4)*ODQualityThresholds.CompositeScoreWeightingVector(4) + ...
         sum(CollectedScores(~isnan(CollectedScores(:,3)),3))/3*ODQualityThresholds.CompositeScoreWeightingVector(3))/...
         sum(ODQualityThresholds.CompositeScoreWeightingVector);
     end

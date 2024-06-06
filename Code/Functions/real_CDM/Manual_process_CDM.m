@@ -27,8 +27,7 @@ config = GetConfig;
 %elseif  current_conjunction(chosen_cdm_index) < config.WRMS_low
 %    action_det = "low WRMS warning"; 
 %end
-%OD check
-OD_check_CDM(current_conjunction(chosen_cdm_index),'primary')
+
 
 
 end

@@ -49,6 +49,38 @@ function real_CDM_list = read_real_CDM(database)
        real_CDM_list(current_line).DC_residuals_primary = database(current_line,46);
        real_CDM_list(current_line).DC_residuals_secondary = database(current_line,106);
 
+       real_CDM_list(current_line).X_ECI_primary = database(current_line,172);
+       real_CDM_list(current_line).Y_ECI_primary = database(current_line,173);
+       real_CDM_list(current_line).Z_ECI_primary = database(current_line,174);
+       real_CDM_list(current_line).X_DOT_ECI_primary = database(current_line,175);
+       real_CDM_list(current_line).Y_DOT_ECI_primary = database(current_line,176);
+       real_CDM_list(current_line).Z_DOT_ECI_primary = database(current_line,177);
+
+       real_CDM_list(current_line).X_ECI_secondary = database(current_line,178);
+       real_CDM_list(current_line).Y_ECI_secondary = database(current_line,179);
+       real_CDM_list(current_line).Z_ECI_secondary = database(current_line,180);
+       real_CDM_list(current_line).X_DOT_ECI_secondary = database(current_line,181);
+       real_CDM_list(current_line).Y_DOT_ECI_secondary = database(current_line,182);
+       real_CDM_list(current_line).Z_DOT_ECI_secondary = database(current_line,183);
+
+       real_CDM_list(current_line).CovUU_primary = database(current_line,73);
+       real_CDM_list(current_line).CovUV_primary = database(current_line,74);
+       real_CDM_list(current_line).CovUW_primary = database(current_line,75);
+       real_CDM_list(current_line).CovVV_primary = database(current_line,79);
+       real_CDM_list(current_line).CovVW_primary = database(current_line,80);
+       real_CDM_list(current_line).CovWW_primary = database(current_line,84);
+
+       real_CDM_list(current_line).CovUU_secondary = database(current_line,133);
+       real_CDM_list(current_line).CovUV_secondary = database(current_line,134);
+       real_CDM_list(current_line).CovUW_secondary = database(current_line,135);
+       real_CDM_list(current_line).CovVV_secondary = database(current_line,139);
+       real_CDM_list(current_line).CovVW_secondary = database(current_line,140);
+       real_CDM_list(current_line).CovWW_secondary = database(current_line,144);
+
+       real_CDM_list(current_line).Bcoef_primary = database(current_line,56);
+       real_CDM_list(current_line).Bcoef_secondary = database(current_line,116);
+       
+
        creation_date = [];
        TCA_date = [];
        for date_index_cre=3:8

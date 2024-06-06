@@ -55,6 +55,9 @@ for l=1:length(sorted_conj_list)
         Pc = current_conjunction(chosen_cdm_index).Pc;
         if (Pc>red_Pc) %red_Pc is selected in Main.m
             %red event
+            % OD check
+            [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'primary');
+            [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'secondary');
             %Manual process
             Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det)
             action_det = "red Pc"; %temp
