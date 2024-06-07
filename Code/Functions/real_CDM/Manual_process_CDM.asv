@@ -42,7 +42,6 @@ new_anom = mod(anom + pi, 2*pi);
 E = 2 * atan(sqrt((1 - e) / (1 + e)) * tan(new_anom / 2)); % eccentric anomaly
 M = E - e* sin(E); % mean anomaly
 [r,v] = Kep2Cart([a,e,i,Omega,w,M]);
-
 %compute new orbital parameters
 %propagate forward again
 
