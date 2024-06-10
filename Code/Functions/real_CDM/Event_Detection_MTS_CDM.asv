@@ -1,9 +1,9 @@
 
 % FUNCTION NAME:
-%   Event_detection_MTS
+%   Event_detection_MTS_CDM
 %
 % DESCRIPTION:
-%   The modified version of Event_detection, adapted for the repropagation
+%   The modified version of Event_detection, adapted for the re-propagation
 %   in Maneuver Trade Space.
 %   
 %
@@ -32,7 +32,7 @@
 %           * Header added
 %
 
-function [event_list,Relevant_object_list] = Event_detection (cdm_list,cdm_index,space_cat,epoch,no_days,event_list)
+function [event_list,Relevant_object_list] = Event_detection_MTS_CDM (orbital_elements,cdm_list,cdm_index,space_cat,epoch,no_days,event_list)
 
 %global config;
 config = GetConfig;
@@ -110,17 +110,19 @@ for cycle=1:length(time_cycle)-1
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
     end
 
-    
-        %% Brute Force
-        ts = toc(start_timer);
+%}  
+
+        %ts = toc(start_timer);
         Propagated_primary = main_propagator (Primary,final_date,timestep,1);
         Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
+        % propagate primary and relevant secondary objects
         event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,config);
+        % screen for conjunctions
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
-        te = toc(start_timer);
-        time_remaining = ceil((length(time_cycle)-1-cycle)*(te-ts)/60); % Remaining computation time in minutes
-        waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
+        %te = toc(start_timer);
+        %time_remaining = ceil((length(time_cycle)-1-cycle)*(te-ts)/60); % Remaining computation time in minutes
+        %waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
     end
 
 if config.TPF == 0

@@ -1,6 +1,6 @@
 
 % FUNCTION NAME:
-%   Event_detection_MTS
+%   Event_detection_MTS_CDM
 %
 % DESCRIPTION:
 %   The modified version of Event_detection, adapted for the re-propagation
@@ -32,7 +32,7 @@
 %           * Header added
 %
 
-function [event_list,Relevant_object_list] = Event_detection_MTS (orbital_elements,cdm_list,cdm_index,space_cat,epoch,no_days,event_list)
+function [event_list,Relevant_object_list] = Event_Detection_MTS_CDM (new_orbital_elements,current_cdm,epoch,no_days,event_list)
 
 %global config;
 config = GetConfig;
@@ -58,23 +58,23 @@ end
 if isnan(sat_index)
     error('Satellite name not found in the space catalogue')
 end
-
-Primary=space_cat(sat_index);
-
+Primary = real_CDM2space_object(current_cdm,'Primary',new_orbital_elements);
+%Primary=space_cat(sat_index);
+Secondary = real_CDM2space_object(current_cdm,'Secondary');
 %% Big Loop for avoiding ram overflow
 
 initial_date=date2mjd2000(epoch);
 
 cycle_days=config.cycle_days; % Time sections to avoid RAM overflow
 
-WB_conjAssess = waitbar(0,['Finding conjunctions for ' Primary.name]);
-start_timer = tic;
+%WB_conjAssess = waitbar(0,['Finding conjunctions for ' Primary.name]);
+%start_timer = tic;
 
 
 time_cycle = initial_date:cycle_days:initial_date+no_days;
-relevent_SO_frequency=config.relevent_SO_frequency; % Renews the relevant space objects every 5 days
+%relevent_SO_frequency=config.relevent_SO_frequency; % Renews the relevant space objects every 5 days
 
-time_cycle(end+1)=initial_date+no_days;
+%time_cycle(end+1)=initial_date+no_days;
 
 timestep = config.timestep;
 
@@ -83,13 +83,13 @@ for cycle=1:length(time_cycle)-1
     initial_date=mjd20002date(time_cycle(cycle));
     final_date=mjd20002date(time_cycle(cycle+1));
 
-    Primary = Space_catalogue_reset_epoch (Primary,initial_date);
+    %Primary = Space_catalogue_reset_epoch (Primary,initial_date);
 
     % This is to renew the relevant space objects after the specified number of days
-    if rem(cycle,ceil(relevent_SO_frequency/cycle_days))==0 || cycle==1
-        space_cat = Space_catalogue_reset_epoch (space_cat,initial_date);
-        Relevant_space_objects= MOID(Primary,space_cat);
-
+    %if rem(cycle,ceil(relevent_SO_frequency/cycle_days))==0 || cycle==1
+     %   space_cat = Space_catalogue_reset_epoch (space_cat,initial_date);
+     %   Relevant_space_objects= MOID(Primary,space_cat);
+%{
         %% Adding to the relevant object list
         if nargout==2
             for pl = 1:length(Relevant_space_objects)
@@ -110,20 +110,20 @@ for cycle=1:length(time_cycle)-1
         Relevant_space_objects = Space_catalogue_reset_epoch (Relevant_space_objects,initial_date);
     end
 
-    
-        %% Brute Force
-        ts = toc(start_timer);
-        Propagated_primary = main_propagator (Primary,final_date,timestep,1);
-        Propagated_Relevant_space_objects  = main_propagator (Relevant_space_objects,final_date,timestep,1);
+%}  
+
+        %ts = toc(start_timer);
+        Propagated_primary = main_propagator(Primary,final_date,timestep,1);
+        Propagated_Relevant_space_objects  = main_propagator(Secondary,final_date,timestep,1);
         % propagate primary and relevant secondary objects
-        event_list = conj_assess (Propagated_primary, Propagated_Relevant_space_objects,event_list,config);
+        event_list = conj_assess(Propagated_primary, Propagated_Relevant_space_objects,event_list,config);
         % screen for conjunctions
         clear Propagated_primary;
         clear Propagated_Relevant_space_objects;
-        te = toc(start_timer);
-        time_remaining = ceil((length(time_cycle)-1-cycle)*(te-ts)/60); % Remaining computation time in minutes
-        waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
-    end
+        %te = toc(start_timer);
+        %time_remaining = ceil((length(time_cycle)-1-cycle)*(te-ts)/60); % Remaining computation time in minutes
+        %waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
+     end
 
 if config.TPF == 0
     close(WB_conjAssess);

@@ -45,7 +45,7 @@ action_list = cell(1,length(sorted_conj_list));
 for l=1:length(sorted_conj_list)
      %% choose last CDM before TCA
     current_conjunction = sorted_conj_list{l};
-  chosen_cdm_index = choose_maneuver_cdm(current_conjunction,time_of_maneuver);
+    chosen_cdm_index = choose_maneuver_cdm(current_conjunction,time_of_maneuver);
         
     %% Decision tree
         %if value_of_collision > config.CC_threshold
@@ -59,7 +59,7 @@ for l=1:length(sorted_conj_list)
             [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'primary');
             [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'secondary');
             %Manual process
-            Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det)
+            Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det,time_of_maneuver)
             action_det = "red Pc"; %temp
             nb_of_maneuver = nb_of_maneuver + 1;
             sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) + 1;
