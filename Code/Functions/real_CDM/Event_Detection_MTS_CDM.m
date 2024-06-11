@@ -32,21 +32,21 @@
 %           * Header added
 %
 
-function [event_list,Relevant_object_list] = Event_Detection_MTS_CDM (new_orbital_elements,current_cdm,epoch,no_days,event_list)
+function [event_list] = Event_Detection_MTS_CDM(new_orbital_elements,current_cdm,epoch,no_days,event_list)
 
 %global config;
 config = GetConfig;
 %%
 
-if nargout == 2
-    Relevant_object_list(length(space_cat)) = Space_object;
-    list_length = 0;
-end
+%if nargout == 2
+%    Relevant_object_list(length(space_cat)) = Space_object;
+%    list_length = 0;
+%end
 
 
 %% Finding primary sat in space catalogue and initial relevant space objects
 %finding the index in the space catalogue
-
+%{
 sat_index=NaN;
 for i=1:length(space_cat)
     if strcmp(cdm_list(cdm_index).id1,space_cat(i).id)
@@ -58,6 +58,7 @@ end
 if isnan(sat_index)
     error('Satellite name not found in the space catalogue')
 end
+%}
 Primary = real_CDM2space_object(current_cdm,'Primary',new_orbital_elements);
 %Primary=space_cat(sat_index);
 Secondary = real_CDM2space_object(current_cdm,'Secondary');
@@ -125,12 +126,12 @@ for cycle=1:length(time_cycle)-1
         %waitbar(cycle/length(time_cycle),WB_conjAssess,['Finding conjunctions for ' Primary.name ', est. time: ' num2str(time_remaining) ' mins']);
      end
 
-if config.TPF == 0
-    close(WB_conjAssess);
-end
+%if config.TPF == 0
+%    close(WB_conjAssess);
+%end
 
-if nargout == 2
-    Relevant_object_list(list_length+1:end) = [];
+%if nargout == 2
+%    Relevant_object_list(list_length+1:end) = [];
+%end
 end
-
 
