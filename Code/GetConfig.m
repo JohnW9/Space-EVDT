@@ -136,6 +136,8 @@ operator_salary = 80000; % Annual salary
 operator_annual_hours = 40*52; % 2080 hrs of annual labor
 operator_hourly = round(operator_salary/operator_annual_hours);
 
+config.mu = 3.986004330000000e+05;
+
 config.cdmCost_lowPc = 0*operator_hourly;
 config.cdmCost_medPc = 2*operator_hourly;
 config.cdmCost_higPc = 5*operator_hourly;

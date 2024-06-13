@@ -32,7 +32,7 @@
 %           * Header added
 %
 
-function [event_list] = Event_Detection_MTS_CDM(new_orbital_elements,current_cdm,epoch,no_days,event_list)
+function [event_list] = Event_Detection_MTS_CDM(new_oe_primary,new_oe_secondary,current_cdm,epoch,no_days,event_list)
 
 %global config;
 config = GetConfig;
@@ -59,9 +59,9 @@ if isnan(sat_index)
     error('Satellite name not found in the space catalogue')
 end
 %}
-Primary = real_CDM2space_object(current_cdm,'Primary',new_orbital_elements);
+Primary = real_CDM2space_object(current_cdm,'Primary',new_oe_primary);
 %Primary=space_cat(sat_index);
-Secondary = real_CDM2space_object(current_cdm,'Secondary');
+Secondary = real_CDM2space_object(current_cdm,'Secondary',new_oe_secondary);
 %% Big Loop for avoiding ram overflow
 
 initial_date=date2mjd2000(epoch);

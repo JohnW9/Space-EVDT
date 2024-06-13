@@ -1,0 +1,94 @@
+% FUNCTION NAME:
+%   plot_orbit
+%
+% DESCRIPTION:
+%  Plots the given orbit and the spacecraft position on that orbit
+%   
+% INPUT:
+%   orbital_elements: a struct with orbital elements assgined
+%
+%   orbital_elements.a
+%   orbital_elements.e
+%   orbital_elements.i
+%   orbital_elements.Omega
+%   orbital_elements.w
+%   orbital_elements.anom
+%
+% OUTPUT:
+%   Plot of the orbit
+%
+% ASSUMPTIONS AND LIMITATIONS:
+% 
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   12/6/2024 - Jonathan Wei
+%       * Header added
+%
+%
+function plot_orbit(initial_conditions,orbital_elements)
+  % initial_conditions: a cell array where each cell contains a struct with r and v
+i = orbital_elements.i
+e = orbital_elements.e
+Omega = orbital_elements.Omega
+    config = GetConfig;
+    mu = config.mu;
+    figure;
+    hold on;
+    grid on;
+    axis equal;
+    xlabel('X (km)');
+    ylabel('Y (km)');
+    zlabel('Z (km)');
+    title('Orbits and Positions of the Spacecraft');
+    
+    colors = ['b', 'g', 'r', 'c', 'm', 'y', 'k']; % Different colors for different orbits
+    
+    for k = 1:length(initial_conditions)
+        r1 = initial_conditions{k}.r;
+        v1 = initial_conditions{k}.v;
+        
+        
+        % Generate the orbit in the perifocal coordinate system
+        theta = linspace(0, 2*pi, 1000);
+        r_orbit = (a * (1 - e^2)) ./ (1 + e * cos(theta));
+        x_orbit = r_orbit .* cos(theta);
+        y_orbit = r_orbit .* sin(theta);
+        z_orbit = zeros(size(theta));
+        
+        % Rotation matrices
+        R3_W = [cos(Omega), -sin(Omega), 0; sin(Omega), cos(Omega), 0; 0, 0, 1];
+        R1_i = [1, 0, 0; 0, cos(i), -sin(i); 0, sin(i), cos(i)];
+        R3_w = [cos(omega), -sin(omega), 0; sin(omega), cos(omega), 0; 0, 0, 1];
+        
+        % Combined rotation matrix
+        Q = R3_W * R1_i * R3_w;
+        
+        % Transform the orbit to the ECI coordinate system
+        r_orbit_eci = Q * [x_orbit; y_orbit; z_orbit];
+        
+        % Plot the orbit and the initial position
+        plot3(r_orbit_eci(1, :), r_orbit_eci(2, :), r_orbit_eci(3, :), colors(k), 'LineWidth', 1.5);
+        plot3(r1(1), r1(2), r1(3), 'o', 'MarkerSize', 8, 'MarkerFaceColor', colors(k));
+    end
+    
+    legend_entries = cell(length(initial_conditions)*2, 1);
+    for k = 1:length(initial_conditions)
+        legend_entries{2*k-1} = ['Orbit ', num2str(k)];
+        legend_entries{2*k} = ['Initial Position ', num2str(k)];
+    end
+    legend(legend_entries);
+    
+    hold off;
+end
+
+% Example usage
+initial_conditions = {
+    struct('r', [7000, 0, 0], 'v', [0, 7.5, 0]),  % Initial condition 1
+    struct('r', [8000, 1000, 0], 'v', [0, 7.0, 1]) % Initial condition 2
+};
+mu = 398600; % Standard gravitational parameter for Earth in km^3/s^2
+plot_multiple_orbits(initial_conditions, mu);
+
+end

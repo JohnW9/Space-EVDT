@@ -26,13 +26,18 @@
 %
 %
 
-function closest_delta_time = Closest_opp_position_delta_time(epoch_sec,oe_2,oe_1)
-mu = 3.986004418 * 1e14;
+function closest_delta_time = Closest_opp_position_delta_time(time_of_maneuver,oe_2,oe_1)
+config = GetConfig;
+mu = config.mu;
 
 E1 = f2E(oe_1.anom,oe_1.e); %eccentric anomaly at TCA
 E2 = f2E(oe_2.anom,oe_2.e); %eccentric anomaly at position opposite to TCA
-delta_t = sqrt((oe_1.a*1e3)^3/mu)*(E2-E1 - oe_1.e*sin(E2-E1)); %time difference for one orbit
-nb_increments = round(epoch_sec/delta_t); % nb of orbits to be as close as possible to epoch_sec
+M1 = E1 - oe_1.e*sin(E1);
+M2 = E2 - oe_2.e*sin(E2);
+
+delta_t = sqrt((oe_1.a)^3/mu)*(E2-E1 - oe_1.e*sin(E2-E1)); %time it takes to go from one position to the opposite side of the orbit
+%delta_t = (2*pi*sqrt(oe_1.a*1e3)^3/mu))
+nb_increments = round(time_of_maneuver/delta_t); % nb of orbits to be as close as possible to epoch_sec
 closest_delta_time = nb_increments * delta_t;
 
 end

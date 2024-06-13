@@ -8,6 +8,8 @@ addpath('Functions/NASA/');
 addpath('Time_conversion/');
 addpath("Data/");
 addpath('Functions/real_CDM/');
+addpath('Functions/KeplerUniversal/');
+addpath('Functions/Unused functions/');
 
 CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
 data_reading_mode = 1; 

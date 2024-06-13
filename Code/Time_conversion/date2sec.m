@@ -22,4 +22,4 @@
 %       * Adding header
 
 function seconds = date2sec(date)
-    seconds = date(2)*30*24*3600 + date(3)*24*3600 + date(4)*60 + date(5);
+    seconds = date(1)*12*30*24*3600 + date(2)*30*24*3600 + date(3)*24*3600 + date(4)*60 + date(5);
