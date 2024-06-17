@@ -12,10 +12,8 @@ classdef NASA_sat
         no_instruments          % Number of instruments onboard the satellite
         instruments             % Instrument names onboard the satellite
         value                   % Value of the satellite assigned by the Vulnerability model
-        
-        general_category        % Human spaceflight/military/civil/commercial
-        main_application        % Earth Observation/scientific research/communication/Navigation
-        remaining_lifetime      % % of remaining lifetime of the spacecraft 
-        redundancy_level        % if the spacecraft is part of a constellation
+        general_category
+        main_application
+        rem
     end
 end

@@ -112,7 +112,7 @@ pos_list = {r1,r2,r2,r_secondary,rf_primary,rf_secondary};
 orbital_el_list = {oe_1,oe_2,oe_3_primary,oe_3_secondary,oef_primary,oef_secondary};
 disp(pos_list);
 disp(orbital_el_list);
-plot_orbit(pos_list,orbital_el_list);
+%plot_orbit(pos_list,orbital_el_list);
 
 end
 

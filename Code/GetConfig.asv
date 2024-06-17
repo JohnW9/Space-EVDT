@@ -140,17 +140,17 @@ config.cdmCost_lowPc = 0*operator_hourly;
 config.cdmCost_medPc = 2*operator_hourly;
 config.cdmCost_higPc = 5*operator_hourly;
 
-config.mu = 3.986004330000000e+05;                          % mu
-
+config.mu = 3.986004330000000e+05;
 %% Valuation categories
-config.human_spaceflight = 'human spaceflight';             % general category
+config.human_spaceflight = 'human spaceflight';
 config.military = 'military';
 config.civil = 'civil';
 config.commercial = 'commercial';
-config.earth_observation = 'earth observation';             % main application
+config.earth_observation = 'earth observation';
 config.scientific_research = 'scientific research';
 config.communication = 'communication';
 config.navigation = 'navigation';
+config.remaining_lifetime = 'remaining_lifetime';
 
 
 
