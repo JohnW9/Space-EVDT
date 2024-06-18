@@ -59,9 +59,10 @@ else
     total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 
     %% NASA satellites
-    eos = Read_NASA_satellites;
-    eos(2:3)=[];
+    %eos = Read_NASA_satellites;
+    %eos(2:3)=[];
     %eos = eos(1);
+    eos = Read_NASA_sat_ordinal;
     disp('NASA satellites loaded')
 
     %% Space catalogue

@@ -23,7 +23,7 @@
 %       * Header added
 
 function eos = Read_NASA_satellites
-eos(5)=NASA_sat;
+eos(5) = NASA_sat;
 
 %% LANDSAT 7
 eos(1).id=25682;

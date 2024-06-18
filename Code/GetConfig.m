@@ -142,7 +142,7 @@ config.cdmCost_higPc = 5*operator_hourly;
 
 config.mu = 3.986004330000000e+05;                          % mu
 
-%% Valuation categories
+%% Valuation categories for spacecraft
 config.human_spaceflight = 'human spaceflight';             % general category
 config.military = 'military';
 config.civil = 'civil';
@@ -151,6 +151,9 @@ config.earth_observation = 'earth observation';             % main application
 config.scientific_research = 'scientific research';
 config.communication = 'communication';
 config.navigation = 'navigation';
+
+config.redundancy_scale_factor = 0.1;
+
 
 
 
