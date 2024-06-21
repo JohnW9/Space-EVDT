@@ -10,5 +10,6 @@ classdef Decision_action
         ValueOfCollision
         Contact_possibility
         available_budget
+        maneuver                % 1 primary maneuvers, 2 if secondary maneuvers, 0 if no maneuver
     end
 end

@@ -109,7 +109,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             %red event
             %Manual process
             [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
-    
+            cdm_list(i) = Valuing_Secondary_obj(cdm_list(i));
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
             %yellow event
             %high B* OD flag

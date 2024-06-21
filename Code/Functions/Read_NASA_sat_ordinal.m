@@ -24,7 +24,7 @@
 
 function eos = Read_NASA_sat_ordinal
 config = GetConfig;
-eos(5) = NASA_sat;
+eos(3) = NASA_sat;
 
 %% LANDSAT 7
 eos(1).id=25682;
@@ -62,7 +62,7 @@ eos(3).cost=952; % NASA Aqua press kit 2002
 eos(3).cost=eos(3).cost*1.54; % Adjusted to 2021 USD (from data.bls.gov)
 
 eos(3).general_category = config.civil;
-eos(3).general_category = config.earth_observation;
+eos(3).main_application = config.earth_observation;
 eos(3).remaining_lifetime = 0; % already passed expected lifetime
 eos(3).redundancy_level = 1; % not redundant
 

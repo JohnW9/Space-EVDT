@@ -15,7 +15,7 @@ classdef NASA_sat
         
         general_category        % Human spaceflight/military/civil/commercial
         main_application        % Earth Observation/scientific research/communication/Navigation
-        remaining_lifetime      % % of remaining lifetime of the spacecraft 
+        remaining_lifetime      % remaining lifetime of the spacecraft (between 0 and 1; e.g. 0.3 means 30% lifetime remaining)
         redundancy_level        % if the spacecraft is part of a constellation
     end
 end

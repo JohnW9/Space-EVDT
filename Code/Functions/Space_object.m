@@ -14,6 +14,12 @@ classdef Space_object
         RCS    % Radar Cross Section category (LARGE/MEDIUM/SMALL)
         value  % Monetized value of the space object
         B_star % B* value used for SWTS
+        
+        general_category        % Human spaceflight/military/civil/commercial
+        main_application        % Earth Observation/scientific research/communication/Navigation
+        remaining_lifetime      % remaining lifetime of the spacecraft (between 0 and 1; e.g. 0.3 means 30% lifetime remaining)
+        redundancy_level        % if the spacecraft is part of a constellation
+        
         %line1  % TLE line 1
         %line2  % TLE line 2
     end
