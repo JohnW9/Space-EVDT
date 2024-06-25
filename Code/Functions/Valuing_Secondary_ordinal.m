@@ -9,10 +9,10 @@
 %   in the database.
 %
 % INPUT:
-%   obj = (1 object) Secondary space object in conjunction with the NASA satellite [Space_object]
+%   cdm = (1 cdm) Considered generated cdm [cdm]
 %
 % OUTPUT:
-%   obj = (1 object) Secondary space object in conjunction with the NASA satellite, with added value [Space_object]
+%   cdm = (1 cdm) Considered generated cdm, with added value [cdm]
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   Only giving a value to the object if it is a PAYLOAD.
@@ -24,19 +24,20 @@
 %       * Adding header
 %
 
-function obj = Valuing_Secondary_ordinal(obj)
+function cdm = Valuing_Secondary_ordinal(cdm)
 config = GetConfig;
 found = 0;
-if strcmp(obj.type,'PAYLOAD')
-   
-  secondary_data = load("Secondary_value.mat");
+%% Read Secondary Data
+%if strcmp(cdm.type2,'PAYLOAD')
+  
+  secondary_data = readmatrix("Secondary_value.xlsx");
   database_length = size(secondary_data,1);
-  for i = 1:database_length %lookup database if secondary object is in it
-        if obj.id == secondary_data(i,1)
-            obj.general_category = secondary_data(i,2);
-            obj.main_application = secondary_data(i,3);
-            obj.remaining_lifetime = secondary_data(i,4);
-            obj.redundancy_level = secondary_data(i,5);
+  for i = 2:database_length %lookup database if secondary object is in it
+        if cdm.id2 == secondary_data(i,1)
+            cdm.general_category = secondary_data(i,2);
+            cdm.main_application = secondary_data(i,3);
+            cdm.remaining_lifetime = secondary_data(i,4);
+            cdm.redundancy_level = secondary_data(i,5);
             found = 1;
         end
         if found == 1
@@ -47,10 +48,14 @@ if strcmp(obj.type,'PAYLOAD')
   if found == 0 % secondary object not in the database
       validAnswer = [1,2,3,4];
       given_input = -1;
+      % get general category input
+      disp('Secondary object with ID ' + string(cdm.id2) + ' not found in database. Please provide the values.')
       while ~ismember(given_input,validAnswer)
-          given_input = input('Please give the general category of the secondary object: 1 for human spaceflight, 2 formilitary, 3 for civil, 4 for commercial');
-          if ~ismember(given_input,validAnswer)
+          given_input = input('Please give the general category of the secondary object: 1 for human spaceflight, 2 formilitary, 3 for civil, 4 for commercial \n', 's');
+          given_input = str2double(given_input);
+          if ~ismember(given_input,validAnswer) || isnan(given_input)
               disp('Invalid input.')
+              given_input = -1;
           end
       end
 
@@ -64,14 +69,17 @@ if strcmp(obj.type,'PAYLOAD')
           input_string = config.commercial;
       end
 
-      obj.general_category = input_string;
+      general_category = input_string;
       input_string = "";
       given_input = -1;
-
+      
+      % get main application input
       while ~ismember(given_input,validAnswer)
-          given_input = input('Please give the main application of the secondary object: 1 for Earth Observation, 2 for scientific research, 3 for communication, 4 for navigation');
+          given_input = input('Please give the main application of the secondary object: 1 for Earth Observation, 2 for scientific research, 3 for communication, 4 for navigation\n');
+          given_input = str2double(given_input);
           if ~ismember(given_input,validAnswer)
               disp('Invalid input.')
+              given_input = -1;
           end
       end
 
@@ -85,42 +93,100 @@ if strcmp(obj.type,'PAYLOAD')
           input_string = config.navigation;
       end
 
-      obj.main_application = input_string;
+      main_application = input_string;
       input_string = "";
       given_input = -1;
-
+      
+      % get remaining lifetime input
       while given_input < 0 || given_input > 1
-          given_input = input('Please give the remaining lifetime value between 0 and 1.');
+          given_input = input('Please give the remaining lifetime value between 0 and 1.\n');
+          given_input = str2double(given_input);
           if given_input < 0 || given_input > 1
               disp('Invalid input.')
+              given_input = -1;
           end
       end
 
-      obj.remaining_lifetime = given_input;
+      remaining_lifetime = given_input;
       given_input = -1;
-
+      
+      % get redundancy level input
       while given_input < 1
-          given_input = input('Plase give the redundancy level, i.e. the number of satellites in the same constellation (1 if standalone)');
+          given_input = input('Plase give the redundancy level, i.e. the number of satellites in the same constellation (1 if standalone)\n');
+          given_input = str2double(given_input);
           if given_input < 1
               disp('Invalid input.');
+              given_input = -1;
           end
       end
 
-      obj.redundancy_level = given_input;
+      redundancy_level = given_input;
       given_input = -1;
-
+      
+      % get saving input
       yesOrNo = [1,0];
       while ~ismember(given_input,yesOrNo)
-            given_input = input('Do you wish to save the data in the database for future reuse? 1 for Yes, 0 for No.');
+            given_input = input('Do you wish to save the data in the database for future reuse? 1 for Yes, 0 for No.\n');
+            given_input = str2double(given_input);
             if ~ismember(given_input,yesOrNo)
                 disp('Invalid input.')
+                given_input = -1;
             end
       end
+   
       if given_input == 1
-          save('Secondary_value.mat',"obj");
+          secondary_data_line = [cdm.id2,general_category,main_application,remaining_lifetime,redundancy_level];
+          save('Secondary_value.xlsx',"secondary_data_line");
       end
   end
 
-else
-    obj.value = 0;
+%else
+ %   cdm.value2 = 0;
+%end
+
+%% Valuation of Secondary
+    score_general_category = 0;
+    score_main_application = 0;
+    score_socioeco = 0;
+
+    %% Socio-economic impact (50% of the score)
+    % the score is over 10 for general category, accounting for 30% of the
+    % total socio-economic impact
+    if strcmp(general_category,config.human_spaceflight)
+        score_general_category = 10;
+    elseif strcmp(general_category,config.military)
+        score_general_category = 7.5;
+    elseif strcmp(general_category,config.civil)
+        score_general_category = 5;
+    elseif strcmp(general_category,config.commercial)
+        score_general_category = 2.5;
+    end
+    
+    % the score is over 10 for main application, accounting for 70% of the
+    % total socio-economic impact
+    if strcmp(main_application,config.earth_observation) || strcmp(main_application,config.scientific_research)
+        score_main_application = 10;
+    elseif strcmp(main_application,config.communication) || strcmp(main_application,config.navigation)
+        score_main_application = 5;
+    end
+
+    score_socioeco = 0.3 * score_general_category + 0.7 * score_main_application; %normalized over 10
+    if redundancy_level > 10
+        % if constellation of more than 10 satellites, then we normalize the socio-economical score
+        score_socioeco = score_socioeco/(redundancy_level*config.redundancy_scale_factor);
+    end
+    
+    cost_score = cdm.value2/100; % 1 point for 100 milion
+    if cost_score > 10
+        cost_score = 10;
+    end
+    
+    total_score = 0.5 * score_socioeco + 0.5 * cost_score;
+
+    if remaining_lifetime >= 0.5
+        % normalization by remaining lifetime with a minimum of 50%
+        total_score = total_score * remaining_lifetime;
+    end
+
+cdm.value2 = total_score;
 end

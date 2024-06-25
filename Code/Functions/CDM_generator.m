@@ -234,6 +234,7 @@ cdm.value1=value1;
 cdm.r2=r2_f;
 cdm.v2=v2_f;
 
+cdm.type2=second_obj.type; %type of secondary object (payload, rocket body, debris)
 
 if NoP2 == 0
     cdm.cov2=prop_cov2; % In RSW frame

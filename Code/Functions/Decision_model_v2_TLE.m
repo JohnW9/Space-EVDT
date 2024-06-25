@@ -105,17 +105,17 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             Pc = Pc * 10;
         end
 
-        if (Pc>config.red_event_Pc)
+        if (Pc>1e-5)
             %red event
             %Manual process
             [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
-            cdm_list(i) = Valuing_Secondary_obj(cdm_list(i));
+
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
             %yellow event
             %high B* OD flag
             if cdm_list(i).Pc < config.red_event_Pc && cdm_list(i).Pc > config.red_event_Pc/10 %close to limit
                     if event_detection(16,event_detection_index) > config.B_star_threshold
-                        action_det = "high B* star OD flag, red Pc";
+                        action_det = "red Pc";
                     else
                         action_det = "yellow Pc";
                     end
@@ -151,6 +151,17 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).ValueOfCollision = cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC/config.CC_normalizer;
         decision_list(act_ind).Contact_possibility = Possibility_of_contacting;
         decision_list(act_ind).available_budget = budget;
+
+        if strcmp(action_det,'red Pc')
+            cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
+            if cdm_list(i).value1 > cdm_list(i).value2
+                decision_list(act_ind).maneuver = 2;
+            else
+                decision_list(act_ind).maneuver = 1;
+            end
+        else
+            decision_list(act_ind).maneuver = 0;
+        end
 
 
     end

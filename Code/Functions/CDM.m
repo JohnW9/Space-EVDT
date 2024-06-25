@@ -27,6 +27,7 @@ classdef CDM
         dim2                % Max conjunction dimension of object 2 [m] 
         m2                  % Mass of object 2 [kg]
         value2              % Value of object 2
+        type2               % Type of object 2 (debris, payload, rocket body)
 
     end
 end

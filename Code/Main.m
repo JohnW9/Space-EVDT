@@ -11,7 +11,7 @@ addpath('Functions/real_CDM/');
 addpath('Functions/KeplerUniversal/');
 addpath('Functions/Unused functions/');
 
-CDM_mode = 0; % 1 for reading CDMs, 0 for reading TLEs
+CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
 data_reading_mode = 1; 
 if CDM_mode == 1
     data_2015 = load("OCMDB_20150101_to_20151231.mat");
@@ -19,7 +19,8 @@ if CDM_mode == 1
     list1 = read_real_CDM(data_2015.DB);
     list2 = read_real_CDM(data_2023.DB);
 
-    red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
+    %red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
+    red_Pc_list = [4.4e-4,1e-4,1e-5];
     tom_list = [12*3600,24*3600,36*3600,48*3600,60*3600]; %time of maneuver before TCA
     nb_of_maneuver_list = []; % list of nb of maneuvers for different time of maneuver
     nb_of_maneuver_list_total = {}; % list of lists of nb of maneuvers for different threshold Pc
@@ -50,8 +51,8 @@ else
 
     %% User inputs
     tic
-    epoch = [2023 3 15 0 0 0];
-    end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
+    epoch = [2023 3 22 0 0 0];
+    end_date= [2023 3 28 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added
