@@ -11,7 +11,7 @@ addpath('Functions/real_CDM/');
 addpath('Functions/KeplerUniversal/');
 addpath('Functions/Unused functions/');
 
-CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
+CDM_mode = 0; % 1 for reading CDMs, 0 for reading TLEs
 data_reading_mode = 1; 
 if CDM_mode == 1
     data_2015 = load("OCMDB_20150101_to_20151231.mat");

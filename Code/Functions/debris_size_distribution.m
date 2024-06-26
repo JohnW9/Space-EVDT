@@ -1,6 +1,6 @@
 % FUNCTION NAME:
 %debris_size_distribution
-% Source: ESA S ANNUAL SPACE ENVIRONMENT REPORT
+% Source: ESA's ANNUAL SPACE ENVIRONMENT REPORT
 load census;
 x1 = 0.1;
 y1 = 10^(4.2);
@@ -48,16 +48,16 @@ end
 %figure;
 plot(x, y, 'b-x', 'LineWidth', 1.5, 'MarkerSize', 8); % Plot y1
 hold on;
-plot(r,s,"r-o");
+%plot(r,s,"r-o");
 
 %plot(fitted_model, 'r-');
-plot(r,cdf, "g-o")
+%plot(r,cdf, "g-o")
 hold off; % Release the current plot
 %plot(z,cdf_inv, "g-x")
 
 
 
-xlabel('Debris Diameter');
+xlabel('Debris Diameter [m]');
 ylabel('Estimated nb of objects');
 title('Debris Size Density Distribution');
 grid on;

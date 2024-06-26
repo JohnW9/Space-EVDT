@@ -117,7 +117,7 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
       if given_input == 1
           
           secondary_data_line = [cdm.id2,general_category,main_application,remaining_lifetime,redundancy_level];
-          updated_data = [secondary_data;secondary_data_line];
+          updated_data = [secondary_data,secondary_data_line];
           writematrix(updated_data,filePath);
           %xlswrite(filePath, updated_data, 'Sheet1', sprintf('A%d', database_length+1));
       end

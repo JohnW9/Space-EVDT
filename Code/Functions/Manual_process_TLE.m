@@ -27,7 +27,7 @@ config = GetConfig;
     if event_detection(15,event_detection_index) == 2 %secondary RCS large
         if event_detection(16,event_detection_index) == 2 %secondary is a debris
 
-            average_value = 1.5349;
+            average_value = 1.5349; %from debris_size_distribution.m
             new_HBR = (cdm_list(i).HBR-config.large_dim+average_value)*1e-3; % replace upper bound by median value
             %new_HBR  in [km]
 
