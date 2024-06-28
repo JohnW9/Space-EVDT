@@ -79,6 +79,14 @@ function [cdm_list,event_detection,total_cost,decision_list,operational_cost]=CA
 config = GetConfig;
 
 operational_cost = 0;
+nb_no_maneuver_v = 0;
+nb_maneuver_primary_v = 0;
+nb_maneuver_secondary_v = 0;
+proportion_primary_v = 0;
+nb_no_maneuver_id = 0;
+nb_maneuver_primary_id = 0;
+nb_maneuver_secondary_id = 0;
+proportion_primary_id = 0;
 
 ti=date2mjd2000(epoch);
 tf=date2mjd2000(end_date);
@@ -203,7 +211,35 @@ while t<=tf %% Loops over Reality time
     end
     t=t+dt;
 end
-maneuver_count(decision_list)
+%count the maneuvers
+for i=1:length(decision_list)
+    if decision_list(i).maneuver_v_based == 0
+        nb_no_maneuver_v = nb_no_maneuver_v + 1;
+    elseif decision_list(i).maneuver_v_based == 1
+        nb_maneuver_primary_v = nb_maneuver_primary_v + 1;
+    elseif decision_list(i).maneuver_v_based == 2
+        nb_maneuver_secondary_v = nb_maneuver_secondary_v + 1;
+    end
+
+    if decision_list(i).maneuver_id_based == 0
+        nb_no_maneuver_id = nb_no_maneuver_id + 1;
+    elseif decision_list(i).maneuver_id_based == 1
+        nb_maneuver_primary_id = nb_maneuver_primary_id + 1;
+    elseif decision(i).maneuver_id_based == 2
+        nb_maneuver_secondary_id = nb_maneuver_secondary_id + 1;
+    end
+end
+proportion_primary_v = nb_maneuver_primary_v/(nb_maneuver_primary_v + nb_maneuver_secondary_v);
+
+
+disp('Vulnerability based decision:');
+disp('number of no maneuvers: ' + string(nb_no_maneuver_v));
+disp('number of primary maneuvers: ' + string(nb_maneuver_primary_v));
+disp('number of secondary maneuvers: ' + string(nb_maneuver_secondary_v));
+disp('Primary objects maneuvers ' + string(proportion_primary_v) + ' % of the time. Secondary maneuvers ' + string(1-proportion_primary_v) + ' of the time.');
+
+disp('ID base decision:');
+disp('number of no maneuvers: ')
 
 
 %operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used

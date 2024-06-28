@@ -29,16 +29,17 @@ config = GetConfig;
 found = 0;
 filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as needed
 %% Read Secondary Data
-%if strcmp(cdm.type2,'PAYLOAD')
+if strcmp(cdm.type2,'PAYLOAD')
   
   secondary_data = readmatrix(filePath);
   database_length = size(secondary_data,1);
   for i = 2:database_length %lookup database if secondary object is in it
         if cdm.id2 == secondary_data(i,1)
-            cdm.general_category = secondary_data(i,2);
-            cdm.main_application = secondary_data(i,3);
-            cdm.remaining_lifetime = secondary_data(i,4);
-            cdm.redundancy_level = secondary_data(i,5);
+            general_category = secondary_data(i,2);
+            main_application = secondary_data(i,3);
+            remaining_lifetime = secondary_data(i,4);
+            redundancy_level = secondary_data(i,5);
+            hardware_value = secondary_data(i,6);
             found = 1;
         end
         if found == 1
@@ -50,18 +51,17 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
       validAnswer = [1,2,3,4];
       given_input = -1;
       % get general category input
-      disp('Secondary object with ID ' + string(cdm.id2) + ' not found in database. Please provide the values.')
+      disp('Secondary object with ID ' + string(cdm.id2) + ' not found in database. Please provide the values.');
       while ~ismember(given_input,validAnswer)
-          given_input = input('Please give the general category of the secondary object: 1 for human spaceflight, 2 formilitary, 3 for civil, 4 for commercial \n', 's');
+          given_input = input('Please give the general category of the secondary object: 1 for human spaceflight, 2 for military, 3 for civil, 4 for commercial \n', 's');
           given_input = str2double(given_input);
           if ~ismember(given_input,validAnswer) || isnan(given_input)
-              disp('Invalid input.')
+              disp('Invalid input.');
               given_input = -1;
           end
       end
 
       general_category = given_input;
-
       given_input = -1;
       
       % get main application input
@@ -102,6 +102,19 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
 
       redundancy_level = given_input;
       given_input = -1;
+
+      % get hw value
+      while given_input <= 0
+          given_input = input('Please give the hardware & launch cost of the spacecraft in number of millions (inflation adjusted to 2024)\n', 's');
+          given_input = str2double(given_input);
+          if given_input <= 0
+              disp('Invalid input.')
+              given_input = -1;
+          end
+
+      end
+      hardware_value = given_input;
+      given_input = -1;
       
       % get saving input
       yesOrNo = [1,0];
@@ -123,10 +136,6 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
       end
   end
 
-%else
- %   cdm.value2 = 0;
-%end
-
 %% Valuation of Secondary
     score_general_category = 0;
     score_main_application = 0;
@@ -135,21 +144,21 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
     %% Socio-economic impact (50% of the score)
     % the score is over 10 for general category, accounting for 30% of the
     % total socio-economic impact
-    if strcmp(general_category,config.human_spaceflight)
+    if general_category == config.human_spaceflight_int
         score_general_category = 10;
-    elseif strcmp(general_category,config.military)
+    elseif general_category == config.military_int
         score_general_category = 7.5;
-    elseif strcmp(general_category,config.civil)
+    elseif general_category == config.civil_int
         score_general_category = 5;
-    elseif strcmp(general_category,config.commercial)
+    elseif general_category == config.commercial_int
         score_general_category = 2.5;
     end
     
     % the score is over 10 for main application, accounting for 70% of the
     % total socio-economic impact
-    if strcmp(main_application,config.earth_observation) || strcmp(main_application,config.scientific_research)
+    if main_application == config.earth_observation_int || main_application == config.scientific_research_int
         score_main_application = 10;
-    elseif strcmp(main_application,config.communication) || strcmp(main_application,config.navigation)
+    elseif main_application == config.communication_int || main_application == config.navigation_int
         score_main_application = 5;
     end
 
@@ -159,7 +168,7 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
         score_socioeco = score_socioeco/(redundancy_level*config.redundancy_scale_factor);
     end
     
-    cost_score = cdm.value2/100; % 1 point for 100 milion
+    cost_score = hardware_value/100; % 1 point for 100 milion
     if cost_score > 10
         cost_score = 10;
     end
@@ -172,4 +181,10 @@ filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as n
     end
 
 cdm.value2 = total_score;
+
+else
+    cdm.value2 = 0; % if secondary is a debris or rocket body
+end
+
+
 end

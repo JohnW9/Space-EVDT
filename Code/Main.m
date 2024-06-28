@@ -115,7 +115,7 @@ else
     ariane = 0;
     
     list = MOID_list{1};
-    for o = 1:length(list)
+    for o  = 1:length(list)
         if contains(list(o).name,'starlink','IgnoreCase',true)
             starlink=starlink+1;
         elseif contains(list(o).name,'ariane','IgnoreCase',true)

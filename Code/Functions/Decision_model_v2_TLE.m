@@ -105,7 +105,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             Pc = Pc * 10;
         end
 
-        if (Pc>1e-5)
+        if (Pc>1e-4) %TO CHANGE
             %red event
             %Manual process
             [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
@@ -153,14 +153,23 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).available_budget = budget;
 
         if strcmp(action_det,'red Pc')
+            %Vulnerability based decision
             cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
             if cdm_list(i).value1 > cdm_list(i).value2
-                decision_list(act_ind).maneuver = 2;
+                decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
             else
-                decision_list(act_ind).maneuver = 1;
+                decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
+            end
+            
+            %ID based maneuver
+            if cdm_list(i).id1 > cdm_list(i).id2
+                decision_list(act_ind).maneuver_id_based = 1;
+            else
+                decision_list(act_ind).maneuver_id_based = 2;
             end
         else
-            decision_list(act_ind).maneuver = 0;
+            decision_list(act_ind).maneuver_v_based = 0; % no maneuver
+            decision_list(act_ind).maneuver_id_based = 0;
         end
 
 
