@@ -158,8 +158,8 @@ config.civil_int = 3;
 config.commercial_int = 4;
 config.earth_observation_int = 1;
 config.scientific_research_int = 2;
-config.communication = 3;
-config.navigation = 4;
+config.communication_int = 3;
+config.navigation_int = 4;
 
 config.redundancy_scale_factor = 0.1;
 

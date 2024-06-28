@@ -51,6 +51,7 @@ function maneuver_count(decision_list)
             nb_maneuver_secondary_id = nb_maneuver_secondary_id + 1;
         end
     end
+    
     proportion_primary_v = nb_maneuver_primary_v/(nb_maneuver_primary_v + nb_maneuver_secondary_v);
     proportion_primary_id = nb_maneuver_primary_id/(nb_maneuver_primary_id + nb_maneuver_secondary_id);
     

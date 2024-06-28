@@ -27,7 +27,6 @@
 function cdm = Valuing_Secondary_ordinal(cdm)
 config = GetConfig;
 found = 0;
-isActive_sc = 1;
 filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as needed
 %% Read Secondary Data
 if strcmp(cdm.type2,'PAYLOAD')
@@ -62,11 +61,11 @@ if strcmp(cdm.type2,'PAYLOAD')
                 given_input = -1;
             end
       end
-      
-      isActive_sc = str2double(given_input);
+
+      isActive = given_input;
       given_input = -1;
 
-      if isActive_sc == 1
+      if isActive == 1
 
           % get general category input
           disp('Secondary object with ID ' + string(cdm.id2) + ' not found in database. Please provide the values.');
@@ -152,26 +151,10 @@ if strcmp(cdm.type2,'PAYLOAD')
               writematrix(updated_data,filePath);
               %xlswrite(filePath, updated_data, 'Sheet1', sprintf('A%d', database_length+1));
           end
-
-      else %if secondary is not active
-            cdm.value2 = 0;
-            while ~ismember(given_input,yesOrNo)
-                given_input = input('Do you wish to save the data in the database for future reuse? 1 for Yes, 0 for No.\n', 's');
-                given_input = str2double(given_input);
-                if ~ismember(given_input,yesOrNo)
-                    disp('Invalid input.')
-                    given_input = -1;
-                end
-            end
-            secondary_data_line = [cdm.id2,0,0,0,0,0];
-            updated_data = [secondary_data;secondary_data_line];
-            writematrix(updated_data,filePath);
-      end
   end
       
       
     %% Valuation of Secondary
-    if isActive_sc == 1
         score_general_category = 0;
         score_main_application = 0;
         score_socioeco = 0;
@@ -216,9 +199,21 @@ if strcmp(cdm.type2,'PAYLOAD')
         end
     
     cdm.value2 = total_score;
-    else % if satellite is not active
-        cdm.value2 = 0;
-    end
+
+      else %if secondary is not active
+            cdm.value2 = 0;
+            while ~ismember(given_input,yesOrNo)
+                given_input = input('Do you wish to save the data in the database for future reuse? 1 for Yes, 0 for No.\n', 's');
+                given_input = str2double(given_input);
+                if ~ismember(given_input,yesOrNo)
+                    disp('Invalid input.')
+                    given_input = -1;
+                end
+            end
+            secondary_data_line = [cdm.id2,0,0,0,0,0];
+            updated_data = [secondary_data;secondary_data_line];
+            writematrix(updated_data,filePath);
+      end
 
 else %if secondary is a debris or rocket body
     cdm.value2 = 0; 

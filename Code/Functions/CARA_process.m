@@ -204,6 +204,6 @@ while t<=tf %% Loops over Reality time
     t=t+dt;
 end
 maneuver_count(decision_list)
-
+end
 
 %operational_cost = 2500*length(eos)*(tf-ti)/30 + operational_cost; %% Only when commercial SSA is used
