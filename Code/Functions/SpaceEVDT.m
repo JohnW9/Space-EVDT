@@ -145,6 +145,7 @@ disp('Event list converted to conjunction event matrix (and sorted)');
 %% Monte Carlo Run
 if MC == 1
     % Replicating NASA CARA
+    total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
     [cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);
     disp('NASA CARA process replicated')
     % CDM repetition list
@@ -161,7 +162,7 @@ else
     for ind = 1:MC
         cdm_list=CDM;
         decision_list=Decision_action;
-        event_detection=zeros(14,1);
+        event_detection=zeros(17,1); %check?
         event_detection(1)=NaN;
         total_cost=0;
         %[cdm_list,event_detection,total_cost,decision_list]=CARA_process (event_matrix,epoch,end_date,space_cat,space_cat_ids,eos,accelerator,cdm_list,decision_list,event_detection,total_cost,total_budget);

@@ -51,8 +51,8 @@ else
 
     %% User inputs
     tic
-    epoch = [2023 3 1 0 0 0];
-    end_date= [2023 3 3 0 0 0];           % Simulation end date and time in gregorian calender
+    epoch = [2023 3 05 0 0 0];
+    end_date= [2023 6 05 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added
@@ -64,6 +64,7 @@ else
     %eos(2:3)=[];
     %eos = eos(1);
     eos = Read_NASA_sat_ordinal;
+    eos = eos(1);
     disp('NASA satellites loaded')
 
     %% Space catalogue
@@ -95,7 +96,10 @@ else
     end
     %% Main program run
     %[cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
-    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,2);
+    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,5);
+    
+    MC_nb_maneuver_display(decision_list);
+
     runtime=toc;
     %% After a long run
     %save("Data\Final_6March.mat");

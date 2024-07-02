@@ -1,0 +1,66 @@
+% FUNCTION NAME:
+%   MC_nb_maneuver_display
+%
+% DESCRIPTION:
+%   Takes the number of maneuvers taken by the primary
+%   and secondary objects for each Monte Carlo run and averages the runs.
+%   Displays the average.
+%   
+%
+% INPUT:
+%   
+% OUTPUT:
+%   eos = (N objects) List of NASA EOS satellites
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   13/1/2023 - Sina Es haghi
+%       * Header added
+
+function MC_nb_maneuver_display(decision_list)
+
+    v_list = cell(1,length(decision_list));
+    id_list = cell(1,length(decision_list));
+    for i = 1:length(decision_list)
+        [v_decision,id_decision] = maneuver_count(decision_list{i,1});
+        v_list{i} = v_decision;
+        id_list{i} = id_decision;
+    end
+    
+    for j = 1:length(decision_list)
+      nb_no_maneuver_list_v = cellfun(@(x) x.nb_no_maneuver, v_list); % extract nb_no_maneuver from struct
+        nb_no_maneuver_list_id = cellfun(@(x) x.nb_no_maneuver, id_list);
+        nb_maneuver_primary_list_v = cellfun(@(x) x.nb_maneuver_primary, v_list);
+        nb_maneuver_primary_list_id = cellfun(@(x) x.nb_maneuver_primary, id_list);
+        nb_maneuver_secondary_list_v = cellfun(@(x) x.nb_maneuver_secondary, v_list);
+        nb_maneuver_secondary_list_id = cellfun(@(x) x.nb_maneuver_secondary, id_list);
+        proportion_primary_list_v = cellfun(@(x) x.proportion_primary, v_list);
+        proportion_primary_list_id = cellfun(@(x) x.proportion_primary, id_list);
+
+
+        nb_no_maneuver_v_average = mean(nb_no_maneuver_list_v);
+        nb_no_maneuver_id_average = mean(nb_no_maneuver_list_id);
+        nb_maneuver_primary_v_average = mean(nb_maneuver_primary_list_v);
+        nb_maneuver_primary_id_average = mean(nb_maneuver_primary_list_id);
+        nb_maneuver_secondary_v_average = mean(nb_maneuver_secondary_list_v);
+        nb_maneuver_secondary_id_average = mean(nb_maneuver_secondary_list_id);
+        proportion_primary_v_average = mean(proportion_primary_list_v);
+        proportion_primary_id_average = mean(proportion_primary_list_id);
+
+    end
+
+    disp('Vulnerability based decision:');
+    disp('Average number of no maneuvers: ' + string(nb_no_maneuver_v_average));
+    disp('Average number of primary maneuvers: ' + string(nb_maneuver_primary_v_average));
+    disp('Average number of secondary maneuvers: ' + string(nb_maneuver_secondary_v_average));
+    disp('Primary objects maneuvers ' + string(proportion_primary_v_average*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_v_average)*100) + ' % of the time.');
+    disp('\n');
+    disp('ID base decision:');
+    disp('Average number of no maneuvers: ' + string(nb_no_maneuver_id_average));
+    disp('Average number of primary maneuvers: ' + string(nb_maneuver_primary_id_average));
+    disp('Average number of secondary maneuvers: ' + string(nb_maneuver_secondary_id_average));
+    disp('Primary objects maneuvers ' + string(proportion_primary_id_average*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_id_average)*100) + ' % of the time.');

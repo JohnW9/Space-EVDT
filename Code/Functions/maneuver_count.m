@@ -9,8 +9,7 @@
 %   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 % OUTPUT:
-%   display of number of maneuvers by primary and secondary objects for
-%   Vulnerability based decision and ID based decision
+%   v_decision = [struct] Struct that 
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % 
@@ -23,47 +22,36 @@
 %
 %
 
-function maneuver_count(decision_list)
+function [v_decision,id_decision] = maneuver_count(decision_list)
 
-    nb_no_maneuver_v = 0;
-    nb_maneuver_primary_v = 0;
-    nb_maneuver_secondary_v = 0;
-    proportion_primary_v = 0;
-    nb_no_maneuver_id = 0;
-    nb_maneuver_primary_id = 0;
-    nb_maneuver_secondary_id = 0;
-    proportion_primary_id = 0;
+    v_decision.nb_no_maneuver = 0;
+    v_decision.nb_maneuver_primary = 0;
+    v_decision.nb_maneuver_secondary = 0;
+    v_decision.proportion_primary = 0;
+    id_decision.nb_no_maneuver = 0;
+    id_decision.nb_maneuver_primary = 0;
+    id_decision.nb_maneuver_secondary = 0;
+    id_decision.proportion_primary = 0;
 
     for i=1:length(decision_list)
         if decision_list(i).maneuver_v_based == 0
-            nb_no_maneuver_v = nb_no_maneuver_v + 1;
+            v_decision.nb_no_maneuver = v_decision.nb_no_maneuver + 1;
         elseif decision_list(i).maneuver_v_based == 1
-            nb_maneuver_primary_v = nb_maneuver_primary_v + 1;
+            v_decision.nb_maneuver_primary = v_decision.nb_maneuver_primary + 1;
         elseif decision_list(i).maneuver_v_based == 2
-            nb_maneuver_secondary_v = nb_maneuver_secondary_v + 1;
+            v_decision.nb_maneuver_secondary = v_decision.nb_maneuver_secondary + 1;
         end
     
         if decision_list(i).maneuver_id_based == 0
-            nb_no_maneuver_id = nb_no_maneuver_id + 1;
+            id_decision.nb_no_maneuver = v_decision.nb_no_maneuver + 1;
         elseif decision_list(i).maneuver_id_based == 1
-            nb_maneuver_primary_id = nb_maneuver_primary_id + 1;
+            id_decision.nb_maneuver_primary = id_decision.nb_maneuver_primary + 1;
         elseif decision_list(i).maneuver_id_based == 2
-            nb_maneuver_secondary_id = nb_maneuver_secondary_id + 1;
+            id_decision.nb_maneuver_secondary = id_decision.nb_maneuver_secondary + 1;
         end
     end
     
-    proportion_primary_v = nb_maneuver_primary_v/(nb_maneuver_primary_v + nb_maneuver_secondary_v);
-    proportion_primary_id = nb_maneuver_primary_id/(nb_maneuver_primary_id + nb_maneuver_secondary_id);
-    
-    disp('Vulnerability based decision:');
-    disp('number of no maneuvers: ' + string(nb_no_maneuver_v));
-    disp('number of primary maneuvers: ' + string(nb_maneuver_primary_v));
-    disp('number of secondary maneuvers: ' + string(nb_maneuver_secondary_v));
-    disp('Primary objects maneuvers ' + string(proportion_primary_v*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_v)*100) + ' % of the time.');
-    
-    disp('ID base decision:');
-    disp('number of no maneuvers: ' + string(nb_no_maneuver_id));
-    disp('number of primary maneuvers: ' + string(nb_maneuver_primary_id));
-    disp('number of secondary maneuvers: ' + string(nb_maneuver_secondary_id));
-    disp('Primary objects maneuvers ' + string(proportion_primary_id*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_id)*100) + ' % of the time.');
+    v_decision.proportion_primary = v_decision.nb_maneuver_primary/(v_decision.nb_maneuver_primary + v_decision.nb_maneuver_secondary);
+    id_decision.proportion_primary = id_decision.nb_maneuver_primary/(id_decision.nb_maneuver_primary + id_decision.nb_maneuver_secondary);
+
 end
