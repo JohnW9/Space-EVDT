@@ -167,11 +167,9 @@ if strcmp(cdm.type2,'PAYLOAD')
                     given_input = -1;
                 end
             end
-            if given_input == 1
-                secondary_data_line = [cdm.id2,0,0,0,0,0];
-                updated_data = [secondary_data;secondary_data_line];
-                writematrix(updated_data,filePath);
-            end
+            secondary_data_line = [cdm.id2,0,0,0,0,0];
+            updated_data = [secondary_data;secondary_data_line];
+            writematrix(updated_data,filePath);
       end
   end
       

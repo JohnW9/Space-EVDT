@@ -61,10 +61,11 @@ else
 
     %% NASA satellites
     %eos = Read_NASA_satellites;
-    %eos(2:3)=[];
-    %eos = eos(1);
-    eos = Read_NASA_sat_ordinal;
+    %eos = Read_NASA_sat_ordinal;
+    %eos = eos(3);
+    eos = Read_other_sat_ordinal;
     eos = eos(1);
+
     disp('NASA satellites loaded')
 
     %% Space catalogue
