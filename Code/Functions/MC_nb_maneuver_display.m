@@ -58,7 +58,7 @@ function MC_nb_maneuver_display(decision_list)
     disp('Average number of primary maneuvers: ' + string(nb_maneuver_primary_v_average));
     disp('Average number of secondary maneuvers: ' + string(nb_maneuver_secondary_v_average));
     disp('Primary objects maneuvers ' + string(proportion_primary_v_average*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_v_average)*100) + ' % of the time.');
-    disp('\n');
+    disp('');
     disp('ID base decision:');
     disp('Average number of no maneuvers: ' + string(nb_no_maneuver_id_average));
     disp('Average number of primary maneuvers: ' + string(nb_maneuver_primary_id_average));

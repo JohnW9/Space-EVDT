@@ -180,10 +180,7 @@ while t<=tf %% Loops over Reality time
 
         %[event_detection,cdm_list,decision_list,operational_cost] = Decision_model_Simple_commercial_noDrop (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
         if config.ordinal_mode == 1
-            [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
-        elseif config.ordinal_mode == 0
-            [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE_sensitivity (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
-        end
+        [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE (event_detection,cdm_list,decision_list,total_cost,t,total_budget);
     else
         [event_detection,cdm_list,decision_list,operational_cost] = dec_func (event_detection,cdm_list,decision_list,total_cost,t,total_budget,operational_cost);
     end

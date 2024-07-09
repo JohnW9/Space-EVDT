@@ -92,7 +92,10 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
 
-        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
+        vulnerability_value = cdm_list(i).value1+cdm_list(i).value2;
+        v_scale_factor = [1,2,3,4,5,6,7,8,9,10];
+        
+        value_of_collision= v_scale_factor*vulnerability_value + cdm_list(i).CC_value;
         budget = total_budget - total_cost;
         Pc=cdm_list(i).Pc;
         TimeToConjunction=date2mjd2000(cdm_list(i).tca)-t;
@@ -101,11 +104,12 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         end
 
         %% Decision tree
-            if value_of_collision(j) > config.CC_threshold
-                %increase threshold if high value of collision
-               Pc = Pc * 10;
-               disp('exceeded threshold')
-            end
+        for j=1:length(value_of_collision)
+                if value_of_collision(j) > config.CC_threshold
+                    %increase threshold if high value of collision
+                   Pc = Pc * 10;
+                   disp('exceeded threshold')
+                end
             
     
             if (Pc>1e-4) %TO CHANGE
@@ -130,7 +134,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 %green event
                 action_det = "green Pc";
             end
-        
+        end
 
         %if TimeToConjunction<config.TimeToConj_low
             %Excecute_maneuver
@@ -157,7 +161,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).available_budget = budget;
         
         
-        if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
+        if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD') & config.ordinal_mode == 1
             %Vulnerability based decision
             cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
             if cdm_list(i).value1 > cdm_list(i).value2

@@ -36,14 +36,26 @@ other_sat(1).main_application = config.earth_observation;
 other_sat(1).remaining_lifetime = 0.5; % based on an expected lifetime of 5 years: https://space.oscar.wmo.int/satelliteprogrammes/view/iceye#:~:text=The%20design%20life%20time%20is,undetermined%20for%20the%20full%20constellation.
 other_sat(1).redundancy_level = 34; % based on their own website, as of July 2024: https://www.iceye.com/satellites
 
-other_sat(2).id = 54873;
-other_sat(2).name = 'STARLINK-5091';
-other_sat(2).dimensions = [2.8,1.4]; % from https://starlinkinstallationpros.com/
-other_sat(2).mass = 800; % https://www.space.com/spacex-starlink-satellites.html, assuming Starlink V2
+other_sat(2).id = 35932;
+other_sat(2).name = 'SWISSCUBE';
+other_sat(2).dimensions = [0.1,0.1]; % from https://starlinkinstallationpros.com/
+other_sat(2).mass = 1; % https://www.space.com/spacex-starlink-satellites.html, assuming Starlink V2
 other_sat(2).cost = 0.8; % https://spacenews.com/starlink-soars-spacexs-satellite-internet-surprises-analysts-with-6-6-billion-revenue-projection/#:~:text=%E2%80%9CStarlink%20has%20been%20able%20to,and%20cost%20roughly%20$1.2%20million.
 
 other_sat(2).general_category = config.commercial;
 other_sat(2).main_application = config.communication;
 other_sat(2).remaining_lifetime = 1;
+other_sat(2).redundancy_level = 1;
+
+other_sat(3).id = 43849;
+other_sat(3).name = 'AEROCUBE 11-R3';
+other_sat(3).dimensions = [0.1,0.3];
+other_sat(3).mass = 5;
+other_sat(3).cost = 1;
+
+other_sat(3).general_category = config.commercial;
+other_sat(3).main_application = config.earth_observation;
+other_sat(3).remaining_lifetime = 0.5;
+other_sat(3).redundancy_level = 2;
 
 end

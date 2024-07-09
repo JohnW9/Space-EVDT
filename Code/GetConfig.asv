@@ -106,8 +106,8 @@ config.medium_value = 0.05;                                 % Monetized value of
 config.large_value =0.5;                                    % Monetized value of large RCS payload [same units as the NASA EOS values]
 
 %% Decision making model
-config.CC_normalizer = 7000;                               % Number of pieces for normalizing the collision consequence (to have the CC value in the order of the object socio-economic values)
-config.CC_normalizer_ordinal = 200;                        % normalization such as value_CC has a max value of 10
+config.CC_normalizer = 200;                               % Number of pieces for normalizing the collision consequence (to have the CC value in the order of the object socio-economic values)
+
 config.red_event_Pc = 1e-4;                                % Red category Pc threshold
 config.yellow_event_Pc = 1e-7;                             % Yellow category Pc theshold
 %config.red_mitigation_days = 1;                            % Number of days before TCA to take mitigation action [days]
@@ -163,7 +163,7 @@ config.navigation_int = 4;
 
 config.redundancy_scale_factor = 0.1;
 
-config.ordinal_mode = 0; % 1 for using ordinal valuation for primary and secondary objects, 0 for using original valuation method
+config.ordinal_mode = 0; % 
 
 
 

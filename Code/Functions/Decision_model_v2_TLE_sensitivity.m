@@ -1,10 +1,11 @@
 % FUNCTION NAME:
-%   Decision_model_V2_TLE
+%   Decision_model_V2_TLE_sensitivity
 %
 % DESCRIPTION:
 %   This function implements the Decision model V2 for the use of TLEs. The
 %   Deicision model is simplified compared to Decision_model_V2_CDMs, due
-%   to lack of input data. The code implements Pc vs HBR, MTS, SWTS
+%   to lack of input data. The code implements Pc vs HBR, MTS, SWTS. This
+%   version focuses on providing the sensitivity analysis for the V model
 %
 % INPUT:
 %   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
@@ -39,7 +40,7 @@
 %
 %
 
-function [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
+function [event_detection,cdm_list,decision_list]=Decision_model_v2_TLE_sensitivity (event_detection,cdm_list,decision_list,total_cost,t,total_budget)
 
 config = GetConfig;
 %dealing with a failed tasking request (to the commercial SSA)
@@ -92,7 +93,14 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
 
-        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
+        vulnerability_value = cdm_list(i).value1+cdm_list(i).value2;
+        v_scale_factor = [1,2,3,4,5,6,7,8,9,10];
+        maneuver_dict = containers.Map('KeyType', 'int32', 'ValueType', 'int32'); % maps out v_scale_factor to corresponding nb of maneuvers
+        for index = 1:length(v_scale_factor)
+            maneuver_dict(v_scale_factor(index)) = 0;
+        end
+        
+        value_of_collision= v_scale_factor*vulnerability_value + cdm_list(i).CC_value;
         budget = total_budget - total_cost;
         Pc=cdm_list(i).Pc;
         TimeToConjunction=date2mjd2000(cdm_list(i).tca)-t;
@@ -101,8 +109,10 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         end
 
         %% Decision tree
+        for j=1:length(value_of_collision)
+
             if value_of_collision(j) > config.CC_threshold
-                %increase threshold if high value of collision
+               %increase threshold if high value of collision
                Pc = Pc * 10;
                disp('exceeded threshold')
             end
@@ -112,7 +122,9 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 %red event
                 %Manual process
                 [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
-    
+                if strcmp(action_det,'red_Pc');
+                    
+                end
             elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
                 %yellow event
                 %high B* OD flag
@@ -130,7 +142,11 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 %green event
                 action_det = "green Pc";
             end
-        
+
+            if strcmp(action_det,'red Pc')
+                maneuver_dict(v_scale_factor(j)) = maneuver_dict(v_scale_factor(j)) + 1;
+            end
+        end
 
         %if TimeToConjunction<config.TimeToConj_low
             %Excecute_maneuver
@@ -155,27 +171,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).ValueOfCollision = value_of_collision;
         decision_list(act_ind).Contact_possibility = Possibility_of_contacting;
         decision_list(act_ind).available_budget = budget;
-        
-        
-        if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
-            %Vulnerability based decision
-            cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
-            if cdm_list(i).value1 > cdm_list(i).value2
-                decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
-            else
-                decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
-            end
-            
-            %ID based maneuver
-            if cdm_list(i).id1 > cdm_list(i).id2
-                decision_list(act_ind).maneuver_id_based = 1;
-            else
-                decision_list(act_ind).maneuver_id_based = 2;
-            end
-        else
-            decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
-            decision_list(act_ind).maneuver_id_based = 0;
-        end
+
 
 
     end
