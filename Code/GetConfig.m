@@ -165,6 +165,5 @@ config.redundancy_scale_factor = 0.1;
 
 config.ordinal_mode = 0; % 1 for using ordinal valuation for primary and secondary objects, 0 for using original valuation method
 
-
-
+config.v_scale_factor = [1,2,3,4,5,6,7,8,9,10,15,16,17,18,19,20]; %scale factors for V weighting for V sensitivity analysis
 

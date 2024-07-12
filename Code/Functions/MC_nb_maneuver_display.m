@@ -18,10 +18,14 @@
 % REVISION HISTORY:
 %   Dates in DD/MM/YYYY
 %
-%   13/1/2023 - Sina Es haghi
+%   02/07/2024 - Jonathan Wei
 %       * Header added
 
 function MC_nb_maneuver_display(decision_list)
+
+    if ~iscell(decision_list)
+        decision_list = {decision_list};
+    end
 
     v_list = cell(1,length(decision_list));
     id_list = cell(1,length(decision_list));
@@ -32,7 +36,7 @@ function MC_nb_maneuver_display(decision_list)
     end
     
     for j = 1:length(decision_list)
-      nb_no_maneuver_list_v = cellfun(@(x) x.nb_no_maneuver, v_list); % extract nb_no_maneuver from struct
+        nb_no_maneuver_list_v = cellfun(@(x) x.nb_no_maneuver, v_list); % extract nb_no_maneuver from struct
         nb_no_maneuver_list_id = cellfun(@(x) x.nb_no_maneuver, id_list);
         nb_maneuver_primary_list_v = cellfun(@(x) x.nb_maneuver_primary, v_list);
         nb_maneuver_primary_list_id = cellfun(@(x) x.nb_maneuver_primary, id_list);

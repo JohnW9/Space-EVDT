@@ -35,7 +35,7 @@
 % REVISION HISTORY:
 %   Dates in DD/MM/YYYY
 %
-%   04/5/2023 - Jonathan Wei
+%   09/7/2023 - Jonathan Wei
 %       * Header added
 %
 %
@@ -85,6 +85,12 @@ for i=1:size(event_detection,2) %First detecting if there were any failed taskin
     end
 end
 
+v_scale_factor = [1,2,3,4,5,6,7,8,9,10]; %scale factor dict initialization
+maneuver_dict = containers.Map('KeyType', 'int32', 'ValueType', 'int32'); % maps out v_scale_factor to corresponding nb of maneuvers
+for index = 1:length(v_scale_factor)
+    maneuver_dict(v_scale_factor(index)) = 0;
+end
+
 for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     if cdm_list(i).read_status==1 % discards read CDMs
         %continue;
@@ -94,9 +100,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         cdm_list(i).read_status=1;
 
         vulnerability_value = cdm_list(i).value1+cdm_list(i).value2;
-        v_scale_factor = [1,2,3,4,5,6,7,8,9,10];
-        maneuver_dict = containers.Map('KeyType', 'int32', 'ValueType', 'int32'); % map
-
+        
         
         value_of_collision= v_scale_factor*vulnerability_value + cdm_list(i).CC_value;
         budget = total_budget - total_cost;
@@ -108,18 +112,19 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
 
         %% Decision tree
         for j=1:length(value_of_collision)
-                if value_of_collision(j) > config.CC_threshold
-                    %increase threshold if high value of collision
-                   Pc = Pc * 10;
-                   disp('exceeded threshold')
-                end
+
+            if value_of_collision(j) > config.CC_threshold
+               %increase threshold if high value of collision
+               Pc = Pc * 10;
+               disp('exceeded threshold')
+            end
             
     
             if (Pc>1e-4) %TO CHANGE
                 %red event
                 %Manual process
                 [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
-                if strcmp(action_det,'red_Pc');
+                if strcmp(action_det,'red_Pc')
                     
                 end
             elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
@@ -138,6 +143,10 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             else
                 %green event
                 action_det = "green Pc";
+            end
+
+            if strcmp(action_det,'red Pc')
+                maneuver_dict(v_scale_factor(j)) = 1; % maneuver_dict are individual to each cdm
             end
         end
 
@@ -164,28 +173,11 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).ValueOfCollision = value_of_collision;
         decision_list(act_ind).Contact_possibility = Possibility_of_contacting;
         decision_list(act_ind).available_budget = budget;
-        
-        
-        if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD') & config.ordinal_mode == 1
-            %Vulnerability based decision
-            cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
-            if cdm_list(i).value1 > cdm_list(i).value2
-                decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
-            else
-                decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
-            end
-            
-            %ID based maneuver
-            if cdm_list(i).id1 > cdm_list(i).id2
-                decision_list(act_ind).maneuver_id_based = 1;
-            else
-                decision_list(act_ind).maneuver_id_based = 2;
-            end
-        else
-            decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
-            decision_list(act_ind).maneuver_id_based = 0;
-        end
-
+        decision_list(act_ind).maneuver_dict = maneuver_dict;
 
     end
+end
+
+
+
 end

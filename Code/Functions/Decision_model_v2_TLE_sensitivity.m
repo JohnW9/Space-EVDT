@@ -35,7 +35,7 @@
 % REVISION HISTORY:
 %   Dates in DD/MM/YYYY
 %
-%   04/5/2023 - Jonathan Wei
+%   09/7/2023 - Jonathan Wei
 %       * Header added
 %
 %
@@ -85,6 +85,12 @@ for i=1:size(event_detection,2) %First detecting if there were any failed taskin
     end
 end
 
+v_scale_factor = config.v_scale_factor; %scale factor dict initialization
+maneuver_dict = containers.Map('KeyType', 'int32', 'ValueType', 'int32'); % maps out v_scale_factor to corresponding nb of maneuvers
+for index = 1:length(v_scale_factor)
+    maneuver_dict(v_scale_factor(index)) = 0;
+end
+
 for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     if cdm_list(i).read_status==1 % discards read CDMs
         %continue;
@@ -94,11 +100,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         cdm_list(i).read_status=1;
 
         vulnerability_value = cdm_list(i).value1+cdm_list(i).value2;
-        v_scale_factor = [1,2,3,4,5,6,7,8,9,10];
-        maneuver_dict = containers.Map('KeyType', 'int32', 'ValueType', 'int32'); % maps out v_scale_factor to corresponding nb of maneuvers
-        for index = 1:length(v_scale_factor)
-            maneuver_dict(v_scale_factor(index)) = 0;
-        end
+        
         
         value_of_collision= v_scale_factor*vulnerability_value + cdm_list(i).CC_value;
         budget = total_budget - total_cost;
@@ -109,8 +111,8 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         end
 
         %% Decision tree
-        for j=1:length(value_of_collision)
-
+        for j=1:length(v_scale_factor)
+            disp('value of collision: ' + string(value_of_collision(j)));
             if value_of_collision(j) > config.CC_threshold
                %increase threshold if high value of collision
                Pc = Pc * 10;
@@ -122,9 +124,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 %red event
                 %Manual process
                 [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
-                if strcmp(action_det,'red_Pc');
-                    
-                end
+
             elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
                 %yellow event
                 %high B* OD flag
@@ -144,7 +144,9 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             end
 
             if strcmp(action_det,'red Pc')
-                maneuver_dict(v_scale_factor(j)) = maneuver_dict(v_scale_factor(j)) + 1;
+                %disp(maneuver_dict(v_scale_factor(j)));
+                maneuver_dict(v_scale_factor(j)) = 1; % maneuver_dict are individual to each cdm
+                disp(maneuver_dict.values);
             end
         end
 
@@ -171,8 +173,13 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).ValueOfCollision = value_of_collision;
         decision_list(act_ind).Contact_possibility = Possibility_of_contacting;
         decision_list(act_ind).available_budget = budget;
-
-
+        disp(maneuver_dict.values);
+        decision_list(act_ind).maneuver_dict = maneuver_dict;
+        
 
     end
+end
+
+
+
 end

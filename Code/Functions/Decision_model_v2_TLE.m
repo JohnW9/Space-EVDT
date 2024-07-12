@@ -101,9 +101,9 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         end
 
         %% Decision tree
-            if value_of_collision(j) > config.CC_threshold
+            if value_of_collision > config.CC_threshold
                 %increase threshold if high value of collision
-               Pc = Pc * 10;
+               %Pc = Pc * 10;
                disp('exceeded threshold')
             end
             

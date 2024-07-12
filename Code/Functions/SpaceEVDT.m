@@ -107,6 +107,7 @@ end
 close(WaitBar);
 disp('All conjunctions throughout the simulation time detected')
 %% Event list to matrix conversion
+%{
 try
     clear cdm_list total_cost decision_list event_detection cdm_rep_list
     space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
@@ -120,6 +121,12 @@ catch
         space_cat_ids(j)=space_cat(j).id;
     end
 
+end
+%}
+
+space_cat_ids=zeros(1,length(space_cat)); % Need to store the NORAD IDs in a matrix to ease computation efforts
+for j=1:length(space_cat)
+    space_cat_ids(j)=space_cat(j).id;
 end
 
 try
