@@ -62,11 +62,17 @@ for i = 1:length(eos)
         cost_score = 10;
     end
     
-    total_score = 0.5 * score_socioeco + 0.5 * cost_score;
+    if config.ordinal_sensitivity_mode == 0
+        total_score = 0.5 * score_socioeco + 0.5 * cost_score;
+    elseif config.ordinal_sensitivity_mode == 1 % for sensitivity analysis
+        total_score = config.score_socioeco_prop * score_socioeco + config.score_hw_prop * cost_score;
+    end
 
     if eos(i).remaining_lifetime >= 0.5
         % normalization by remaining lifetime with a minimum of 50%
         total_score = total_score * eos(i).remaining_lifetime;
+    else
+        total_score = total_score * 0.5;
     end
 
 eos(i).value = total_score;

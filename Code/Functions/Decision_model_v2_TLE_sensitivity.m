@@ -120,7 +120,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             end
             
     
-            if (Pc>1e-4) %TO CHANGE
+            if (Pc>config.red_event_Pc)
                 %red event
                 %Manual process
                 [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
@@ -143,7 +143,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 action_det = "green Pc";
             end
 
-            if strcmp(action_det,'red Pc')
+            if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
                 %disp(maneuver_dict(v_scale_factor(j)));
                 maneuver_dict(v_scale_factor(j)) = 1; % maneuver_dict are individual to each cdm
                 disp(maneuver_dict.values);
@@ -179,7 +179,5 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
 
     end
 end
-
-
 
 end

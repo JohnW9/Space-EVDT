@@ -163,7 +163,10 @@ config.navigation_int = 4;
 
 config.redundancy_scale_factor = 0.1;
 
-config.ordinal_mode = 0; % 1 for using ordinal valuation for primary and secondary objects, 0 for using original valuation method
+config.ordinal_mode = 1; % 1 for using ordinal valuation for primary and secondary objects, 0 for using original valuation method
+config.ordinal_sensitivity_mode = 1; % 1 for doing a sensitivity analysis of hw value wrt socio-economic score, 0 for using the 50-50 split
 
-config.v_scale_factor = [1,2,3,4,5,6,7,8,9,10,15,16,17,18,19,20]; %scale factors for V weighting for V sensitivity analysis
-
+config.v_scale_factor = [1,2,3,3.5,4,4.5,5,6,7,10,15]; %scale factors for V weighting for V sensitivity analysis
+config.score_socioeco_prop = [0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1]; %proportionality factors for socio-economic score
+config.score_hw_prop = [1,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1,0]; %proportionality factors for hardware value score
+%config.v_scale_factor = [1];

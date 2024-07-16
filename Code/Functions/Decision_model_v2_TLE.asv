@@ -91,11 +91,8 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
     else
         event_detection_index=find(event_detection(1,:)==cdm_list(i).label); % since the event_detection matrix has columns in the chronological order
         cdm_list(i).read_status=1;
-        if config.ordinal_sensitivity_mode == 0
-            value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
-        elseif config.ordinal_sensitivity_mode == 1
-            value_of_collision = 0; %placeholder value, value_of_collision not used in sensitvity mode
-        end
+
+        value_of_collision=cdm_list(i).value1+cdm_list(i).value2+cdm_list(i).CC_value;
         budget = total_budget - total_cost;
         Pc=cdm_list(i).Pc;
         TimeToConjunction=date2mjd2000(cdm_list(i).tca)-t;
@@ -185,15 +182,14 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 %Vulnerability based decision
                 cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
 
-                for value_index=1:length(config.score_socioeco_prop)
+                for value_index=1:length(value2)
 
                     if cdm_list(i).value1 > cdm_list(i).value2(value_index)
-                        decision_list(act_ind).maneuver_v_based(value_index) = 2; % secondary maneuvers
+                        decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
                     else
-                        decision_list(act_ind).maneuver_v_based(value_index) = 1; % primary maneuvers
+                        decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
                     end
                 end
-                disp(decision_list(act_ind).maneuver_v_based)
                 
             else
                 decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
