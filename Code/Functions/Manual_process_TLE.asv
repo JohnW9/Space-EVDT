@@ -9,12 +9,10 @@
 %                            chronological order. Containing important space object informations. 
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (H objects) A list of all the CDM's generated [CDM]
-%   i = current cdm_list index
-%   event_detection_index = index of current event_detection
-%
+%   i = current cdm_list
 % OUTPUT:
-%   cdm_list = (H objects) A list of all the CDM's generated [CDM]
-%   action_det = resulting Pc (red Pc, yellow Pc, green Pc)
+%
+%
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %

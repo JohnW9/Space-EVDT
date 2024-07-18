@@ -4,10 +4,10 @@
 % DESCRIPTION:
 % 
 % INPUT:
-%   databse: CDM database
+%   database: CDM database
 %
 % OUTPUT:
-%  real_CDM_list
+%  real_CDM_list: list of real CDMs [real_CDM]
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %

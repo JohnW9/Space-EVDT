@@ -24,10 +24,6 @@
 %   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 %
-%
-%
-%
-%
 % ASSUMPTIONS AND LIMITATIONS:
 % 
 %
@@ -111,7 +107,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             end
             
     
-            if (Pc>1e-4) %TO CHANGE
+            if (Pc>config.red_event_Pc)
                 %red event
                 %Manual process
                 [cdm_list,action_det]=Manual_process_TLE(event_detection,cdm_list,i, event_detection_index);
@@ -187,7 +183,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
 
                 for value_index=1:length(config.score_socioeco_prop)
 
-                    if cdm_list(i).value1 > cdm_list(i).value2(value_index)
+                    if cdm_list(i).value1(value_index) > cdm_list(i).value2(value_index)
                         decision_list(act_ind).maneuver_v_based(value_index) = 2; % secondary maneuvers
                     else
                         decision_list(act_ind).maneuver_v_based(value_index) = 1; % primary maneuvers

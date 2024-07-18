@@ -11,7 +11,7 @@ addpath('Functions/real_CDM/');
 addpath('Functions/KeplerUniversal/');
 addpath('Functions/Unused functions/');
 
-CDM_mode = 0; % 1 for reading CDMs, 0 for reading TLEs
+CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
 data_reading_mode = 1; 
 
 % 1 for using the ordinal ranking system to value primarys and secondarys,
@@ -63,11 +63,11 @@ else
     total_budget = (date2mjd2000(end_date)-date2mjd2000(epoch))*config.budget_per_day;
 
     %% NASA satellites
-    %eos = Read_NASA_satellites;
-    %eos = Read_NASA_sat_ordinal;
-    %eos = eos(2);
-    eos = Read_other_sat_ordinal;
-    eos = eos(1);
+    eos = Read_NASA_satellites;
+    eos = Read_NASA_sat_ordinal;
+    eos = eos(3);
+    %eos = Read_other_sat_ordinal;
+    %eos = eos(3);
 
     disp('NASA satellites loaded')
 

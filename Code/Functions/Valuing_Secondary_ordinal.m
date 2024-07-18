@@ -27,7 +27,7 @@
 function cdm = Valuing_Secondary_ordinal(cdm)
 config = GetConfig;
 found = 0;
-isActive_sc = 1;
+isActive_sc = 0;
 filePath = fullfile(pwd, 'Data', 'Secondary_value.xlsx'); % Adjust the path as needed
 %% Read Secondary Data
 if strcmp(cdm.type2,'PAYLOAD')
@@ -41,6 +41,7 @@ if strcmp(cdm.type2,'PAYLOAD')
             remaining_lifetime = secondary_data(i,4);
             redundancy_level = secondary_data(i,5);
             hardware_value = secondary_data(i,6);
+            isActive_sc = secondary_data(i,7);
             found = 1;
         end
         if found == 1
@@ -149,7 +150,7 @@ if strcmp(cdm.type2,'PAYLOAD')
        
           if given_input == 1
               
-              secondary_data_line = [cdm.id2,general_category,main_application,remaining_lifetime,redundancy_level,hardware_value];
+              secondary_data_line = [cdm.id2,general_category,main_application,remaining_lifetime,redundancy_level,hardware_value,isActive_sc];
               updated_data = [secondary_data;secondary_data_line];
               writematrix(updated_data,filePath);
               %xlswrite(filePath, updated_data, 'Sheet1', sprintf('A%d', database_length+1));
@@ -168,7 +169,7 @@ if strcmp(cdm.type2,'PAYLOAD')
                 end
             end
             if given_input == 1
-                secondary_data_line = [cdm.id2,0,0,0,0,0];
+                secondary_data_line = [cdm.id2,0,0,0,0,0,0];
                 updated_data = [secondary_data;secondary_data_line];
                 writematrix(updated_data,filePath);
             end
@@ -227,13 +228,21 @@ if strcmp(cdm.type2,'PAYLOAD')
     
     cdm.value2 = total_score;
     else % if satellite is not active
-        cdm.value2 = 0;
+        if config.ordinal_sensitivity_mode == 0
+            cdm.value2 = 0;
+        elseif config.ordinal_sensitivity_mode == 1
+            cdm.value2 = zeros(1,length(config.score_socioeco_prop));
+        end
     end
 
 else %if secondary is a debris or rocket body
-    cdm.value2 = 0;
+    if config.ordinal_sensitivity_mode == 0
+        cdm.value2 = 0;
+    elseif config.ordinal_sensitivity_mode == 1
+        cdm.value2 = zeros(1,length(config.score_socioeco_prop));
+    end
 end
-
+cdm.isActive2 = isActive_sc; %memorize whether the spacecraft is active
 end
 
 
