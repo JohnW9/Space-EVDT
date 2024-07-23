@@ -6,9 +6,14 @@
 %
 % INPUT:
 %  real_CDM_list: list of real CDMs [real_CDM]
+%  red_PC: currently considered Pc threshold (for maneuvring)
+%  time_of_maneuver: currently considered time of maneuver
+%  sat_maneuver_dict: dictionnary mapping 
 %
 % OUTPUT:
 %  real_CDM_list: list of real CDMs [real_CDM]
+%  nb_of_maneuver: resulting number of maneuvers
+%  sa
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % 

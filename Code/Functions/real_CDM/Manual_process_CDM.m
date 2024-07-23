@@ -5,11 +5,10 @@
 %   This function simulates the manual process of NASA CARA for CDMs.
 %
 % INPUT:
-%
+%   action_det = resulting Pc (red Pc, yellow Pc, green Pc)
 %
 % OUTPUT:
-%
-%
+%   action_det = resulting Pc (red Pc, yellow Pc, green Pc)
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %

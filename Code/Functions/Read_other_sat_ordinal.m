@@ -39,12 +39,12 @@ other_sat(1).redundancy_level = 34; % based on their own website, as of July 202
 other_sat(2).id = 35932;
 other_sat(2).name = 'SWISSCUBE';
 other_sat(2).dimensions = [0.1,0.1]; % from https://starlinkinstallationpros.com/
-other_sat(2).mass = 1; % https://www.space.com/spacex-starlink-satellites.html, assuming Starlink V2
-other_sat(2).cost = 0.8; % https://spacenews.com/starlink-soars-spacexs-satellite-internet-surprises-analysts-with-6-6-billion-revenue-projection/#:~:text=%E2%80%9CStarlink%20has%20been%20able%20to,and%20cost%20roughly%20$1.2%20million.
+other_sat(2).mass = 1;
+other_sat(2).cost = 0.929; % 0.625 normalized to May 2024
 
 other_sat(2).general_category = config.commercial;
 other_sat(2).main_application = config.communication;
-other_sat(2).remaining_lifetime = 1;
+other_sat(2).remaining_lifetime = 0;
 other_sat(2).redundancy_level = 1;
 
 other_sat(3).id = 43849;

@@ -143,7 +143,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                 action_det = "green Pc";
             end
 
-            if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
+            if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD') & cdm_list(i).isActive2 == 1
                 %disp(maneuver_dict(v_scale_factor(j)));
                 maneuver_dict(v_scale_factor(j)) = 1; % maneuver_dict are individual to each cdm
                 disp(maneuver_dict.values);

@@ -6,10 +6,9 @@
 %   the total score, with respect to the total number of maneuvers
 %
 % INPUT:
-%
+%   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 % OUTPUT:
-%
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:
@@ -53,10 +52,10 @@ for i = 1:length(decision_list) % loop through all decision_list (due to MC)
 end
 
 figure;
-plot(config.score_socioeco_prop,maneuver_decision_av_primary,'o-', 'DisplayName', 'Primary');
+plot(config.score_socioeco_prop,maneuver_decision_av_primary,'o-', 'DisplayName', 'Primary', 'LineWidth', 2);
 hold on;
-plot(config.score_socioeco_prop,maneuver_decision_av_secondary,'x-','DisplayName','Secondary');
-xlabel('Socio-economic score %'); % Label for the x-axis
+plot(config.score_socioeco_prop,maneuver_decision_av_secondary,'x-','DisplayName','Secondary', 'LineWidth', 2);
+xlabel('Socio-economic score weight'); % Label for the x-axis
 ylabel('Total number of maneuvers'); % Label for the y-axis
 title('Sensitivity analysis'); % Title of the plot
 legend show; % Show the legend

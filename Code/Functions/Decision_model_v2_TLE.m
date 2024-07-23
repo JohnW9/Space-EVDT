@@ -159,17 +159,19 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
                 %Vulnerability based decision
                 cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
-                if cdm_list(i).value1 > cdm_list(i).value2
-                    decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
-                else
-                    decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
-                end
-                
-                %ID based maneuver
-                if cdm_list(i).id1 > cdm_list(i).id2
-                    decision_list(act_ind).maneuver_id_based = 1;
-                else
-                    decision_list(act_ind).maneuver_id_based = 2;
+                if cdm_list(i).isActive2 == 1
+                    if cdm_list(i).value1 > cdm_list(i).value2
+                        decision_list(act_ind).maneuver_v_based = 2; % secondary maneuvers
+                    else
+                        decision_list(act_ind).maneuver_v_based = 1; % primary maneuvers
+                    end
+                    
+                    %ID based maneuver
+                    if cdm_list(i).id1 > cdm_list(i).id2
+                        decision_list(act_ind).maneuver_id_based = 1;
+                    else
+                        decision_list(act_ind).maneuver_id_based = 2;
+                    end
                 end
             else
                 decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
@@ -180,7 +182,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
             if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')
                 %Vulnerability based decision
                 cdm_list(i) = Valuing_Secondary_ordinal(cdm_list(i));
-
+            if cdm_list(i).isActive2 ==1
                 for value_index=1:length(config.score_socioeco_prop)
 
                     if cdm_list(i).value1(value_index) > cdm_list(i).value2(value_index)
@@ -189,7 +191,9 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                         decision_list(act_ind).maneuver_v_based(value_index) = 1; % primary maneuvers
                     end
                 end
+            end
                 disp(decision_list(act_ind).maneuver_v_based)
+
                 
             else
                 decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
