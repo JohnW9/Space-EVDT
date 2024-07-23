@@ -154,6 +154,7 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
         decision_list(act_ind).ValueOfCollision = value_of_collision;
         decision_list(act_ind).Contact_possibility = Possibility_of_contacting;
         decision_list(act_ind).available_budget = budget;
+        cdm_list(i).action_det = action_det;
         
         if config.ordinal_sensitivity_mode == 0
             if strcmp(action_det,'red Pc') & strcmp(cdm_list(i).type2, 'PAYLOAD')

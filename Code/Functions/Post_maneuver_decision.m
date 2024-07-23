@@ -1,0 +1,91 @@
+% FUNCTION NAME:
+%   Post_maneuver_decision
+%
+% DESCRIPTION:
+%   This function takes each conjunction (with multiple CDMs) and chooses
+%   who maneuvers based on their valuation
+%
+% INPUT:
+%   cdm_rep_list = [SxP] A cell matrix with each column representing a single conjunction event 
+%                        in an ascending chronological order, and rows containing the CDMs 
+%                        corresponding to that conjunction event.
+%
+%     cdm_rep_list cell matrix column details:
+%      row1: Event number
+%      row2: Maximum Pc between the generated CDMs
+%      row3: The index of the CDM with the maximum Pc within the list column
+%      row4: Total number of CDMs generated for that conjunction event
+%      row5-end: CDMs generated in the a chronological order
+%
+% OUTPUT:
+%   post_maneuver_list_v_based: list of maneuver decisions for
+%   vulnerability based decision model
+%   post_maneuver_list_id_based: list of maneuver decisions for id based
+%   decision model
+%
+% ASSUMPTIONS AND LIMITATIONS:
+%
+%
+% REVISION HISTORY:
+%   Dates in DD/MM/YYYY
+%
+%   23/07/2024 - Jonathan Wei
+%       * Adding header
+%
+
+function [post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC] = Post_maneuver_decision(cdm_rep_list)
+
+config = GetConfig;
+post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
+post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
+post_maneuver_list_v_based_MC = cell(1,length(cdm_rep_list));
+post_maneuver_list_id_based_MC = cell(1,length(cdm_rep_list));
+for list = 1:length(cdm_rep_list) %loop through MC runs
+    current_cdm_rep_list = cdm_rep_list{list};
+    for column = 1:size(current_cdm_rep_list,2) %loop through columns of list
+        current_cdm = current_cdm_rep_list{6,column};
+        if strcmp(current_cdm.type2,'PAYLOAD') & current_cdm.isActive2 == 1 & strcmp(cdm_rep_list{5,column},'red Pc')
+
+            if config.ordinal_sensitivity_mode == 0
+                    if current_cdm.value1 > current_cdm.value2
+                        post_maneuver_list_v_based(column) = 2; % secondary maneuvers
+                    else
+                        post_maneuver_list_v_based(column) = 1; % primary maneuvers
+                    end
+                    
+                    %ID based maneuver
+                    if current_cdm.id1 > current_cdm.id2
+                        post_maneuver_list_id_based(column) = 1;
+                    else
+                        post_maneuver_list_id_based(column) = 2;
+                    end
+
+             elseif config.ordinal_sensitivity_mode == 1
+
+
+                for value_index=1:length(config.score_socioeco_prop)
+
+                    if current_cdm.value1(value_index) > current_cdm.value2(value_index)
+                        post_maneuver_list_v_based(column) = 2; % secondary maneuvers
+                    else
+                        post_maneuver_list_v_based(column) = 1; % primary maneuvers
+                    end
+                end
+            
+                disp(decision_list(act_ind).maneuver_v_based)
+
+                
+            else
+                post_maneuver_list_v_based(column) = 0; % no maneuver or encounter with debris or rocket body
+                post_maneuver_list_id_based(column) = 0;
+            end
+
+        end
+    end
+    post_maneuver_list_v_based_MC(list) = post_maneuver_list_v_based;
+    post_maneuver_list_id_based_MC(list) = post_maneuver_list_id_based;
+
+end
+
+end
+
