@@ -91,10 +91,10 @@ for i = 1:length(post_maneuver_list_v_based_MC) % loop through all decision_list
         
     end
 
-end
+    maneuver_decision_av_primary = mean(maneuver_decision_matrix_primary); % average over columns, such that we have the average nb of maneuvers after MC
+    maneuver_decision_av_secondary = mean(maneuver_decision_matrix_secondary);
 
-maneuver_decision_av_primary = mean(maneuver_decision_matrix_primary); % average over columns, such that we have the average nb of maneuvers after MC
-maneuver_decision_av_secondary = mean(maneuver_decision_matrix_secondary);
+end
 
 
 

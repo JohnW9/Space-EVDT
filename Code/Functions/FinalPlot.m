@@ -34,7 +34,7 @@ yy=yline(config.yellow_event_Pc,'Color',"#EDB120",'LineWidth',2);
 for k=1:1:size(cdm_rep_list,2)
     time_series=[];
     Pc_series=[];
-    for v=6:(cdm_rep_list{5,k}+5)
+    for v=9:(cdm_rep_list{4,k}+8)
         time_series(end+1)=date2mjd2000(cdm_rep_list{v,k}.creation_date);
         Pc_series(end+1)=cdm_rep_list{v,k}.Pc;
     end

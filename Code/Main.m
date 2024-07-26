@@ -55,7 +55,7 @@ else
     %% User inputs
     tic
     epoch = [2023 3 15 0 0 0];
-    end_date= [2023 4 15 0 0 0];           % Simulation end date and time in gregorian calender
+    end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added
@@ -107,7 +107,7 @@ else
         if config.ordinal_sensitivity_mode == 0
             MC_nb_maneuver_display(post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC);
         elseif config.ordinal_sensitivity_mode == 1 % sensitivity analysis of hw value wrt socio-economic score
-            MC_socioeco_sensi_display(decision_list);
+            MC_socioeco_sensi_display(post_maneuver_list_v_based_MC);
         end
     elseif config.ordinal_mode == 0
         plot_V_sensitivity(decision_list);

@@ -68,11 +68,12 @@ nb_no_maneuver_id = 0;
 nb_maneuver_primary_list_v = zeros(1,length(post_maneuver_list_v_based));
 nb_maneuver_secondary_list_v = zeros(1,length(post_maneuver_list_v_based));
 nb_no_maneuver_list_v = zeros(1,length(post_maneuver_list_v_based));
+proportion_primary_list_v = zeros(1,length(post_maneuver_list_v_based));
 
 nb_maneuver_primary_list_id = zeros(1,length(post_maneuver_list_v_based));
 nb_maneuver_secondary_list_id = zeros(1,length(post_maneuver_list_v_based));
 nb_no_maneuver_list_id = zeros(1,length(post_maneuver_list_v_based));
-
+proportion_primary_list_id = zeros(1,length(post_maneuver_list_v_based));
 
 
 if ~iscell(post_maneuver_list_v_based)
@@ -84,7 +85,7 @@ if ~iscell(post_maneuver_list_id_based)
 end
 
 for i=1:length(post_maneuver_list_v_based) %loop through MC
-    current_list = post_maneuver_list_v_based(i);
+    current_list = post_maneuver_list_v_based{i};
     for j=1:length(current_list)
         if current_list(j) == 1
             nb_maneuver_primary_v = nb_maneuver_primary_v + 1;
@@ -97,6 +98,7 @@ for i=1:length(post_maneuver_list_v_based) %loop through MC
     nb_maneuver_primary_list_v(i) =  nb_maneuver_primary_v;
     nb_maneuver_secondary_list_v(i) = nb_maneuver_secondary_v;
     nb_no_maneuver_list_v(i) = nb_no_maneuver_v;
+    proportion_primary_list_v(i) = nb_maneuver_primary_v/(nb_maneuver_primary_v+nb_maneuver_secondary_v);
 
     nb_maneuver_primary_v = 0; % reset
     nb_maneuver_secondary_v = 0;
@@ -106,7 +108,7 @@ end
 
 % ID based
 for i=1:length(post_maneuver_list_id_based) %loop through MC
-    current_list = post_maneuver_list_id_based(i);
+    current_list = post_maneuver_list_id_based{i};
     for j=1:length(current_list)
         if current_list(j) == 1
             nb_maneuver_primary_id = nb_maneuver_primary_id + 1;
@@ -119,12 +121,22 @@ for i=1:length(post_maneuver_list_id_based) %loop through MC
     nb_maneuver_primary_list_id(i) =  nb_maneuver_primary_id;
     nb_maneuver_secondary_list_id(i) = nb_maneuver_secondary_id;
     nb_no_maneuver_list_id(i) = nb_no_maneuver_id;
+    proportion_primary_list_id(i) = nb_maneuver_primary_id/(nb_maneuver_primary_id+nb_maneuver_secondary_id);
 
     nb_maneuver_primary_id = 0; % reset
     nb_maneuver_secondary_id = 0;
     nb_no_maneuver_id = 0;
 
 end
+
+nb_no_maneuver_v_average = mean(nb_no_maneuver_list_v);
+nb_no_maneuver_id_average = mean(nb_no_maneuver_list_id);
+nb_maneuver_primary_v_average = mean(nb_maneuver_primary_list_v);
+nb_maneuver_primary_id_average = mean(nb_maneuver_primary_list_id);
+nb_maneuver_secondary_v_average = mean(nb_maneuver_secondary_list_v);
+nb_maneuver_secondary_id_average = mean(nb_maneuver_secondary_list_id);
+proportion_primary_v_average = mean(proportion_primary_list_v);
+proportion_primary_id_average = mean(proportion_primary_list_id);
 
 
     disp('Vulnerability based decision:');

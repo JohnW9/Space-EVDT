@@ -30,6 +30,8 @@ classdef CDM
         type2               % Type of object 2 (debris, payload, rocket body)
         isActive2           % Whether the secondary space object is active (only active (1) if it is an active payload, otherwise 0)
         action_det          % final Pc level after Decision model
+        whoManeuvers_v      % 0 for no one, 1, for primary, 2 for secondary, for v based decision
+        whoManeuvers_id     % same for id based decision
 
     end
 end

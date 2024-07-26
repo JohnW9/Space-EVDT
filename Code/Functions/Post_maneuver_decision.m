@@ -36,54 +36,47 @@
 function [post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC] = Post_maneuver_decision(cdm_rep_list)
 
 config = GetConfig;
-post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
-post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
+if config.ordinal_sensitivity_mode == 0
+    post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
+    post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
+elseif config.ordinal_sensitivity_mode == 1
+    post_maneuver_list_v_based = cell(1,size(cdm_rep_list{1},2));
+end
+
 post_maneuver_list_v_based_MC = cell(1,length(cdm_rep_list));
 post_maneuver_list_id_based_MC = cell(1,length(cdm_rep_list));
 for list = 1:length(cdm_rep_list) %loop through MC runs
     current_cdm_rep_list = cdm_rep_list{list};
     for column = 1:size(current_cdm_rep_list,2) %loop through columns of list
-        current_cdm = current_cdm_rep_list{6,column};
-        if strcmp(current_cdm.type2,'PAYLOAD') & current_cdm.isActive2 == 1 & strcmp(cdm_rep_list{5,column},'red Pc')
+        current_cdm = current_cdm_rep_list{10,column};
+        if strcmp(current_cdm.type2,'PAYLOAD') & current_cdm_rep_list{6,column} == 1 & strcmp(current_cdm_rep_list{5,column},'red Pc')
 
             if config.ordinal_sensitivity_mode == 0
-                    if current_cdm.value1 > current_cdm.value2
-                        post_maneuver_list_v_based(column) = 2; % secondary maneuvers
-                    else
-                        post_maneuver_list_v_based(column) = 1; % primary maneuvers
-                    end
-                    
-                    %ID based maneuver
-                    if current_cdm.id1 > current_cdm.id2
-                        post_maneuver_list_id_based(column) = 1;
-                    else
-                        post_maneuver_list_id_based(column) = 2;
-                    end
+
+                post_maneuver_list_v_based(column) = current_cdm_rep_list{7,column}; 
+                %ID based maneuver
+                post_maneuver_list_id_based(column) = current_cdm_rep_list{8,column};
 
              elseif config.ordinal_sensitivity_mode == 1
 
-
-                for value_index=1:length(config.score_socioeco_prop)
-
-                    if current_cdm.value1(value_index) > current_cdm.value2(value_index)
-                        post_maneuver_list_v_based(column) = 2; % secondary maneuvers
-                    else
-                        post_maneuver_list_v_based(column) = 1; % primary maneuvers
-                    end
-                end
+                post_maneuver_list_v_based{column} = current_cdm_rep_list{7,column}; 
             
-                disp(decision_list(act_ind).maneuver_v_based)
-
+               % disp(decision_list(act_ind).maneuver_v_based)
                 
-            else
+            end
+
+        else
+            if config.ordinal_sensitivity_mode == 0
                 post_maneuver_list_v_based(column) = 0; % no maneuver or encounter with debris or rocket body
                 post_maneuver_list_id_based(column) = 0;
             end
 
         end
     end
-    post_maneuver_list_v_based_MC(list) = post_maneuver_list_v_based;
-    post_maneuver_list_id_based_MC(list) = post_maneuver_list_id_based;
+    post_maneuver_list_v_based_MC{list} = post_maneuver_list_v_based;
+    if config.ordinal_sensitivity_mode == 0
+        post_maneuver_list_id_based_MC{list} = post_maneuver_list_id_based;
+    end
 
 end
 
