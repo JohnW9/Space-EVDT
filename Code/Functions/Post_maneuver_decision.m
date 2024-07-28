@@ -36,16 +36,25 @@
 function [post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC] = Post_maneuver_decision(cdm_rep_list)
 
 config = GetConfig;
+%{
 if config.ordinal_sensitivity_mode == 0
     post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
     post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
 elseif config.ordinal_sensitivity_mode == 1
     post_maneuver_list_v_based = cell(1,size(cdm_rep_list{1},2));
 end
-
+%}
 post_maneuver_list_v_based_MC = cell(1,length(cdm_rep_list));
 post_maneuver_list_id_based_MC = cell(1,length(cdm_rep_list));
+
 for list = 1:length(cdm_rep_list) %loop through MC runs
+    if config.ordinal_sensitivity_mode == 0
+        post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
+        post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
+    elseif config.ordinal_sensitivity_mode == 1
+        post_maneuver_list_v_based = cell(1,size(cdm_rep_list{1},2));
+    end
+    
     current_cdm_rep_list = cdm_rep_list{list};
     for column = 1:size(current_cdm_rep_list,2) %loop through columns of list
         current_cdm = current_cdm_rep_list{10,column};

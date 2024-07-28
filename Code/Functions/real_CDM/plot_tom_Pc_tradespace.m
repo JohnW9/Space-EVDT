@@ -2,10 +2,16 @@
 %   plot_tom_Pc_tradespace
 %
 % DESCRIPTION:
-% 
-% INPUT:
+%   Plots the time of maneuver and Pc tradespace. Time of maneuver is on the x
+%   axis and total number of maneuver is on the y axis.
 %
+% INPUT:
+%   nb_of_maneuver_list_total: list of lists of nb of maneuvers for different threshold Pc
+%   tom_list: list of considered time of maneuver
+%   red_Pc_list: list of considered threshold Pc
+%   
 % OUTPUT:
+%   plot
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %

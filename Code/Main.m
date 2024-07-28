@@ -22,8 +22,8 @@ if CDM_mode == 1
     list1 = read_real_CDM(data_2015.DB);
     list2 = read_real_CDM(data_2023.DB);
 
-    red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
-    %red_Pc_list = [4.4e-4,1e-4,1e-5];
+    %red_Pc_list = [1e-6,2.5e-6,5e-6,7.5e-6,1e-5,2.5e-5,5e-5,7.5e-5,1e-4,2.5e-4,4.4e-4,5e-4,7.5e-4,1e-3];
+    red_Pc_list = [4.4e-4,1e-4,1e-5];
     tom_list = [12*3600,24*3600,36*3600,48*3600,60*3600]; %time of maneuver before TCA
     nb_of_maneuver_list = []; % list of nb of maneuvers for different time of maneuver
     nb_of_maneuver_list_total = {}; % list of lists of nb of maneuvers for different threshold Pc
@@ -34,7 +34,7 @@ if CDM_mode == 1
 if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for different Pc thresholds
     for red_Pc = red_Pc_list
         for time_of_maneuver = tom_list
-            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list1,red_Pc,time_of_maneuver,sat_maneuver_dict);
+            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list2,red_Pc,time_of_maneuver,sat_maneuver_dict);
             disp("for threshold Pc " + string(red_Pc) + " and t of maneuver (before TCA) of " + string(time_of_maneuver/3600) +" h, we have " + string(nb_of_maneuver) + " maneuvers");
             disp(sat_maneuver_dict);
             sat_maneuver_dict(sat_ids) = 0;
@@ -55,7 +55,7 @@ else
     %% User inputs
     tic
     epoch = [2023 3 15 0 0 0];
-    end_date= [2023 3 20 0 0 0];           % Simulation end date and time in gregorian calender
+    end_date= [2023 5 15 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added
@@ -100,7 +100,7 @@ else
     end
     %% Main program run
     %[cdm_rep_list,event_list,cd am_list,event_detection,total_cost,decision_list,MOID_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
-    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,5);
+    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,10);
     
     [post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC] = Post_maneuver_decision(cdm_rep_list);
     if config.ordinal_mode == 1

@@ -6,7 +6,7 @@
 %   to each specific conjunction event, along with some basic data
 %
 % INPUT:
-%   event_detection = [14xP] A matrix with each column corresponding to conjunctions detected, in the
+%   event_detection = [17xP] A matrix with each column corresponding to conjunctions detected, in the
 %                            chronological order. Containing important space object informations. 
 %                            [--,mjd2000,--,--,km,--,mjd2000,--,mjd2000,--,--,mjd2000,km,mjd2000]'
 %   cdm_list = (Q objects) List of all CDMs generated in the chronological order [CDM]
@@ -23,6 +23,8 @@
 %      row3: The index of the CDM with the maximum Pc within the list column
 %      row4: Total number of CDMs generated for that conjunction event
 %      row5: action det (Pc level)
+%      row6: is the secondary space active
+%      row7:
 %      row5-end: CDMs generated in the a chronological order
 %
 %
@@ -71,20 +73,27 @@ for i=1:size(event_detection,2)
             
             if cdm_list(j).isActive2 == 1 % one cdm is active means the s/c is active
                 isActive2 = 1;
+                %whoManeuvers_v = cdm_list(j).whoManeuvers_v;
             end
 
-            if ~isempty(cdm_list(j).whoManeuvers_v) | cdm_list(j).whoManeuvers_v ~= 0
-                whoManeuvers_v = cdm_list(j).whoManeuvers_v;
-            end
-
-            if ~isempty(cdm_list(j).whoManeuvers_id) | cdm_list(j).whoManeuvers_id ~= 0
-                whoManeuvers_id = cdm_list(j).whoManeuvers_id;
+            if config.ordinal_sensitivity_mode == 1
+                if ~isempty(cdm_list(j).whoManeuvers_v) & cdm_list(j).whoManeuvers_v ~= 0
+                    whoManeuvers_v = cdm_list(j).whoManeuvers_v;
+                end
+            elseif config.ordinal_sensitivity_mode == 0
+                if cdm_list(j).whoManeuvers_v ~= 0 & ~isempty(cdm_list(j).whoManeuvers_v)
+                    whoManeuvers_v = cdm_list(j).whoManeuvers_v;
+                end
+    
+                if cdm_list(j).whoManeuvers_id ~= 0 & ~isempty(cdm_list(j).whoManeuvers_v)
+                    whoManeuvers_id = cdm_list(j).whoManeuvers_id;
+                end
             end
         end
     end
     cdm_rep_list{2,i}=Pcmax;
     cdm_rep_list{3,i}=index_of_max;
-    cdm_rep_list{4,i}=index-8;
+    cdm_rep_list{4,i}=index-9;
     cdm_rep_list{5,i}=action_det;
     cdm_rep_list{6,i}=isActive2;
     cdm_rep_list{7,i}=whoManeuvers_v;

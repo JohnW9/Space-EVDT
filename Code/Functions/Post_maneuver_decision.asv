@@ -40,11 +40,12 @@ if config.ordinal_sensitivity_mode == 0
     post_maneuver_list_v_based = zeros(1,size(cdm_rep_list{1},2));
     post_maneuver_list_id_based = zeros(1,size(cdm_rep_list{1},2));
 elseif config.ordinal_sensitivity_mode == 1
-    
+    post_maneuver_list_v_based = cell(1,size(cdm_rep_list{1},2));
 end
 
 post_maneuver_list_v_based_MC = cell(1,length(cdm_rep_list));
 post_maneuver_list_id_based_MC = cell(1,length(cdm_rep_list));
+
 for list = 1:length(cdm_rep_list) %loop through MC runs
     current_cdm_rep_list = cdm_rep_list{list};
     for column = 1:size(current_cdm_rep_list,2) %loop through columns of list
@@ -59,20 +60,24 @@ for list = 1:length(cdm_rep_list) %loop through MC runs
 
              elseif config.ordinal_sensitivity_mode == 1
 
-                post_maneuver_list_v_based(column) = current_cdm_rep_list{7,column}; 
+                post_maneuver_list_v_based{column} = current_cdm_rep_list{7,column}; 
             
                % disp(decision_list(act_ind).maneuver_v_based)
                 
             end
 
-            else
+        else
+            if config.ordinal_sensitivity_mode == 0
                 post_maneuver_list_v_based(column) = 0; % no maneuver or encounter with debris or rocket body
                 post_maneuver_list_id_based(column) = 0;
+            end
 
         end
     end
     post_maneuver_list_v_based_MC{list} = post_maneuver_list_v_based;
-    post_maneuver_list_id_based_MC{list} = post_maneuver_list_id_based;
+    if config.ordinal_sensitivity_mode == 0
+        post_maneuver_list_id_based_MC{list} = post_maneuver_list_id_based;
+    end
 
 end
 

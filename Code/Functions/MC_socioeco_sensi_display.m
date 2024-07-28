@@ -66,11 +66,6 @@ for i = 1:length(post_maneuver_list_v_based_MC) % loop through all decision_list
     nonEmptyCells = cellfun(@(x) ~isempty(x),post_maneuver_list_v_based_MC{i});
     current_decision_list = post_maneuver_list_v_based_MC{i}(nonEmptyCells);
 
-    % Find the indices of cells that are not empty and do not contain 0
-    %nonEmptyNonZeroCells = cellfun(@(x) ~(isnumeric(x) && x == 0), current_decision_list);
-
-    % Create a new cell array with only the non-empty, non-zero cells
-    %current_decision_list = post_maneuver_list_v_based_MC{i}(nonEmptyNonZeroCells);
     new_list = {};
     for truc = 1:length(current_decision_list)
         if current_decision_list{truc} ~= 0

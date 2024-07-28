@@ -150,4 +150,3 @@ proportion_primary_id_average = mean(proportion_primary_list_id);
     disp('Average number of primary maneuvers: ' + string(nb_maneuver_primary_id_average));
     disp('Average number of secondary maneuvers: ' + string(nb_maneuver_secondary_id_average));
     disp('Primary objects maneuvers ' + string(proportion_primary_id_average*100) + ' % of the time. Secondary maneuvers ' + string((1-proportion_primary_id_average)*100) + ' % of the time.');
-end

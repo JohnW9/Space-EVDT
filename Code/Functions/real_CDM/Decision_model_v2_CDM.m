@@ -40,7 +40,7 @@ for l=1:length(sorted_conj_list)
     current_conjunction = sorted_conj_list{l};
     chosen_cdm_index = choose_maneuver_cdm(current_conjunction,time_of_maneuver);
     current_ID=current_conjunction(chosen_cdm_index).Primary_ID;
-    if current_conjunction(chosen_cdm_index).Primary_ID == 27424
+    if current_conjunction(chosen_cdm_index).Primary_ID == 43613
    
     %% Decision tree
         %if value_of_collision > config.CC_threshold
