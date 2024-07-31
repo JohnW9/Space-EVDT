@@ -55,7 +55,7 @@ else
     %% User inputs
     tic
     epoch = [2023 3 15 0 0 0];
-    end_date= [2023 5 15 0 0 0];           % Simulation end date and time in gregorian calender
+    end_date= [2023 6 15 0 0 0];           % Simulation end date and time in gregorian calender
     %epoch = [2015 1 1 0 0 0]; end_date = [2015 7 1 0 0 0];
     %epoch = [2005 1 1 0 0 0]; end_date = [2005 7 1 0 0 0];
     accelerator=0;                          % details to be added
@@ -64,10 +64,10 @@ else
 
     %% NASA satellites
     %eos = Read_NASA_satellites;
-    eos = Read_NASA_sat_ordinal;
-    eos = eos(2);
-    %eos = Read_other_sat_ordinal;
-    %eos = eos(1);
+    %eos = Read_NASA_sat_ordinal;
+    %eos = eos(3);
+    eos = Read_other_sat_ordinal;
+    eos = eos(1);
 
     disp('NASA satellites loaded')
 
@@ -100,7 +100,7 @@ else
     end
     %% Main program run
     %[cdm_rep_list,event_list,cd am_list,event_detection,total_cost,decision_list,MOID_list] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator);
-    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,10);
+    [cdm_rep_list,event_list,cdm_list,event_detection,total_cost,decision_list,MOID_list,operation_cost] = SpaceEVDT (epoch, end_date , eos, space_cat,accelerator,5);
     
     [post_maneuver_list_v_based_MC,post_maneuver_list_id_based_MC] = Post_maneuver_decision(cdm_rep_list);
     if config.ordinal_mode == 1
