@@ -63,7 +63,7 @@ for l=1:length(sorted_conj_list)
             %yellow event
             %high B* OD flag
             if Pc < config.red_event_Pc && Pc > config.red_event_Pc/10 %close to limit
-                    if current_conjunction(chosen_cdm_index).Drag_primary > config.B_star_threshold % TO CHANGE
+                    if current_conjunction(chosen_cdm_index).Drag_primary > config.B_star_threshold
                         action_det = "high B* star OD flag, red Pc";
                     else
                         action_det = "yellow Pc";
