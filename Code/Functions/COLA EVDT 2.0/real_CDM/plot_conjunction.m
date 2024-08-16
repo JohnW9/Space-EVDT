@@ -6,7 +6,7 @@
 %   of the same conjunction.
 %
 % INPUT:
-%
+%   conjunction = currently considered conjunction
 %
 % OUTPUT:
 %

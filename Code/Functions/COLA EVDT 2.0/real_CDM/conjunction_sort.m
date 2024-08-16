@@ -7,10 +7,11 @@
 %   chornologically.
 %
 % INPUT:
-%
+%  real_CDM_list: list of real CDMs [real_CDM]
 %
 % OUTPUT:
-%
+% sorted_conj_list: list of conjunctions composed of [real_CDM], with
+% conjunctions sorted in chronological order
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % 

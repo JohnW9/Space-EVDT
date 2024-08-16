@@ -8,7 +8,9 @@
 %   
 %
 % INPUT:
-%   
+%   post_maneuver_list_v_based: list of maneuver decisions for vulnerability based decision model
+%   post_maneuver_list_id_based: list of maneuver decisions for id based decision model
+%
 % OUTPUT:
 %
 % ASSUMPTIONS AND LIMITATIONS:

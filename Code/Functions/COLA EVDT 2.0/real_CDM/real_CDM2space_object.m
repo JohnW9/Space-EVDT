@@ -6,7 +6,14 @@
 %   orbital elements with the newly computed ones.
 %
 % INPUT:
-%
+%   real_CDM_i: currently considered real_CDM [real_CDM]
+%   Input_Object_Designator - (optional, Defaults to Secondary Object) 
+%                             Text or Numeric Entry indicating whether to
+%                             analyze the Primary "1" or Secondary "2"
+%                             Object Allowable Inputs:
+%                               - 1 '1' 'Primary'
+%                               - 2 '2' 'Secondary'
+%   orbital_elements: a struct with the orbital elements in it.
 %
 % OUTPUT:
 %

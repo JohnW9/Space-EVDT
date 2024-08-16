@@ -7,12 +7,9 @@
 %   maneuvers
 %
 % INPUT:
-%
+%   decision_list = (U objects) The list containing all the actions taken by the decision model [Decision_action]
 %
 % OUTPUT:
-%
-%
-%
 %
 %
 % ASSUMPTIONS AND LIMITATIONS:

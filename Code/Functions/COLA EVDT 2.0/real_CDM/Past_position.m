@@ -12,7 +12,8 @@
 %   Input_Object_Designator: 'primary' or 'secondary' (object)
 %
 % OUTPUT:
-
+%   r_past: past x,y,z position
+%   v_past: past velocity
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % 

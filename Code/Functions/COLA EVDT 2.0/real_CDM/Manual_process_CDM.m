@@ -6,6 +6,9 @@
 %
 % INPUT:
 %   action_det = resulting Pc (red Pc, yellow Pc, green Pc)
+%   current_conjunction = currently considered conjunction
+%   chosen_cdm_index = index of the considered cdm within the conjunction
+%   time_of_maneuver: currently considered time of maneuver
 %
 % OUTPUT:
 %   action_det = resulting Pc (red Pc, yellow Pc, green Pc)

@@ -6,7 +6,8 @@
 %   the total score, with respect to the total number of maneuvers
 %
 % INPUT:
-%   decision_list = (J objects) The list containing all the actions taken by the decision model [Decision_action]
+%   post_maneuver_list_v_based_MC: list of number of MC runs of list of maneuver decisions for
+%   vulnerability based decision model
 %
 % OUTPUT:
 %

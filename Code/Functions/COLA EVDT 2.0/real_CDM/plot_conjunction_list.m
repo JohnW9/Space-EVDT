@@ -6,7 +6,7 @@
 %   list of real_CDMs
 %
 % INPUT:
-%
+%   real_CDM_list: list of real CDMs [real_CDM]
 %
 % OUTPUT:
 %

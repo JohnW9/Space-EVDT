@@ -8,16 +8,16 @@
 %   
 %
 % INPUT:
-%   Satellite = (1 object) Primary NASA satellites under consideration for collision avoidance [NASA_sat]
-%   space_cat = (M objects) Space catalogue fed to the program as the space environment [Space_object]
+%   new_oe_primary = new orbital elements of primary spacecraft
+%   new_oe_secondary = new orbital elements of secondary spacecraft
+%   current_cdm = current CDM under consideration
 %   epoch = [1x6] Simulation start date in Gregorian calender [yy mm dd hr mn sc]
 %   no_days = [1x1] Simulation number of days after epoch [days]
 %   event_list = (F objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
-%   space_cat_ids = [1xM] A matrix containing the NORAD IDs of the space catalogue objects in order
 %   
 % OUTPUT:
 %   event_list = (P objects) List of conjunction events detected by the program, not in a sorted way [Conjunction_event]
-%   Relevant_object_list = [Vx1] a list of relevant space objects detected throughout the simulation time
+%   
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %   It is suggested that the timestep not be higher than 15 seconds, otherwise conjunctions may be missed.
