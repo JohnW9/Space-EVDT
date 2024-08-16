@@ -13,7 +13,8 @@
 % OUTPUT:
 %  real_CDM_list: list of real CDMs [real_CDM]
 %  nb_of_maneuver: resulting number of maneuvers
-%  sa
+%  sat_maneuver_dict: dictionnary mapping satellite id to number of
+%  maneuvers
 %
 % ASSUMPTIONS AND LIMITATIONS:
 % 
@@ -40,7 +41,7 @@ for l=1:length(sorted_conj_list)
     current_conjunction = sorted_conj_list{l};
     chosen_cdm_index = choose_maneuver_cdm(current_conjunction,time_of_maneuver);
     current_ID=current_conjunction(chosen_cdm_index).Primary_ID;
-    if current_conjunction(chosen_cdm_index).Primary_ID == 43613
+    %if current_conjunction(chosen_cdm_index).Primary_ID == 43613
    
     %% Decision tree
         %if value_of_collision > config.CC_threshold
@@ -76,7 +77,7 @@ for l=1:length(sorted_conj_list)
             action_det = "green Pc";
         end
         action_list{l} = action_det;
-    end
+   % end
 end
 
 end

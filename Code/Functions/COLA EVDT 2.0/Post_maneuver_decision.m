@@ -58,7 +58,7 @@ for list = 1:length(cdm_rep_list) %loop through MC runs
     current_cdm_rep_list = cdm_rep_list{list};
     for column = 1:size(current_cdm_rep_list,2) %loop through columns of list
         current_cdm = current_cdm_rep_list{10,column};
-        if strcmp(current_cdm.type2,'PAYLOAD') & current_cdm_rep_list{6,column} == 1 & strcmp(current_cdm_rep_list{5,column},'red Pc')
+        if strcmp(current_cdm_rep_list{5,column},'red Pc')
 
             if config.ordinal_sensitivity_mode == 0
 

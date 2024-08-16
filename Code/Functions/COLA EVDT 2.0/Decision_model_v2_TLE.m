@@ -183,10 +183,14 @@ for i=length(cdm_list):-1:1 % loops through all the generated CDMs
                         
                     end
                 end
-
-            %elseif strcmp(action_det,'red Pc') % red but debris or rocket body
-            %    cdm_list(i).whoManeuvers_v = 1;
-            %    cdm_list(i).whoManeuvers_id = 1;
+        %{
+            elseif strcmp(action_det,'red Pc') % red but debris or rocket body
+                delta_time = date2sec(cdm_list(i).tca) - date2sec(cdm_list(i).creation_date);
+                if delta_time < config.twenty_four_hour_sec % within 24h of TCA
+                    cdm_list(i).whoManeuvers_v = 1;
+                    cdm_list(i).whoManeuvers_id = 1;
+                end
+        %}
             else
                 decision_list(act_ind).maneuver_v_based = 0; % no maneuver or encounter with debris or rocket body
                 decision_list(act_ind).maneuver_id_based = 0;

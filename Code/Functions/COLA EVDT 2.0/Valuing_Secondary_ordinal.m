@@ -243,9 +243,9 @@ else %if secondary is a debris or rocket body
     end
 end
 cdm.isActive2 = isActive_sc; %memorize whether the spacecraft is active
-if cdm.isActive2 ==1
-    disp('isActive2')
-end
+%if cdm.isActive2 ==1
+%    disp('isActive2')
+%end
 end
 
 
