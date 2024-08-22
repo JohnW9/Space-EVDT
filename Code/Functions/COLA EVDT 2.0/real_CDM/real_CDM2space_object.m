@@ -16,8 +16,26 @@
 %   orbital_elements: a struct with the orbital elements in it.
 %
 % OUTPUT:
-%
-%
+%   space_object_i: ith space object
+%        name   % Name of the object
+%        id     % NORAD ID
+%        epoch  % Epoch in mjd2000
+%        a      % Semi-major axis [km]
+%        e      % Eccentricity
+%        i      % Inclination [rad]
+%        raan   % Right Ascension of Ascending Node [rad]
+%        om     % Argument of perigee [rad]
+%        M      % Mean anomaly [rad]
+%        f      % True anomaly [rad]
+%        type   % Space object type (PAYLOAD/ROCKET BODY/DEBRIS)
+%        RCS    % Radar Cross Section category (LARGE/MEDIUM/SMALL)
+%        value  % Monetized value of the space object
+%        B_star % B* value used for SWTS
+        
+%        general_category        % Human spaceflight/military/civil/commercial
+%        main_application        % Earth Observation/scientific research/communication/Navigation
+%        remaining_lifetime      % remaining lifetime of the spacecraft (between 0 and 1; e.g. 0.3 means 30% lifetime remaining)
+%        redundancy_level        % if the spacecraft is part of a constellation
 %
 % ASSUMPTIONS AND LIMITATIONS:
 %

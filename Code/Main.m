@@ -12,8 +12,8 @@ addpath('Functions/Unused functions/');
 addpath('Functions/COLA EVDT 2.0/');
 addpath('Functions/COLA EVDT 2.0/real_CDM/');
 
-CDM_mode = 0; % 1 for reading CDMs, 0 for reading TLEs
-data_reading_mode = 1; 
+CDM_mode = 1; % 1 for reading CDMs, 0 for reading TLEs
+data_reading_mode = 0; 
 
 % 1 for using the ordinal ranking system to value primarys and secondarys,
 % 0 to use the original valuation method
@@ -33,13 +33,21 @@ if CDM_mode == 1
     sat_maneuver_dict = dictionary(sat_ids,sat_maneuvers);
     
 if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for different Pc thresholds
+    list_24toTCA = []; %to store the index of conjunctions with red Pc at 24 before TCA
     for red_Pc = red_Pc_list
         for time_of_maneuver = tom_list
-            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM(list2,red_Pc,time_of_maneuver,sat_maneuver_dict);
+            [real_CDM_list, nb_of_maneuver,sat_maneuver_dict,list_already_maneuvered] = Decision_model_v2_CDM(list2,red_Pc,time_of_maneuver,sat_maneuver_dict);
             disp("for threshold Pc " + string(red_Pc) + " and t of maneuver (before TCA) of " + string(time_of_maneuver/3600) +" h, we have " + string(nb_of_maneuver) + " maneuvers");
             disp(sat_maneuver_dict);
             sat_maneuver_dict(sat_ids) = 0;
             nb_of_maneuver_list(end+1) = nb_of_maneuver;
+            if time_of_maneuver == 24*3600
+                list_24toTCA = list_already_maneuvered; %TCA-24h as baseline of comparison
+            elseif time_of_maneuver >= 24*3600                
+                common_elements = intersect(list_24toTCA, list_already_maneuvered);
+                proportion_appeared = numel(common_elements) / numel(list_24toTCA);
+                disp("for threshold Pc " + string(red_Pc) + " and t of maneuver (before TCA) of " + string(time_of_maneuver/3600) +" h, we have " + proportion_appeared*100 + " % maneuvers that appeared before")
+            end
         end
         nb_of_maneuver_list_total{end+1} = nb_of_maneuver_list;
         nb_of_maneuver_list = [];
@@ -48,7 +56,7 @@ if data_reading_mode == 1 % plotting nb of maneuvers vs time of maneuver for dif
     plot_tom_Pc_tradespace(nb_of_maneuver_list_total,tom_list,red_Pc_list);
 
 else % plotting each relevant conjunction
-    plot_conjunction_list(list1);
+    plot_conjunction_list(list2);
 end
 
 else

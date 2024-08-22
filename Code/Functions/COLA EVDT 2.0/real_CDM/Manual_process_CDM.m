@@ -88,9 +88,9 @@ epoch = s2date(epoch_sec);
 no_days = closest_delta_time/(60*60*24); % Simulation number of days after epoch [days]
 event_list = [];
 %event_list = Event_Detection_MTS_CDM(oe_3_primary,oe_3_secondary,current_conjunction(chosen_cdm_index),epoch,no_days,event_list);
-if ~isempty(event_list)
-    disp('not empty');
-end
+%if ~isempty(event_list)
+%    disp('not empty');
+%end
 
 %propagate forward to TCA again
 % primary position at TCA
@@ -112,8 +112,8 @@ oef_secondary = Kep2struct(Kepf_secondary);
 %visualisation
 pos_list = {r1,r2,r2,r_secondary,rf_primary,rf_secondary};
 orbital_el_list = {oe_1,oe_2,oe_3_primary,oe_3_secondary,oef_primary,oef_secondary};
-disp(pos_list);
-disp(orbital_el_list);
+%disp(pos_list);
+%disp(orbital_el_list);
 %plot_orbit(pos_list,orbital_el_list);
 
 end

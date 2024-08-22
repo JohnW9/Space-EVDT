@@ -27,14 +27,14 @@
 %
 %
 
-function [real_CDM_list, nb_of_maneuver,sat_maneuver_dict] = Decision_model_v2_CDM (real_CDM_list,red_Pc,time_of_maneuver,sat_maneuver_dict)
+function [real_CDM_list, nb_of_maneuver,sat_maneuver_dict,list_already_maneuvered] = Decision_model_v2_CDM (real_CDM_list,red_Pc,time_of_maneuver,sat_maneuver_dict)
 
 config = GetConfig;
 nb_of_maneuver = 0;
 
 sorted_conj_list = conjunction_sort(real_CDM_list);
 action_list = cell(1,length(sorted_conj_list));
-
+list_already_maneuvered = []; %list of conjunction indexes that has already appeared
    
 for l=1:length(sorted_conj_list)
      %% choose last CDM before TCA
@@ -55,9 +55,12 @@ for l=1:length(sorted_conj_list)
             [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'primary');
             [CollectedScores,CompositeScore,CurrentEval] = OD_check_CDM(current_conjunction(chosen_cdm_index),'secondary');
             %Manual process
-            Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det,time_of_maneuver)
+            action_det = Manual_process_CDM(current_conjunction,chosen_cdm_index,action_det,time_of_maneuver);
             action_det = "red Pc"; %temp
             nb_of_maneuver = nb_of_maneuver + 1;
+            if time_of_maneuver >= 24*3600
+                list_already_maneuvered(end+1) = l; % remember the conjunction that already appeared for TCA-24h
+            end
             sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) = sat_maneuver_dict(current_conjunction(chosen_cdm_index).Primary_ID) + 1;
             
         elseif (Pc<config.red_event_Pc && Pc>config.yellow_event_Pc)
@@ -65,7 +68,7 @@ for l=1:length(sorted_conj_list)
             %high B* OD flag
             if Pc < config.red_event_Pc && Pc > config.red_event_Pc/10 %close to limit
                     if current_conjunction(chosen_cdm_index).Drag_primary > config.B_star_threshold
-                        action_det = "high B* star OD flag, red Pc";
+                        action_det = "high B* star OD flag, red Pc"; %for now this doesn't count as a maneuver
                     else
                         action_det = "yellow Pc";
                     end
