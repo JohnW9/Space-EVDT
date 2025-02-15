@@ -33,7 +33,7 @@ other_sat(1).cost= 5; % no clear info on that, price estimated from article: htt
 
 other_sat(1).general_category = config.commercial;
 other_sat(1).main_application = config.earth_observation;
-other_sat(1).remaining_lifetime = 0.75; % based on an expected lifetime of 5 years: https://space.oscar.wmo.int/satelliteprogrammes/view/iceye#:~:text=The%20design%20life%20time%20is,undetermined%20for%20the%20full%20constellation.
+other_sat(1).remaining_lifetime = 0.78; % based on an expected lifetime of 5 years: https://space.oscar.wmo.int/satelliteprogrammes/view/iceye#:~:text=The%20design%20life%20time%20is,undetermined%20for%20the%20full%20constellation.
 other_sat(1).redundancy_level = 34; % based on their own website, as of July 2024: https://www.iceye.com/satellites
 
 other_sat(2).id = 35932;

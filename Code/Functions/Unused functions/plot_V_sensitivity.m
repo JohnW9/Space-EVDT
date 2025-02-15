@@ -54,7 +54,7 @@ for idx = 1:length(config.v_scale_factor)
 end
 
 figure;
-    plot(config.v_scale_factor, maneuver_dict_averaged, 'o-', 'LineWidth', 2);
+    plot(config.v_scale_factor, maneuver_dict_averaged, '-', 'LineWidth', 2);
     xlabel('Scale Factor');
     ylabel('Number of maneuvers');
     title('Vulnerability sensibility');
